@@ -1,0 +1,20 @@
+# --- Fichiers Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Environnements virtuels ---
+venv/
+.env/
+.venv/
+
+# --- Build / Distribution ---
+build/
+dist/
+*.spec
+*.egg-info/
+
+# --- OS spécifiques ---
+.DS_Store
+Thumbs.db

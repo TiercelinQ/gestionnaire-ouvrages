@@ -1,0 +1,18 @@
+# Normalisation des fins de ligne
+* text=auto eol=lf
+
+# Fichiers Python : toujours LF
+*.py text eol=lf
+
+# Fichiers Markdown et config : toujours LF
+*.md text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+
+# Fichiers binaires : ne pas modifier
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.exe binary
+*.zip binary

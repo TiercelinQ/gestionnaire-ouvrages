@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="global_icons">
+        <file alias="iconBookInventoryApp.png">resources/icons/app/iconBookInventoryApp.png</file>
+    </qresource>
+    <qresource prefix="theme_icons">
+        <file alias="moon.svg">resources/icons/moon.svg</file>
+        <file alias="sun.svg">resources/icons/sun.svg</file>
+        <file alias="refresh_black.svg">resources/icons/refresh_black.svg</file>
+        <file alias="refresh_white.svg">resources/icons/refresh_white.svg</file>
+        <file alias="arrow_down_black.svg">resources/icons/arrow_down_black.svg</file>
+        <file alias="arrow_down_white.svg">resources/icons/arrow_down_white.svg</file>
+    </qresource>
+    <qresource prefix="status_icons">
+        <file alias="error.png">resources/icons/error.png</file>
+        <file alias="information.png">resources/icons/information.png</file>
+        <file alias="question.png">resources/icons/question.png</file>
+        <file alias="success.png">resources/icons/success.png</file>
+        <file alias="warning.png">resources/icons/warning.png</file>
+    </qresource>
+    <qresource prefix="buttons_icons">
+        <file alias="add_white.svg">resources/icons/add_white.svg</file>
+        <file alias="edit_white.svg">resources/icons/edit_white.svg</file>
+        <file alias="delete_white.svg">resources/icons/delete_white.svg</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,591 @@
+/*
+================================================================================
+PALETTE LIGHT THEME :
+- MAIN_BG_COLOR (Fond Principal) : #f0f0f0
+- SECONDARY_BG_COLOR (Widgets/Tables/Onglets) : #ffffff
+- SURFACE_COLOR (Contenus/Groupes) : #e8e8e8
+- BORDER_COLOR : #cccccc (Pour les bordures)
+- TEXT_COLOR : #1a1a1a
+- ACCENT_PRIMARY (Bleu) : #4682B4
+- ACCENT_SECONDARY (Sélection/Hover) : #d4e5f2
+================================================================================
+*/
+
+/*
+================================================================================
+1. STYLES DE BASE ET COULEURS (GLOBAL)
+================================================================================
+*/
+
+/* Définitions de style de base appliquées à la majorité des widgets */
+QWidget {
+    background-color: #f0f0f0;
+    color: #1a1a1a;
+    font-size: 10pt;
+    selection-background-color: #d4e5f2;
+    selection-color: #1a1a1a;
+}
+
+QMainWindow {
+    border: 1px solid #cccccc;
+}
+
+/* Cible l'ancêtre commun des listes et tableaux pour retirer l'outline de focus */
+QAbstractItemView {
+    outline: none;
+}
+
+/* --- LOG DE STATUT/RÉSULTATS --- */
+QLabel#StatusLabel {
+    color: #666666;
+    margin-top: 5px;
+}
+
+/* --- TITRES DE WIDGETS --- */
+QLabel#WidgetTitle {
+    padding-bottom: 5px;
+    border-bottom: 2px solid #cccccc;
+    font-weight: bold;
+    color: #1a1a1a;
+}
+
+/* Barre Header */
+QLabel#UserName, QLabel#DataBase {
+    font-weight: bold;
+}
+
+QFrame[frameShape="4"] {
+    background-color: #cccccc;
+    max-height: 2px;
+    border: none;
+}
+
+/*
+================================================================================
+2. NAVIGATION (QTabWidget et QTabBar)
+================================================================================
+*/
+
+QTabWidget::pane {
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+
+QTabBar::tab {
+    background: #e8e8e8;
+    border-top: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-bottom: 4px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    padding: 8px 15px;
+}
+
+QTabBar::tab:hover {
+    background: #d4e5f2;
+    color: #1a1a1a;
+    border-bottom: 4px solid #1a1a1a;
+}
+
+QTabBar::tab:selected {
+    background: #4682B4;
+    color: #ffffff;
+    border-bottom: 4px solid #1a1a1a;
+    font-weight: bold;
+}
+
+/*
+================================================================================
+3. FORMULAIRES & CHAMPS DE SAISIE (QLineEdit, QComboBox, QTextEdit)
+================================================================================
+*/
+
+QLineEdit, QTextEdit {
+    padding: 8px 10px;
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    color: #1a1a1a;
+}
+
+QComboBox {
+    padding: 0 0 0 10px;
+    min-height: 30px;
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    color: #1a1a1a;
+}
+
+/* --- Flèche et Zone de Dropdown --- */
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #cccccc;
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+}
+
+QComboBox::drop-down:hover {
+    background: #e8e8e8;
+}
+
+QComboBox::down-arrow {
+    image: url(":/theme_icons/arrow_down_black.svg");
+    width: 24px;
+    height: 24px;
+}
+
+/* --- Liste Déroulante (Le menu qui s'ouvre) --- */
+
+/* 1. Style de la fenêtre de la liste déroulante (le conteneur) */
+QComboBox QAbstractItemView {
+    border: 1px solid #4682B4;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    padding: 2px;
+}
+
+/* 2. Style de CHAQUE élément/ligne dans la liste (Height, Padding, Base) */
+QComboBox QAbstractItemView::item {
+    padding: 8px 10px;
+    min-height: 25px;
+    background-color: transparent;
+    color: #1a1a1a;
+}
+
+/* 3. Style de l'élément au survol de la souris */
+QComboBox QAbstractItemView::item:hover {
+    background-color: #e8e8e8;
+    color: #1a1a1a;
+}
+
+/* 4. Style de l'élément sélectionné (celui que vous venez de cliquer) */
+QComboBox QAbstractItemView::item:selected {
+    background-color: #4682B4;
+    color: #ffffff;
+}
+
+/* --- États de Focus --- */
+QLineEdit:focus, QTextEdit:focus, QComboBox:focus {
+    border: 1px solid #4682B4;
+}
+
+/*
+================================================================================
+4. BOUTONS (QPushButton)
+================================================================================
+*/
+
+QPushButton[text=""] {
+    padding: 5px;
+    min-width: 30px;
+    max-width: 30px;
+}
+
+QPushButton {
+    padding: 10px 20px;
+    min-height: 15px;
+    border: none;
+    font-weight: bold;
+}
+
+/* --- 4.1 BOUTON GESTION THEME (#ThemeToggleButton) --- */
+QPushButton#ThemeToggleButton {
+    background-color: #e8e8e8;
+    color: #1a1a1a;
+    border: 1px solid #cccccc;
+    border-radius: 20px;
+    padding: 3px;
+    min-width: 32px;
+    max-width: 32px;
+    min-height: 32px;
+    max-height: 32px;
+}
+
+QPushButton#ThemeToggleButton:hover {
+    background-color: #d4e5f2;
+    border: 1px solid #1a1a1a;
+}
+
+QPushButton#ThemeToggleButton:pressed {
+    background-color: #b9daf4;
+}
+
+/* --- 4.2 BOUTON DE REFRESH (#RefreshButton) --- */
+QPushButton#RefreshButton {
+    border: 1px solid #cccccc;
+    border-radius: 18px;
+    background-color: #e8e8e8;
+    padding: 2px;
+}
+
+QPushButton#RefreshButton:hover {
+    background-color: #d4e5f2;
+    border: 1px solid #1a1a1a;
+}
+
+QPushButton#RefreshButton:pressed {
+    background-color: #b9daf4;
+}
+
+/* --- 4.3 BOUTON D'ACTION PRINCIPALE (#PrimaryActionButton) ET D'AJOUT (#AddActionButton) --- */
+QPushButton#PrimaryActionButton,
+QPushButton#AddActionButton {
+    background-color: #4682B4;
+    color: #ffffff;
+}
+
+QPushButton#PrimaryActionButton:hover,
+QPushButton#AddActionButton:hover {
+    background-color: #5b92c4;
+}
+
+QPushButton#PrimaryActionButton:pressed,
+QPushButton#AddActionButton:pressed {
+    background-color: #3f709d;
+}
+
+/* --- 4.4 BOUTON D'ACTION SECONDAIRE (#SecondaryActionButton) --- */
+QPushButton#SecondaryActionButton {
+    background-color: #e8e8e8;
+    color: #1a1a1a;
+    border: 1px solid #cccccc;
+}
+
+QPushButton#SecondaryActionButton:hover {
+    background-color: #cccccc;
+    border: 1px solid #4682B4;
+}
+QPushButton#SecondaryActionButton:pressed {
+    background-color: #f0f0f0;
+}
+
+/* --- 4.5 BOUTON D'ACTION EDIT (#EditActionButton) --- */
+QPushButton#EditActionButton {
+    min-height: 20px;
+    background-color: #2ECC71;
+    color: #ffffff;
+}
+
+QPushButton#EditActionButton:hover {
+    background-color: #27AE60;
+}
+
+QPushButton#EditActionButton:pressed {
+    background-color: #229954;
+}
+
+/* --- 4.5bis BOUTON D'ACTION EDIT TABLE (#EditTableActionButton) --- */
+QPushButton#EditTableActionButton,
+QPushButton#DangerTableActionButton {
+    min-height: 28px;
+    max-height: 28px;
+    min-width: 80px;
+    padding: 4px 12px;
+    border: none;
+    font-weight: bold;
+}
+
+QPushButton#EditTableActionButton {
+    background-color: #2ECC71;
+    color: #ffffff;
+}
+
+QPushButton#EditTableActionButton:hover {
+    background-color: #27AE60;
+    color: #ffffff;
+}
+
+QPushButton#EditTableActionButton:pressed {
+    background-color: #229954;
+    color: #ffffff;
+}
+
+/* --- 4.6 BOUTON D'ACTION SUPPRESSION (#DangerActionButton) --- */
+QPushButton#DangerActionButton {
+    background-color: #C0392B;
+    color: #ffffff;
+}
+
+QPushButton#DangerActionButton:hover {
+    background-color: #A93226;
+    color: #ffffff;
+}
+
+QPushButton#DangerActionButton:pressed {
+    background-color: #8C2F24;
+    color: #ffffff;
+}
+
+/* --- 4.6bis BOUTON D'ACTION SUPPRIMER TABLE (#DangerTableActionButton) --- */
+QPushButton#DangerTableActionButton {
+    background-color: #C0392B;
+    color: #ffffff;
+}
+
+QPushButton#DangerTableActionButton:hover {
+    background-color: #A93226;
+    color: #ffffff;
+}
+
+QPushButton#DangerTableActionButton:pressed {
+    background-color: #8C2F24;
+    color: #ffffff;
+}
+
+/* --- 4.7 BOUTON D'ACTION EXPORT (#FilesActionButton) --- */
+QPushButton#FilesActionButton {
+    background-color: #F7C55F;
+    color: #2C3E50;
+}
+
+QPushButton#FilesActionButton:hover {
+    background-color: #F5B93E;
+}
+
+QPushButton#FilesActionButton:pressed {
+    background-color: #D49A29;
+}
+
+/* --- 4.8 États Désactivés (Disabled) --- */
+QPushButton#PrimaryActionButton:disabled,
+QPushButton#SecondaryActionButton:disabled,
+QPushButton#AddActionButton:disabled,
+QPushButton#EditActionButton:disabled,
+QPushButton#DangerActionButton:disabled,
+QPushButton:disabled {
+    background-color: #e8e8e8;
+    color: #aaaaaa;
+    border: 1px solid #dcdcdc;
+}
+
+/*
+================================================================================
+5. TABLES DE DONNÉES (QTableWidget & Headers)
+================================================================================
+*/
+
+QTableWidget {
+    gridline-color: #e0e0e0;
+    background-color: #ffffff;
+}
+
+QTableWidget#OuvragesTable::item:hover {
+    background-color: #d4e5f2;
+    color: #1a1a1a;
+}
+
+QTableWidget::item:selected {
+    background-color: #d4e5f2;
+    color: #1a1a1a;
+}
+
+/* En-têtes de colonnes (Headers) */
+QHeaderView::section {
+    background-color: #e8e8e8;
+    color: #1a1a1a;
+    padding: 6px;
+    border: 1px solid #cccccc;
+    font-weight: bold;
+}
+
+QTableWidget QTableCornerButton::section {
+    background-color: #e8e8e8;
+    border: 1px solid #cccccc;
+}
+
+
+/*
+================================================================================
+6. MODALES (QDialog)
+================================================================================
+*/
+
+QDialog {
+    background-color: #f0f0f0;
+    color: #1a1a1a;
+}
+
+QDialog#OuvrageModal QGroupBox {
+    border: 1px solid #cccccc;
+    margin-top: 10px;
+}
+
+QDialog#OuvrageModal QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 5px;
+    font-weight: bold;
+}
+
+QLabel#CoverPreview {
+    border: 1px dashed #4682B4;
+    background-color: #e8e8e8;
+    color: #666666;
+    font-style: italic;
+}
+
+#GroupBoxModal {
+    background-color: #e9e9e9;
+}
+
+#GroupBoxModal #GroupBoxCustomTitle {
+    font-size: 16px;
+    color: #1a1a1a;
+    background: transparent;
+}
+
+#GroupBoxModal QLabel{
+    background-color: transparent;
+}
+
+#GroupBoxModal #GroupBoxCustomTitleSystem{
+    font-weight: bold;
+}
+
+
+/*
+================================================================================
+7. MENU DE PARAMÈTRES (QListWidget#NavigationMenu)
+================================================================================
+*/
+
+#ParametersPage QListWidget#NavigationMenu {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    border: 1px solid #1a1a1a;
+}
+
+#ParametersPage QListWidget#NavigationMenu::item {
+    height: 35px;
+    padding: 6px 10px;
+    border-left: 4px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#ParametersPage QListWidget#NavigationMenu::item:hover {
+    background-color: #d4e5f2;
+    color: #1a1a1a;
+    border-left: 4px solid #1a1a1a;
+}
+
+#ParametersPage QListWidget#NavigationMenu::item:selected {
+    background-color: #4682B4;
+    color: #ffffff;
+    border-left: 4px solid #1a1a1a;
+    padding-left: 10px;
+}
+
+
+/*
+================================================================================
+8. WIDGETS DE PARAMÈTRES (QGroupBox et QListWidget internes)
+================================================================================
+*/
+
+#ParametersPage QGroupBox {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    border: 1px solid #cccccc;
+    margin-top: 10px;
+}
+
+/* Titre personnalisée des GroupBox (par exemple, "Table: Logs") */
+QLabel#GroupBoxCustomTitle {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 3px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #1a1a1a;
+    background: transparent;
+}
+
+/* Style des QListWidget internes aux GroupBox (Catégories, Genres, etc.) */
+#ParametersPage QGroupBox QListWidget {
+    background-color: #f8f8f8;
+    border: 1px solid #1a1a1a;
+}
+
+#ParametersPage QGroupBox QListWidget::item {
+    padding: 5px;
+}
+
+#ParametersPage QGroupBox QListWidget::item:hover {
+    background-color: #d4e5f2;
+    border-left: 3px solid #1a1a1a;
+    padding-left: 2px;
+}
+
+#ParametersPage QGroupBox QListWidget::item:selected {
+    selection-background-color: #4682B4;
+    background-color: #4682B4;
+    selection-color: #ffffff;
+    color: #ffffff;
+    border-left: 3px solid #1a1a1a;
+    padding-left: 2px;
+}
+
+QLabel#InstructionLabel {
+    background: transparent;
+    color: #1a1a1a;
+    font-style: italic;
+    margin: 5px 0;
+}
+
+QLabel#ParametersPage{
+    background: transparent;
+}
+
+/*
+================================================================================
+9. AMÉLIORATION DES BOÎTES DE MESSAGE (QMessageBox)
+================================================================================
+*/
+
+QMessageBox {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    border: 1px solid #cccccc;
+}
+
+QMessageBox QLabel {
+    color: #1a1a1a;
+    background: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+QMessageBox QPushButton {
+    background-color: #f0f0f0;
+    padding: 5px 15px;
+    min-width: 60px;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #e0e0e0;
+}
+
+QMessageBox QPushButton:pressed {
+    background-color: #cccccc;
+}
+
+QMessageBox QPushButton#PrimaryButton {
+    background-color: #4682B4;
+    color: #ffffff;
+    border: 1px solid #4682B4;
+}
+
+QMessageBox QPushButton#PrimaryButton:hover {
+    background-color: #5d92c7;
+}
+
+/* --- Style spécifique pour le Conteneur de Log d'Activité --- */
+
+QGroupBox#LogContentGroup {
+    padding: 10px;
+}
+
+QWidget#ActivityLogContainer QLabel{
+    background: none;
+}

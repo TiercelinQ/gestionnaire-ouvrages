@@ -1,0 +1,219 @@
+{
+  "categories": {
+    "Livres (Littérature)": {
+      "genres": {
+        "Roman": {
+          "sous_genres": [
+            "Historique",
+            "Policier/Polar",
+            "Noir",
+            "Thriller/Suspense",
+            "Espionnage",
+            "Aventures",
+            "Science-fiction",
+            "Fantastique",
+            "Fantasy/Heroic Fantasy",
+            "Gothique",
+            "Sentimental/Romance",
+            "Psychologique",
+            "Réaliste",
+            "Naturaliste",
+            "Épistolaire",
+            "Picaresque",
+            "Philosophique",
+            "Initiatique",
+            "Dystopique/Utopique",
+            "Humoristique/Satirique",
+            "Jeunesse/Young Adult"
+          ]
+        },
+        "Nouvelle": {
+          "sous_genres": [
+            "Fantastique",
+            "Réaliste",
+            "Policière",
+            "Philosophique"
+          ]
+        },
+        "Conte": {
+          "sous_genres": [
+            "Merveilleux",
+            "Philosophique",
+            "Populaire/Folklorique",
+            "Moderne"
+          ]
+        },
+        "Poésie": {
+          "sous_genres": [
+            "Lyrique",
+            "Épique",
+            "Dramatique",
+            "Engagée",
+            "Symboliste",
+            "Surréaliste",
+            "Contemporaine (slam, spoken word)"
+          ]
+        },
+        "Théâtre": {
+          "sous_genres": [
+            "Tragédie",
+            "Comédie",
+            "Drame",
+            "Farce",
+            "Vaudeville",
+            "Absurde",
+            "Épique (Brecht)"
+          ]
+        },
+        "Argumentatif": {
+          "sous_genres": [
+            "Essai",
+            "Discours",
+            "Pamphlet",
+            "Dialogue philosophique",
+            "Traité"
+          ]
+        },
+        "Documentaire": {
+          "sous_genres": [
+            "Biographie",
+            "Autobiographie",
+            "Journal intime",
+            "Mémoires",
+            "Chronique",
+            "Reportage littéraire",
+            "Récit de voyage"
+          ]
+        }
+      }
+    },
+    "Livres d’Histoire": {
+      "genres": {
+        "Académiques": {
+          "sous_genres": [
+            "Monographie",
+            "Histoire générale",
+            "Histoire économique",
+            "Histoire sociale",
+            "Histoire politique",
+            "Histoire culturelle",
+            "Histoire religieuse",
+            "Histoire militaire",
+            "Histoire sciences/techniques",
+            "Historiographie"
+          ]
+        },
+        "Par période": {
+          "sous_genres": [
+            "Préhistoire",
+            "Antiquité",
+            "Moyen Âge",
+            "Renaissance",
+            "Époque moderne",
+            "Époque contemporaine",
+            "Histoire immédiate"
+          ]
+        },
+        "Par aire géographique": {
+          "sous_genres": [
+            "Mondiale/Globale",
+            "Comparée",
+            "Nationale",
+            "Régionale"
+          ]
+        },
+        "Biographiques/Mémoriels": {
+          "sous_genres": [
+            "Biographies historiques",
+            "Mémoires",
+            "Témoignages",
+            "Récits de témoins"
+          ]
+        },
+        "Vulgarisation": {
+          "sous_genres": [
+            "Essais historiques",
+            "Récits narratifs",
+            "Chroniques illustrées",
+            "Atlas historiques"
+          ]
+        },
+        "Pédagogiques": {
+          "sous_genres": [
+            "Manuels scolaires",
+            "Guides chronologiques",
+            "Anthologies de documents"
+          ]
+        }
+      }
+    },
+    "Bande dessinée (BD, Comics, Manga)": {
+      "genres": {
+        "Genres narratifs": {
+          "sous_genres": [
+            "Aventure",
+            "Policier/Polar graphique",
+            "Science-fiction",
+            "Fantasy/Heroic Fantasy",
+            "Fantastique/Horreur",
+            "Historique",
+            "Humour/Gag",
+            "Satirique/Parodique",
+            "Super-héros (comics)",
+            "Tranche de vie",
+            "Romance graphique"
+          ]
+        },
+        "Manga (par public cible)": {
+          "sous_genres": [
+            "Shōnen (action, aventure, amitié)",
+            "Shōjo (romance, drame, quotidien)",
+            "Seinen (psychologique, mature, thriller)",
+            "Josei (vie adulte, romance réaliste)",
+            "Kodomo (jeunesse)"
+          ]
+        },
+        "Formats": {
+          "sous_genres": ["One-shot", "Série longue", "Anthologie graphique"]
+        }
+      }
+    },
+    "Ouvrages pratiques et documentaires": {
+      "genres": {
+        "Guides pratiques": {
+          "sous_genres": [
+            "Cuisine",
+            "Jardinage",
+            "Santé/Bien-être",
+            "Développement personnel",
+            "Voyage"
+          ]
+        },
+        "Scientifiques": {
+          "sous_genres": ["Sciences exactes", "Sciences humaines et sociales"]
+        },
+        "Autres": {
+          "sous_genres": [
+            "Techniques/Professionnels",
+            "Dictionnaires",
+            "Encyclopédies",
+            "Beaux-livres/Artbooks"
+          ]
+        }
+      }
+    },
+    "Autres formes éditoriales": {
+      "genres": {
+        "Albums jeunesse": {
+          "sous_genres": ["Illustré", "Documentaire", "Poétique"]
+        },
+        "Anthologies": {
+          "sous_genres": ["Poésie", "Nouvelles", "Thématiques"]
+        },
+        "Catalogues": {
+          "sous_genres": ["Musées", "Expositions", "Collections"]
+        }
+      }
+    }
+  }
+}
