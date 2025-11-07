@@ -23,6 +23,10 @@
 3. Ouvrir le dossier **GestionnaireOuvrages**
 4. Executer le fichier **GestionnaireOuvrages** (extension .exe) situé dans le dossier
 
+### Bonus
+- Vous pouvez télécharger une base de classification d'ouvrages (Catégories, Genres et Sous-Genres) pour votre gestionnaire à ce lien: [Classification JSON](https://github.com/TiercelinQ/gestionnaire-ouvrages/blob/main/assets/modeles/classification_cats-genres-subgenres.json)
+- Ce fichier JSON est à importer via le bouton dédié au sein de l'onglet "Paramètres", menu "Catégories & Genres".
+
 ## Dépendances
 
 - Python 3.13.9
