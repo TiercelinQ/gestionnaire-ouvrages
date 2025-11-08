@@ -1,8 +1,20 @@
 # Gestionnaire d'Ouvrages
 
-- Application de gestion et de recherche d’ouvrages développée en **Python / PyQt6**.
-- Elle permet de consulter, d’ajouter, d'éditer, de supprimer, de rechercher et d'exporter des ouvrages dans une interface moderne et intuitive.
-- Enfin, la gestion des valeurs des listes déroulantes ainsi que de la configuration de l'utilisateur sont dans un espace dédié.
+- Application de gestion et de recherche d’ouvrages développée en **Python**, **PyQt6** et **SQLite3**
+- Elle permet de consulter, d’ajouter, d'éditer, de supprimer, de rechercher et d'exporter des ouvrages dans une interface moderne et intuitive
+- Enfin, la gestion des valeurs des listes déroulantes ainsi que de la configuration de l'utilisateur sont dans un espace dédié
+
+## Table des matières
+
+ 1. [Fonctionnalités](#fonctionnalités)
+ 2. [Installation](#installation)
+ 3. [Bonus](#bonus)
+ 3. [Dépendances](#dépendances)
+ 4. [Aperçu](#aperçu)
+ 5. [Structure du projet](#structure-du-projet)
+ 6. [Licence](#licence)
+ 7. [Auteur](#auteur)
+
 
 ## Fonctionnalités
 
@@ -22,6 +34,10 @@
 2. Dézipper le fichier zip au sein de votre poste de travail
 3. Ouvrir le dossier **GestionnaireOuvrages**
 4. Executer le fichier **GestionnaireOuvrages** (extension .exe) situé dans le dossier
+
+> [!WARNING]
+> - L'application doit être exécuter directement au sein du dossier **GestionnaireOuvrages**
+> - N'hésitez pas à créer un raccourcis sur votre bureau ou à épingler l'application dans votre menu "Démarrer" pour faciliter son accès
 
 ### Bonus
 - Vous pouvez télécharger une base de classification d'ouvrages (Catégories, Genres et Sous-Genres) pour votre gestionnaire à ce lien: [Classification JSON](https://github.com/TiercelinQ/gestionnaire-ouvrages/blob/main/assets/modeles/classification_cats-genres-subgenres.json)
