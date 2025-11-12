@@ -73,6 +73,13 @@ class CoverPreviewModal(QDialog):
             self.image_label.setText("Erreur: Fichier image non trouvé.")
 
 
+class PlainTextEdit(QTextEdit):
+    """PlainTextEdit qui n'accepte que du texte brut lors du collage."""
+    def insertFromMimeData(self, source):
+        # On ignore tout formatage et on insère uniquement le texte brut
+        self.insertPlainText(source.text())
+
+
 class OuvrageFormMixin:
     """
     Mixin contenant toute la logique et les widgets communs
@@ -107,8 +114,8 @@ class OuvrageFormMixin:
     input_dimensions: QLineEdit
     combo_localisation: QComboBox
     input_localisation_details: QLineEdit
-    input_resume: QTextEdit
-    input_remarques: QTextEdit
+    input_resume: PlainTextEdit
+    input_remarques: PlainTextEdit
     input_couv_prem_chemin: QLineEdit
     label_couv_prem_preview: ClickableLabel
     input_couv_prem_location: QLineEdit
@@ -184,10 +191,10 @@ class OuvrageFormMixin:
         self.input_localisation_details.setPlaceholderText("Etagère 1...")
 
         # Colonne 3
-        self.input_resume = QTextEdit()
+        self.input_resume = PlainTextEdit()
         self.input_resume.setFixedHeight(100)
 
-        self.input_remarques = QTextEdit()
+        self.input_remarques = PlainTextEdit()
         self.input_remarques.setFixedHeight(100)
 
         # Couvertures (avant)
