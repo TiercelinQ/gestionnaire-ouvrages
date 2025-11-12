@@ -1,8 +1,20 @@
 # Gestionnaire d'Ouvrages
 
-- Application de gestion et de recherche d’ouvrages développée en **Python / PyQt6**.
-- Elle permet de consulter, d’ajouter, d'éditer, de supprimer, de rechercher et d'exporter des ouvrages dans une interface moderne et intuitive.
-- Enfin, la gestion des valeurs des listes déroulantes ainsi que de la configuration de l'utilisateur sont dans un espace dédié.
+- Application de gestion et de recherche d’ouvrages développée en **Python**, **PyQt6** et **SQLite3**
+- Elle permet de consulter, d’ajouter, d'éditer, de supprimer, de rechercher et d'exporter des ouvrages dans une interface moderne et intuitive
+- Enfin, la gestion des valeurs des listes déroulantes ainsi que de la configuration de l'utilisateur sont dans un espace dédié
+
+## Table des matières
+
+ 1. [Fonctionnalités](#fonctionnalités)
+ 2. [Installation](#installation)
+ 3. [Bonus](#bonus)
+ 3. [Dépendances](#dépendances)
+ 4. [Aperçu](#aperçu)
+ 5. [Structure du projet](#structure-du-projet)
+ 6. [Licence](#licence)
+ 7. [Auteur](#auteur)
+
 
 ## Fonctionnalités
 
@@ -23,6 +35,14 @@
 3. Ouvrir le dossier **GestionnaireOuvrages**
 4. Executer le fichier **GestionnaireOuvrages** (extension .exe) situé dans le dossier
 
+> [!WARNING]
+> - L'application doit être exécuter directement au sein du dossier **GestionnaireOuvrages**
+> - N'hésitez pas à créer un raccourcis sur votre bureau ou à épingler l'application dans votre menu "Démarrer" pour faciliter son accès
+
+### Bonus
+- Vous pouvez télécharger une base de classification d'ouvrages (Catégories, Genres et Sous-Genres) pour votre gestionnaire à ce lien: [Classification JSON](https://github.com/TiercelinQ/gestionnaire-ouvrages/blob/main/assets/modeles/classification_cats-genres-subgenres.json)
+- Ce fichier JSON est à importer via le bouton dédié au sein de l'onglet "Paramètres", menu "Catégories & Genres".
+
 ## Dépendances
 
 - Python 3.13.9
@@ -32,19 +52,19 @@
 ## Aperçu
 
 <p align="center">
-    <img src="assets/captures/1_main.png" alt="Interface principale" width="200">
-    <img src="assets/captures/2_search.png" alt="Recherche active" width="200">
+    <img src="assets/captures/1_main.png" alt="Interface principale" width="400">
+    <img src="assets/captures/2_search.png" alt="Recherche active" width="400">
 </p>
 <p align="center">
-    <img src="assets/captures/3_add.png" alt="Créatoin d'un ouvrage" width="200">
-    <img src="assets/captures/4_edit.png" alt="Édition d'un ouvrage" width="200">
+    <img src="assets/captures/3_add.png" alt="Créatoin d'un ouvrage" width="400">
+    <img src="assets/captures/4_edit.png" alt="Édition d'un ouvrage" width="400">
 </p>
 <p align="center">
-    <img src="assets/captures/5_settings-1.png" alt="Onglet 'Paramètres'" width="200">
-    <img src="assets/captures/5_settings-2.png" alt="Gestion de la classification" width="200">
+    <img src="assets/captures/5_settings-1.png" alt="Onglet 'Paramètres'" width="400">
+    <img src="assets/captures/5_settings-2.png" alt="Gestion de la classification" width="400">
 </p>
 <p align="center">
-    <img src="assets/captures/5_settings-3.png" alt="Journal d'activité" width="200">
+    <img src="assets/captures/5_settings-3.png" alt="Journal d'activité" width="400">
 </p>
 
 ## Structure du projet
