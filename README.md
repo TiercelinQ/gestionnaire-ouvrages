@@ -30,14 +30,22 @@
 
 ## Installation
 
-1. [Télécharger la dernière version](https://github.com/TiercelinQ/gestionnaire-ouvrages/releases/download/v1.0.0/GestionnaireOuvrages.zip)
-2. Dézipper le fichier zip au sein de votre poste de travail
-3. Ouvrir le dossier **GestionnaireOuvrages**
-4. Executer le fichier **GestionnaireOuvrages** (extension .exe) situé dans le dossier
+1. [Télécharger la dernière version](https://github.com/TiercelinQ/gestionnaire-ouvrages/releases)
+3. Dézipper le fichier zip au sein de votre poste de travail
+4. Ouvrir le dossier **GestionnaireOuvrages**
+5. Executer le fichier **GestionnaireOuvrages** (extension .exe) situé dans le dossier
 
 > [!WARNING]
-> - L'application doit être exécuter directement au sein du dossier **GestionnaireOuvrages**
-> - N'hésitez pas à créer un raccourcis sur votre bureau ou à épingler l'application dans votre menu "Démarrer" pour faciliter son accès
+> - L'application doit être exécuter directement au sein du dossier **GestionnaireOuvrages**.
+> - Ne pas hésiter à créer un raccourcis sur le poste de travail ("Bureau par exemple) ou à épingler l'application dans le menu "Démarrer" ou dans la barre de tâche.
+
+> [!IMPORTANT]
+> - Dès qu'une nouvelle version est disponible et qu'elle ne touche pas au coeur même de l'application, voici les instructions:
+> - Télécharger la dernière version
+> - Ouvrir le fichier zip
+> - Extraire le contenu du dossier "GestionnaireOuvrages", dans le dossier de la version actuelle sur le poste de travail
+> - Exécuter le fichier **GestionnaireOuvrages** (extension .exe) afin de vérifier le comportement de l'application (toutes les configurations et données doivent être conservées).
+> - En théorie, le raccourci créé de la version précédente doit toujours être opérationnel. Dans le cas contraire, ne pas hésiter à créer un raccourcis sur son poste de travail ou à épingler l'application dans le menu "Démarrer" ou dans la barre de tâche.
 
 ### Bonus
 - Vous pouvez télécharger une base de classification d'ouvrages (Catégories, Genres et Sous-Genres) pour votre gestionnaire à ce lien: [Classification JSON](https://github.com/TiercelinQ/gestionnaire-ouvrages/blob/main/assets/modeles/classification_cats-genres-subgenres.json)
