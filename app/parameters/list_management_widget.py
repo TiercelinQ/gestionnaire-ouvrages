@@ -77,49 +77,59 @@ class ListManagementWidget(QWidget):
         group_box = QGroupBox()
         title_label = QLabel(f"Table: {title}")
         title_label.setObjectName("GroupBoxCustomTitle")
-        v_layout = QVBoxLayout(group_box)
-        v_layout.addWidget(title_label)
+        item_exists_label = QLabel("Liste des valeurs existantes:")
+        item_exists_label.setObjectName("GroupBoxCustomSubTitle")
+        vertical_layout = QVBoxLayout(group_box)
+        vertical_layout.addWidget(title_label)
+        vertical_layout.addWidget(item_exists_label)
 
         self.list_widget = FocusListWidget()
         self.list_widget.setObjectName(f"List_{self.table_name}")
         self.list_widget.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
-        v_layout.addWidget(self.list_widget)
+        vertical_layout.addWidget(self.list_widget)
+        vertical_layout.addSpacing(10)
 
-        instruction_label = QLabel("Pour \"Editer\" ou \"Supprimer\" une valeur, cliquer d'abord sur celle-ci.")
-        instruction_label.setWordWrap(True)
-        instruction_label.setObjectName("InstructionLabel")
-        v_layout.addWidget(instruction_label)
-
-        # Zone de saisie
+        # Ajout d'une nouvelle valeur
+        ajout_item = QLabel("Ajout d'une nouvelle valeur")
+        ajout_item.setObjectName("GroupBoxCustomSubTitle")
+        vertical_layout.addWidget(ajout_item)
         self.input_line = QLineEdit()
-        self.input_line.setPlaceholderText(f"Nom de la nouvelle {title.lower()}...")
-        v_layout.addWidget(self.input_line)
-
-        btn_layout = QHBoxLayout()
-
+        # Zone de saisie
+        self.input_line.setPlaceholderText(f"Nom de la nouvelle valeur...")
         # Bouton Ajouter
         self.btn_add = QPushButton("")
         self.btn_add.setIcon(QIcon(":/buttons_icons/add_white.svg"))
-        self.btn_add.setIconSize(QSize(24, 24))
         self.btn_add.setObjectName("AddActionButton")
+        self.btn_add.setIconSize(QSize(18, 18))
         self.btn_add.setToolTip("Ajouter un nouvel élément")
         self.btn_add.clicked.connect(self._handle_add_item)
         self.btn_add.setEnabled(False)
-        btn_layout.addWidget(self.btn_add)
         self.input_line.textChanged.connect(
             lambda text: self.btn_add.setEnabled(bool(text.strip()))
         )
+        # Groupe de composant horizontal
+        horizontal_layout = QHBoxLayout()
+        horizontal_layout.addWidget(self.input_line)
+        horizontal_layout.addWidget(self.btn_add)
+        vertical_layout.addLayout(horizontal_layout)
+        vertical_layout.addSpacing(10)
+
+        instruction_label = QLabel("Cliquer en premier sur une valeur existante, dans la liste ci-dessus, pour l'<b>éditer</b> ou pour la <b>supprimer</b>")
+        instruction_label.setWordWrap(True)
+        instruction_label.setObjectName("GroupBoxCustomSubTitle")
+        vertical_layout.addWidget(instruction_label)
+
+        btn_layout = QHBoxLayout()
 
         # Bouton Editer
         self.btn_edit = QPushButton("")
         self.btn_edit.setObjectName("EditActionButton")
         self.btn_edit.setIcon(QIcon(":/buttons_icons/edit_white.svg"))
         self.btn_edit.setIconSize(QSize(24, 24))
-        self.btn_edit.setToolTip("Éditer l'élément sélectionné")
+        self.btn_edit.setToolTip("Éditer la valeur sélectionnée")
         self.btn_edit.clicked.connect(self._handle_edit_item)
         self.btn_edit.setEnabled(False)
 
-        # --- CORRECTION DE FOCUS ---
         self.btn_edit.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
         btn_layout.addWidget(self.btn_edit)
@@ -129,7 +139,7 @@ class ListManagementWidget(QWidget):
         self.btn_delete.setObjectName("DangerActionButton")
         self.btn_delete.setIcon(QIcon(":/buttons_icons/delete_white.svg"))
         self.btn_delete.setIconSize(QSize(24, 24))
-        self.btn_delete.setToolTip("Supprimer l'élément sélectionné")
+        self.btn_delete.setToolTip("Supprimer la valeur sélectionnée")
         self.btn_delete.clicked.connect(self._handle_delete_item)
         self.btn_delete.setEnabled(False)
 
@@ -138,7 +148,7 @@ class ListManagementWidget(QWidget):
 
         btn_layout.addWidget(self.btn_delete)
 
-        v_layout.addLayout(btn_layout)
+        vertical_layout.addLayout(btn_layout)
 
         # Connexion pour activer/désactiver les boutons CRUD
         self.list_widget.itemSelectionChanged.connect(
@@ -173,7 +183,7 @@ class ListManagementWidget(QWidget):
                 self,
                 'SUCCESS',
                 "Enregistrement Item Réussi",
-                f"{nom} ajouté aux {self.title}."
+                f"'<b>{nom}</b>' ajouté aux <b>{self.title}</b>."
             )
             self.data_updated.emit()
         else:
@@ -200,7 +210,7 @@ class ListManagementWidget(QWidget):
         item_id = selected_item.data(Qt.ItemDataRole.UserRole)
 
         new_name, ok = QInputDialog.getText(
-            self, f"Modifier {self.title}", f"Nouveau nom pour '{current_name}' :",
+            self, f"Modifier {self.title}", f"Nouveau nom pour '<b>{current_name}</b>' :",
             QLineEdit.EchoMode.Normal, current_name
         )
 
@@ -210,7 +220,7 @@ class ListManagementWidget(QWidget):
                     self,
                     'SUCCESS',
                     "Mise à Jour Iteam Réussie",
-                    f"{current_name} renommé en {new_name.strip()}."
+                    f"'<b>{current_name}</b>' renommé en '<b>{new_name.strip()}</b>'."
                     )
                 self.load_list()
                 self.data_updated.emit()
@@ -240,8 +250,8 @@ class ListManagementWidget(QWidget):
             self,
             'QUESTION',
             "Confirmation Suppression",
-            f"Êtes-vous sûr de vouloir supprimer '{item_name}' des {self.title} ?",
-            "ATTENTION: Tous les ouvrages associés à cet élément perdront cette classification !",
+            f"Êtes-vous sûr de vouloir supprimer '<b>{item_name}</b>' des <b>{self.title}</b> ?",
+            "<b>ATTENTION</b>: Tous les ouvrages associés à cet élément perdront cette classification !",
             buttons=['Yes', 'No']
         )
 
@@ -251,7 +261,7 @@ class ListManagementWidget(QWidget):
                     self,
                     'SUCCESS',
                     "Suppression Item Réussie",
-                    f"{item_name} a été supprimé des {self.title}."
+                    f"'<b>{item_name}</b>' a été supprimé des </b>{self.title}</b>."
                 )
                 self.load_list()
                 self.data_updated.emit()

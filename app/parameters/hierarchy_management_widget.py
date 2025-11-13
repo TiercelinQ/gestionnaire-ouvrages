@@ -79,8 +79,11 @@ class HierarchyManagementWidget(QWidget):
         group_box = QGroupBox()
         title_label = QLabel(f"Table: {title}")
         title_label.setObjectName("GroupBoxCustomTitle")
+        item_exists_label = QLabel("Liste des valeurs existantes:")
+        item_exists_label.setObjectName("GroupBoxCustomSubTitle")
         vertical_layout = QVBoxLayout(group_box)
         vertical_layout.addWidget(title_label)
+        vertical_layout.addWidget(item_exists_label)
 
         # Utilisation du FocusListWidget
         list_widget = FocusListWidget()
@@ -89,32 +92,41 @@ class HierarchyManagementWidget(QWidget):
         list_widget.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
         vertical_layout.addWidget(list_widget)
 
-        instruction_label = QLabel("Pour \"Editer\" ou \"Supprimer\" une valeur, cliquer d'abord sur celle-ci.")
-        instruction_label.setWordWrap(True)
-        instruction_label.setObjectName("InstructionLabel")
-        vertical_layout.addWidget(instruction_label)
-
+        # Ajout d'une nouvelle valeur
+        ajout_item = QLabel("Ajout d'une nouvelle valeur")
+        ajout_item.setObjectName("GroupBoxCustomSubTitle")
+        vertical_layout.addWidget(ajout_item)
         # Zone de saisie
         input_line = QLineEdit()
         setattr(self, f"input_{table_name}", input_line)
-        input_line.setPlaceholderText(f"Nom de la nouvelle {title.lower()}...")
+        input_line.setPlaceholderText(f"Nom de la nouvelle valeur...")
         vertical_layout.addWidget(input_line)
-
-        btn_layout = QHBoxLayout()
-
         # Bouton Ajouter
         btn_add = QPushButton("")
         setattr(self, f"btn_add_{table_name}", btn_add)
         btn_add.setIcon(QIcon(":/buttons_icons/add_white.svg"))
-        btn_add.setIconSize(QSize(24, 24))
+        btn_add.setIconSize(QSize(18, 18))
         btn_add.setObjectName("AddActionButton")
         btn_add.setToolTip("Ajouter un nouvel élément")
         btn_add.clicked.connect(lambda: self._handle_add_item(table_name, has_parent))
         btn_add.setEnabled(False)
-        btn_layout.addWidget(btn_add)
         input_line.textChanged.connect(
             lambda text: btn_add.setEnabled(bool(text.strip()))
         )
+        # Groupe de composant horizontal
+        horizontal_layout = QHBoxLayout()
+        horizontal_layout.addWidget(input_line)
+        horizontal_layout.addWidget(btn_add)
+        vertical_layout.addLayout(horizontal_layout)
+        vertical_layout.addSpacing(10)
+
+
+        instruction_label = QLabel("Cliquer en premier sur une valeur existante, dans la liste ci-dessus, pour l'<b>éditer</b> ou pour la <b>supprimer</b>")
+        instruction_label.setWordWrap(True)
+        instruction_label.setObjectName("GroupBoxCustomSubTitle")
+        vertical_layout.addWidget(instruction_label)
+
+        btn_layout = QHBoxLayout()
 
         # Bouton Editer
         btn_edit = QPushButton("")
@@ -255,7 +267,7 @@ class HierarchyManagementWidget(QWidget):
                 self,
                 'SUCCESS',
                 "Enregistrement Item Réussi",
-                f'{nom} ajouté aux {table_name}.'
+                f"'<b>{nom}</b>' ajouté aux <b>{table_name}</b>."
                 )
             self.data_updated.emit()
         else:
@@ -284,7 +296,7 @@ class HierarchyManagementWidget(QWidget):
         item_id = selected_item.data(Qt.ItemDataRole.UserRole)
 
         new_name, ok = QInputDialog.getText(
-            self, f"Modifier {table_name}", f"Nouveau nom pour '{current_name}' :",
+            self, f"Modifier {table_name}", f"Nouveau nom pour '<b>{current_name}</b>' :",
             QLineEdit.EchoMode.Normal, current_name
         )
 
@@ -294,7 +306,7 @@ class HierarchyManagementWidget(QWidget):
                     self,
                     'SUCCESS',
                     "Mise à jour Item Réussie",
-                    f"{current_name} renommé en {new_name.strip()}."
+                    f"'<b>{current_name}' renommé en '<b>{new_name.strip()}</b>'."
                 )
                 self.load_categories()
                 self.data_updated.emit()
@@ -325,8 +337,8 @@ class HierarchyManagementWidget(QWidget):
             self,
             'QUESTION',
             "Confirmation Suppression",
-            f"Êtes-vous sûr de vouloir supprimer '{item_name}' des {table_name} ?",
-            "ATTENTION: Tous les ouvrages associés à cet élément perdront cette classification !",
+            f"Êtes-vous sûr de vouloir supprimer '<b>{item_name}</b>' des <b>{table_name}</b> ?",
+            "<b>ATTENTION</b>: Tous les ouvrages associés à cet élément perdront cette classification !",
             buttons=['Yes', 'No']
         )
 
@@ -336,7 +348,7 @@ class HierarchyManagementWidget(QWidget):
                     self,
                     'SUCCESS',
                     "Suppression Item Réussie",
-                    f"{item_name} a été supprimé des {table_name}."
+                    f"'<b>{item_name}</b>' a été supprimé des '<b>{table_name}</b>'."
                     )
                 self.load_categories()
                 self.data_updated.emit()

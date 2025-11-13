@@ -35,6 +35,14 @@ QAbstractItemView {
     outline: none;
 }
 
+QToolTip {
+    background-color: #393f48;
+    color: #cccccc;
+    border: 1px solid #cccccc;
+    padding: 4px;
+    font-size: 12px;
+}
+
 /* --- LOG DE STATUT/RÉSULTATS --- */
 QLabel#StatusLabel {
     color: #888888;
@@ -354,7 +362,7 @@ QPushButton#AddActionButton:disabled,
 QPushButton#EditActionButton:disabled,
 QPushButton#DangerActionButton:disabled,
 QPushButton:disabled {
-    background-color: #393f48;
+    background-color: #2e343a;
     color: #888888;
     border: 1px solid #4a5463;
 }
@@ -435,6 +443,12 @@ QLabel#CoverPreview {
     background: transparent;
 }
 
+QGroupBox #GroupBoxCustomSubTitle {
+    font-size: 14px;
+    color: #ffffff;
+    background: transparent;
+}
+
 #GroupBoxModal QLabel{
     background-color: transparent;
 }
@@ -494,7 +508,6 @@ QLabel#CoverPreview {
 QLabel#GroupBoxCustomTitle {
     subcontrol-origin: margin;
     subcontrol-position: top left;
-    padding: 0 3px;
     font-size: 14px;
     font-weight: bold;
     color: #ffffff;

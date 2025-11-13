@@ -5,6 +5,7 @@ Présente l'inventaire sous forme de tableau et gère les interactions principal
 (recherche, affichage des détails, ajout, édition, suppression et export CSV).
 """
 
+import logging
 from typing import List, Dict, Any
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
@@ -17,6 +18,8 @@ from app.db_manager import DBManager
 from app.ouvrage_add_modal import OuvrageAddModal
 from app.ouvrage_edit_modal import OuvrageEditModal
 from app.utils import show_custom_message_box
+
+logger = logging.getLogger(__name__)
 
 class QNumTableWidgetItem(QTableWidgetItem):
     """
@@ -103,6 +106,7 @@ class SearchOuvrageWidget(QWidget):
         self.table_ouvrages.verticalHeader().setVisible(True)
         self.table_ouvrages.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
         self.table_ouvrages.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.table_ouvrages.cellDoubleClicked.connect(self._on_table_cell_double_clicked)
 
         header = self.table_ouvrages.horizontalHeader()
         self.table_ouvrages.verticalHeader().setDefaultSectionSize(36)
@@ -291,7 +295,7 @@ class SearchOuvrageWidget(QWidget):
 
         reply = QMessageBox.question(
             self, "Confirmation Suppression",
-            f"Êtes-vous sûr de vouloir supprimer définitivement l'ouvrage '{titre}' ?",
+            f"Êtes-vous sûr de vouloir supprimer définitivement l'ouvrage '<b>{titre}</b>' ?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
 
@@ -345,3 +349,36 @@ class SearchOuvrageWidget(QWidget):
                 'Erreur Exportation CSV',
                 message
             )
+
+    def _on_table_cell_double_clicked(self, row: int, column: int):
+        """
+        Ouvre la modale d'édition lorsqu'un utilisateur double-clique sur une ligne,
+        sauf si le double-clic a lieu dans la colonne 'Actions'.
+        """
+        source_method = "search_ouvrage_widget._on_table_cell_double_clicked"
+        logger.info("Ouverture au double clique d'un ouvrage - En cours")
+        # Ignorer la colonne Actions
+        if column == self.ACTION_COL_INDEX:
+            return
+
+        # Récupérer l'ID de l'ouvrage (colonne 0, même si elle est cachée)
+        id_item = self.table_ouvrages.item(row, 0)
+        if id_item is None:
+            return
+
+        id_text = id_item.text().strip()
+        if not id_text:
+            logger.info("Ouverture au double clique d'un ouvrage - Echec")
+            logger.error("%s - Erreur: id_text est vide", source_method, exc_info=True)
+            return
+
+        try:
+            ouvrage_id = int(id_text)
+        except ValueError:
+            logger.info("Ouverture au double clique d'un ouvrage - Echec")
+            logger.error("%s - Erreur: id_text n’est pas convertible en entier", source_method, exc_info=True)
+            return
+
+        # Ouvrir la modale d'édition
+        logger.info("Ouverture au double clique d'un ouvrage - Succès")
+        self._handle_edit_ouvrage_by_id(ouvrage_id)

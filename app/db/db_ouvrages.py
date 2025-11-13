@@ -155,7 +155,7 @@ class DBOuvrages:
             self.db_manager.cursor.execute(sql, tuple(values))
             self.db_manager.connexion.commit()
             logger.info("Ajout d'un nouvel ouvrage - Succès")
-            return True, f"Ouvrage '{data.get('titre')}' ajouté avec succès."
+            return True, f"Ouvrage '<b>{data.get('titre')}</b>' ajouté avec succès."
         except sqlite3.Error as e:
             logger.info("Ajout d'un nouvel ouvrage - Echec")
             logger.error("%s - Erreur: %s",source_method,e,exc_info=True)
@@ -224,7 +224,7 @@ class DBOuvrages:
             self.db_manager.connexion.commit()
             if self.db_manager.cursor.rowcount > 0:
                 logger.info("Mise à jour de l'ouvrage %s - Succès",ouvrage_id)
-                return True, f"Ouvrage '{data.get('titre')}' mis à jour avec succès."
+                return True, f"Ouvrage '<b>{data.get('titre')}</b>' mis à jour avec succès."
             else:
                 logger.info("Mise à jour de l'ouvrage %s - Terminée",ouvrage_id)
                 return False, "Aucun ouvrage trouvé avec cet ID."
@@ -238,7 +238,7 @@ class DBOuvrages:
                 source=source_method,
                 message=f"Erreur mise à jour ouvrage {ouvrage_id}.",
                 exception=e)
-            return False, f"Erreur lors de la mise à jour de l'ouvrage {ouvrage_id}. Veuillez consulter le journal d'activités."
+            return False, f"Erreur lors de la mise à jour de l'ouvrage <b>{ouvrage_id}</b>. Veuillez consulter le journal d'activités."
 
     def delete_ouvrage(self, ouvrage_id: int) -> Tuple[bool, str]:
         """
@@ -270,4 +270,4 @@ class DBOuvrages:
                 source=source_method,
                 message=f"Erreur suppression ouvrage {ouvrage_id}.",
                 exception=e)
-            return False, f"Erreur BDD lors de la suppression de l'ouvrage : {ouvrage_id}. Veuillez consulter le journal d'activités."
+            return False, f"Erreur BDD lors de la suppression de l'ouvrage : <b>{ouvrage_id}</b>. Veuillez consulter le journal d'activités."

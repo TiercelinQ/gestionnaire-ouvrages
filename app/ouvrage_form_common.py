@@ -200,6 +200,7 @@ class OuvrageFormMixin:
         # Couvertures (avant)
         self.input_couv_prem_chemin = QLineEdit()
         self.input_couv_prem_chemin.setReadOnly(True)
+        self.input_couv_prem_chemin.setHidden(True)
 
         self.label_couv_prem_preview = ClickableLabel("Aperçu")
         self.label_couv_prem_preview.setFixedSize(INITIAL_MIN_WIDTH, INITIAL_MIN_HEIGHT)
@@ -209,12 +210,12 @@ class OuvrageFormMixin:
         self.label_couv_prem_preview.setFrameShadow(QFrame.Shadow.Sunken)
 
         self.input_couv_prem_location = QLineEdit()
-        self.input_couv_prem_location.setPlaceholderText("Image stockée...")
-        self.input_couv_prem_location.setToolTip("Indiquer sur quel PC l'image est stocké. Exemple: PC John.")
+        self.input_couv_prem_location.setHidden(True)
 
         # Couvertures (arrière)
         self.input_couv_quat_chemin = QLineEdit()
         self.input_couv_quat_chemin.setReadOnly(True)
+        self.input_couv_quat_chemin.setHidden(True)
 
         self.label_couv_quat_preview = ClickableLabel("Aperçu")
         self.label_couv_quat_preview.setFixedSize(INITIAL_MIN_WIDTH, INITIAL_MIN_HEIGHT)
@@ -224,8 +225,7 @@ class OuvrageFormMixin:
         self.label_couv_quat_preview.setFrameShadow(QFrame.Shadow.Sunken)
 
         self.input_couv_quat_location = QLineEdit()
-        self.input_couv_quat_location.setPlaceholderText("Image stockée...")
-        self.input_couv_quat_location.setToolTip("Indiquer sur quel PC l'image est stocké. Exemple: PC John.")
+        self.input_couv_quat_location.setHidden(True)
 
     @staticmethod
     def make_required_label(text: str) -> QLabel:
@@ -380,7 +380,6 @@ class OuvrageFormMixin:
         h_layout_file_prem.addWidget(btn_browse_prem)
         h_layout_file_prem.addWidget(self.input_couv_prem_chemin)
         section_prem.addLayout(h_layout_file_prem)
-        section_prem.addWidget(self.input_couv_prem_location)
         section_prem.addWidget(self.label_couv_prem_preview, alignment=Qt.AlignmentFlag.AlignCenter)
         section_prem.addStretch()
         main_cover_layout.addLayout(section_prem)
@@ -405,7 +404,6 @@ class OuvrageFormMixin:
         h_layout_file_quat.addWidget(btn_browse_quat)
         h_layout_file_quat.addWidget(self.input_couv_quat_chemin)
         section_quat.addLayout(h_layout_file_quat)
-        section_quat.addWidget(self.input_couv_quat_location)
         section_quat.addWidget(self.label_couv_quat_preview, alignment=Qt.AlignmentFlag.AlignCenter)
         section_quat.addStretch()
         main_cover_layout.addLayout(section_quat)

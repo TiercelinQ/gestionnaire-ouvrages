@@ -229,7 +229,7 @@ class OuvrageEditModal(QDialog, OuvrageFormMixin):
 
         reply = QMessageBox.question(
             self, "Confirmation Suppression",
-            f"Êtes-vous sûr de vouloir supprimer définitivement l'ouvrage '{titre}' ?",
+            f"Êtes-vous sûr de vouloir supprimer définitivement l'ouvrage '<b>{titre}</b>' ?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
 
