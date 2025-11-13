@@ -376,12 +376,24 @@ class OuvrageFormMixin:
         btn_browse_prem.setObjectName("FilesActionButton")
         btn_browse_prem.clicked.connect(lambda: self._browse_cover(False))
 
+        btn_remove_prem = QPushButton("Retirer")
+        btn_remove_prem.setObjectName("SecondaryActionButton")
+        btn_remove_prem.clicked.connect(lambda: self._remove_cover(False))
+
+        # Layout vertical pour empiler les deux boutons
+        v_layout_buttons_prem = QVBoxLayout()
+        v_layout_buttons_prem.addWidget(btn_browse_prem)
+        v_layout_buttons_prem.addWidget(btn_remove_prem)
+
+        # Layout horizontal pour mettre (bloc boutons + champ texte)
         h_layout_file_prem = QHBoxLayout()
-        h_layout_file_prem.addWidget(btn_browse_prem)
+        h_layout_file_prem.addLayout(v_layout_buttons_prem)
         h_layout_file_prem.addWidget(self.input_couv_prem_chemin)
+
         section_prem.addLayout(h_layout_file_prem)
         section_prem.addWidget(self.label_couv_prem_preview, alignment=Qt.AlignmentFlag.AlignCenter)
         section_prem.addStretch()
+
         main_cover_layout.addLayout(section_prem)
 
         # --- SÉPARATEUR VISUEL VERTICAL ---
@@ -400,12 +412,24 @@ class OuvrageFormMixin:
         btn_browse_quat.setObjectName("FilesActionButton")
         btn_browse_quat.clicked.connect(lambda: self._browse_cover(True))
 
+        btn_remove_quat = QPushButton("Retirer")
+        btn_remove_quat.setObjectName("SecondaryActionButton")
+        btn_remove_quat.clicked.connect(lambda: self._remove_cover(True))
+
+        # Layout vertical pour empiler les deux boutons
+        v_layout_buttons_quat = QVBoxLayout()
+        v_layout_buttons_quat.addWidget(btn_browse_quat)
+        v_layout_buttons_quat.addWidget(btn_remove_quat)
+
+        # Layout horizontal pour mettre (bloc boutons + champ texte)
         h_layout_file_quat = QHBoxLayout()
-        h_layout_file_quat.addWidget(btn_browse_quat)
+        h_layout_file_quat.addLayout(v_layout_buttons_quat)
         h_layout_file_quat.addWidget(self.input_couv_quat_chemin)
+
         section_quat.addLayout(h_layout_file_quat)
         section_quat.addWidget(self.label_couv_quat_preview, alignment=Qt.AlignmentFlag.AlignCenter)
         section_quat.addStretch()
+
         main_cover_layout.addLayout(section_quat)
 
         right_layout.addWidget(group_couverture)
@@ -573,6 +597,18 @@ class OuvrageFormMixin:
                 'Aperçu Couverture',
                 'Aucun chemin de couverture valide n\'est spécifié.'
             )
+
+    def _remove_cover(self, is_back_cover: bool):
+        """Retire l'image de couverture sélectionnée et réinitialise l'aperçu."""
+        if is_back_cover:
+            input_chemin = self.input_couv_quat_chemin
+        else:
+            input_chemin = self.input_couv_prem_chemin
+
+        # Vider le champ chemin
+        input_chemin.clear()
+        input_chemin.setToolTip("")
+        input_chemin.setReadOnly(True)
 
     # --- Collecte des données ---
     def _collect_data(self) -> Optional[Dict[str, Any]]:
