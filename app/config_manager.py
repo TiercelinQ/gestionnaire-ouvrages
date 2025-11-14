@@ -109,6 +109,7 @@ class ConfigManager:
     def set_db_path(self, path: str):
         """Définit et sauvegarde le chemin de la base de données."""
         self.save_config('db_path', path)
+        self.update_db_storage(path)
 
     def get_db_storage(self) -> str | None:
             """Retourne le type de stockage de la base ('local' ou 'cloud')."""
