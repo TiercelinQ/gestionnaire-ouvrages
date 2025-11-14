@@ -110,6 +110,29 @@ class ConfigManager:
         """Définit et sauvegarde le chemin de la base de données."""
         self.save_config('db_path', path)
 
+    def get_db_storage(self) -> str | None:
+            """Retourne le type de stockage de la base ('local' ou 'cloud')."""
+            return self._config_data.get('db_storage')
+
+    def set_db_storage(self, storage_type: str):
+        """Définit et sauvegarde le type de stockage de la base ('local' ou 'cloud')."""
+        if storage_type not in ('local', 'cloud'):
+            logger.warning("Type de stockage invalide: %s", storage_type)
+            return
+        self.save_config('db_storage', storage_type)
+
+    def update_db_storage(self, db_path: str):
+        """
+        Détermine automatiquement le type de stockage (local ou cloud)
+        en fonction du chemin fourni et met à jour la configuration.
+        """
+        cloud_keywords = ["Mon Google Drive", "Google Drive", "OneDrive", "Dropbox", "iCloud"]
+
+        if any(keyword.lower() in db_path.lower() for keyword in cloud_keywords):
+            self.set_db_storage('cloud')
+        else:
+            self.set_db_storage('local')
+
     def get_theme(self) -> str:
         """Retourne le nom du thème sauvegardé ou 'dark' par défaut."""
         return self._config_data.get('theme', 'dark')

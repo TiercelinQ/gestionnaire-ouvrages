@@ -23,7 +23,7 @@ from app.config_manager import ConfigManager
 from app.header_widget import HeaderWidget
 from app.search_ouvrage_widget import SearchOuvrageWidget
 from app.parameters_widget import ParametersWidget
-from app.utils import show_custom_message_box, BUTTON_MAP
+from app.utils import show_custom_message_box, is_cloud_path, BUTTON_MAP
 
 logger = logging.getLogger(__name__)
 
@@ -31,50 +31,32 @@ class GestionnaireOuvrageApp(QMainWindow):
     """
     Application Principale de gestion d'ouvrages
     """
-    DB_FILE_NAME = "MaBibliotheque.db"
-    GD_RELATIVE_PATH_COMPONENTS = ["Documents", "Mon Google Drive", "MaBibliotheque"]
+    DEFAULT_DB_FILE_NAME = "MonGestionnaireOuvrages.db"
 
     def __init__(self):
         super().__init__()
-        self.initialization_failed = False
+        # --- Configuration de la fenêtre ---
         app_icon = QIcon(":/global_icons/iconBookInventoryApp.png")
         self.setWindowIcon(app_icon)
         self.setWindowTitle("Gestionnaire d'Ouvrages")
         self.setMinimumSize(1000, 700)
 
+        # --- Gestionnaires principaux ---
         self.config_manager = ConfigManager()
         self.db_manager = DBManager(parent_widget=self)
         self.ui_manager = UIManager(self)
+
+        # --- Thème initial ---
         self._apply_initial_theme()
 
-        db_path = self.config_manager.get_db_path()
-        if db_path and os.path.exists(db_path):
-            if not self.db_manager.connect_db(db_path, parent_widget=self):
-                self.initialization_failed = True
-                return
-        else:
-            new_db_path = self._resolve_google_drive_path()
-            if new_db_path:
-                db_path = new_db_path
-                self.config_manager.save_config('db_path', db_path)
-                if not self.db_manager.connect_db(db_path, parent_widget=self):
-                    self.initialization_failed = True
-                    return
-            else:
-                primary_text = "Base de données introuvable au lancement."
-                show_custom_message_box(
-                    self,
-                    'INFO',
-                    "Gestion Base de Données",
-                    primary_text
-                )
-                if not self._select_or_create_db():
-                    self.initialization_failed = True
-                    return
+        # --- Initialisation de la base de données ---
+        if not self._initialize_database():
+            logger.error("Initialisation Base de Données - Echec")
+            logger.critical("Fermeture de l'application")
+            return
 
         self._setup_ui()
         self.db_manager.get_system_user_id()
-
         self.center_window()
 
     def center_window(self):
@@ -86,56 +68,33 @@ class GestionnaireOuvrageApp(QMainWindow):
             (screen.height() - size.height()) // 2
         )
 
-    # --- Gestion du Chemin BDD (Résolution Google Drive) ---
-    def _resolve_google_drive_path(self) -> str | None:
+    # --- Gestion BDD ---
+    def _initialize_database(self) -> bool:
         """
-        Tente de trouver le chemin de la base de données en utilisant les composants
-        du chemin relatifs au dossier utilisateur.
+        Initialise la connexion à la base de données :
+        - Utilise le chemin configuré si disponible
+        - Vérifie si 'db_storage' est présent dans la config, sinon l'ajoute
+        - Sinon propose à l'utilisateur de créer/ouvrir une base
+        Retourne True si la connexion est réussie, False sinon.
         """
-        source_method = "main_app._resolve_google_drive_path"
-        user_home = Path.home()
+        logger.info("Identification Base de Données - En Cours")
+        db_path = self.config_manager.get_db_path()
 
-        try:
-            db_folder_path = user_home.joinpath(*self.GD_RELATIVE_PATH_COMPONENTS)
-            potential_db_path = db_folder_path / self.DB_FILE_NAME
-        except (TypeError, ValueError) as e:
-            logger.error("%s - Statut: Echec - Erreur: %s", source_method, str(e), exc_info=True)
-            return None
-
-        if potential_db_path.exists():
-            return str(potential_db_path)
-
-        alt_components = list(self.GD_RELATIVE_PATH_COMPONENTS)
-
-        try:
-            alt_components[1] = alt_components[1].replace("Mon Google Drive", "Google Drive")
-            alt_db_folder_path = user_home.joinpath(*alt_components)
-            potential_db_path_alt = alt_db_folder_path / self.DB_FILE_NAME
-
-            if potential_db_path_alt.exists():
-                return str(potential_db_path_alt)
-        except IndexError:
-            pass
-
-        return None
-
-    # --- Gestion du Thème et BDD ---
-    def _apply_initial_theme(self):
-        """Applique le thème initial sauvegardé dans la configuration."""
-        initial_theme = self.config_manager.get_theme()
-        self.ui_manager.set_theme(initial_theme)
-
-    def _handle_theme_change(self, theme_name: str):
-        """Gère le changement de thème et sauvegarde le choix dans la configuration."""
-        self.config_manager.save_config('theme', theme_name)
-        self._force_full_style_update(theme_name)
-        if hasattr(self, 'search_ouvrage_widget'):
-            self.search_ouvrage_widget.update_refresh_icon(theme_name)
+        if db_path and os.path.exists(db_path):
+            logger.info("Identification Base de Données - Succès")
+            logger.info("Identification Stockage Base de Données - En Cours")
+            if not self.config_manager.get_db_storage():
+                self.config_manager.update_db_storage(db_path)
+                logger.info("Identification Stockage Base de Données - Succès")
+            return self.db_manager.connect_db(db_path, parent_widget=self)
+        logger.info("Identification Base de Données - Terminée")
+        logger.info("Identification Base de Données - Création ou Ouverture d'une BDD")
+        return self._select_or_create_db()
 
     def _select_or_create_db(self) -> bool:
         """
         Propose à l'utilisateur d'ouvrir une base existante ou d'en créer une nouvelle.
-        Utilise une QMessageBox personnalisée avec des boutons en français.
+        Enregistre le chemin choisi et avertit si la base est sur un service Cloud.
         """
         choice_box = QMessageBox(self)
         choice_box.setWindowTitle("Gestion Base de Données")
@@ -180,13 +139,80 @@ class GestionnaireOuvrageApp(QMainWindow):
             )
 
         if db_path:
-            if self.db_manager.connect_db(db_path, parent_widget=self):
-                self.config_manager.save_config('db_path', db_path)
-                if hasattr(self, 'header_widget'):
-                    self.header_widget.update_db_info()
-                return True
+            self.config_manager.set_db_path(db_path)
+            self.config_manager.update_db_storage(db_path)
+
+            # Si c'est du cloud, avertir l'utilisateur
+            if self.config_manager.get_db_storage() == 'cloud':
+                show_custom_message_box(
+                    self,
+                    level="WARNING",
+                    title="Base sur Cloud détectée",
+                    text="La base est stockée sur un service Cloud.",
+                    informative_text="<b>Attention</b> : les écritures simultanées peuvent provoquer des erreurs "
+                                    "ou une corruption de la base.\n\n"
+                                    "Évitez d'utiliser l'application à deux en même temps.",
+                    buttons=["Ok"]
+                )
+
+            return self.db_manager.connect_db(db_path, parent_widget=self)
 
         return False
+
+    # --- Gestion du Thème ---
+    def _apply_initial_theme(self):
+        """Applique le thème initial sauvegardé dans la configuration."""
+        initial_theme = self.config_manager.get_theme()
+        self.ui_manager.set_theme(initial_theme)
+
+    def _handle_theme_change(self, theme_name: str):
+        """Gère le changement de thème et sauvegarde le choix dans la configuration."""
+        self.config_manager.save_config('theme', theme_name)
+        self._force_full_style_update(theme_name)
+        if hasattr(self, 'search_ouvrage_widget'):
+            self.search_ouvrage_widget.update_refresh_icon(theme_name)
+
+    def _force_full_style_update(self, theme_name: str):
+        """
+        Réapplique le QSS en cours et force le rafraîchissement du style
+        sur les widgets spécifiques pour garantir que tous les sélecteurs sont pris en compte.
+        """
+        self.ui_manager.set_theme(theme_name)
+
+        widgets_to_polish = []
+        if hasattr(self, 'header_widget'):
+            widgets_to_polish.append(self.header_widget)
+        if hasattr(self, 'tab_parameters'):
+            widgets_to_polish.append(self.tab_parameters)
+        if hasattr(self, 'search_ouvrage_widget'):
+            widgets_to_polish.append(self.search_ouvrage_widget)
+
+        def _recursive_polish(widget):
+            if widget is None:
+                return
+
+            style = widget.style()
+            style.unpolish(widget)
+            style.polish(widget)
+
+            for child in widget.findChildren(QWidget):
+                if child != self:
+                    child.style().unpolish(child)
+                    child.style().polish(child)
+
+            if hasattr(widget, 'table_view') and hasattr(widget.table_view, 'horizontalHeader'):
+                header = widget.table_view.horizontalHeader()
+                header.style().unpolish(header)
+                header.style().polish(header)
+
+        for widget in widgets_to_polish:
+            _recursive_polish(widget)
+
+        if hasattr(self, 'header_widget'):
+            self.header_widget.update_theme_icon()
+
+        self.style().unpolish(self)
+        self.style().polish(self)
 
     # --- Construction de l'UI ---
     def _setup_ui(self):
@@ -249,6 +275,7 @@ class GestionnaireOuvrageApp(QMainWindow):
         elif index == 1:
             self.tab_parameters.refresh_classifications()
 
+    # --- Gestion fermeture application --- #
     def closeEvent(self, event): # pylint: disable=invalid-name
         """Événement appelé lors de la fermeture de la fenêtre. Ferme la connexion à la BDD."""
         self.db_manager.close_db()
@@ -256,49 +283,7 @@ class GestionnaireOuvrageApp(QMainWindow):
         logger.info("Fermeture Application")
         event.accept()
 
-    def _force_full_style_update(self, theme_name: str):
-        """
-        Réapplique le QSS en cours et force le rafraîchissement du style
-        sur les widgets spécifiques pour garantir que tous les sélecteurs sont pris en compte.
-        """
-        self.ui_manager.set_theme(theme_name)
-
-        widgets_to_polish = []
-        if hasattr(self, 'header_widget'):
-            widgets_to_polish.append(self.header_widget)
-        if hasattr(self, 'tab_parameters'):
-            widgets_to_polish.append(self.tab_parameters)
-        if hasattr(self, 'search_ouvrage_widget'):
-            widgets_to_polish.append(self.search_ouvrage_widget)
-
-        def _recursive_polish(widget):
-            if widget is None:
-                return
-
-            style = widget.style()
-            style.unpolish(widget)
-            style.polish(widget)
-
-            for child in widget.findChildren(QWidget):
-                if child != self:
-                    child.style().unpolish(child)
-                    child.style().polish(child)
-
-            if hasattr(widget, 'table_view') and hasattr(widget.table_view, 'horizontalHeader'):
-                header = widget.table_view.horizontalHeader()
-                header.style().unpolish(header)
-                header.style().polish(header)
-
-        for widget in widgets_to_polish:
-            _recursive_polish(widget)
-
-        if hasattr(self, 'header_widget'):
-            self.header_widget.update_theme_icon()
-
-        self.style().unpolish(self)
-        self.style().polish(self)
-
-    # --- Gestion du redémarage de l'application (uniquement avec le fichier .exe de l'application) ---
+    # --- Gestion redémarage application (uniquement avec le fichier .exe de l'application) ---
     def _execute_restart(self):
         """
         Fonction interne appelée par QTimer pour exécuter le redémarrage réel.

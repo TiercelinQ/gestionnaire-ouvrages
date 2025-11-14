@@ -6,11 +6,12 @@ toutes les opérations (CRUD sur les ouvrages, gestion des listes, logs, etc.)
 en déléguant aux modules spécialisés.
 """
 
+import os
 import sqlite3
 import logging
 from typing import Optional, Any, Dict, Tuple, List
 from PyQt6.QtWidgets import QWidget
-from app.utils import log_error_connection_database
+from app.utils import log_error_connection_database, is_cloud_path
 from app.db.db_init_db import DBInitDataBase
 from app.db.db_init_data import DBInitData
 from app.db.db_classifications import DBClassifications
@@ -54,6 +55,8 @@ class DBManager:
     def connect_db(self, db_path: str, parent_widget: QWidget = None) -> bool:
         """
         Établit la connexion à la base de données et initialise le schéma si nécessaire.
+        Si la base de données est stockée en local, alors PRAGMA journal_mode=WAL
+        Si la base de données est stockée dans un Cloud, alors PRAGMA journal_mode=DELETE
         :param db_path: Chemin complet du fichier SQLite.
         :param parent_widget: Widget parent pour l'affichage des messages d'erreur.
         :return: True si la connexion et l'initialisation réussissent, False sinon.
@@ -62,10 +65,21 @@ class DBManager:
         self.db_path = db_path
         source_method = "db_manager.connect_db"
         try:
-            self.connexion = sqlite3.connect(self.db_path)
+            self.connexion = sqlite3.connect(self.db_path, timeout=10)
             self.connexion.row_factory = sqlite3.Row
             self.cursor = self.connexion.cursor()
-            self.cursor.execute("PRAGMA journal_mode=WAL;")
+
+            if is_cloud_path(db_path):
+                logger.warning("Base de données détectée sur un service cloud : WAL désactivé")
+                self.cursor.execute("PRAGMA journal_mode=DELETE;")
+            else:
+                try:
+                    logger.info("Base de données locale détectée : tentative WAL")
+                    self.cursor.execute("PRAGMA journal_mode=WAL;")
+                except sqlite3.OperationalError:
+                    logger.warning("WAL non supporté, bascule en DELETE")
+                    self.cursor.execute("PRAGMA journal_mode=DELETE;")
+
             self.connexion.commit()
             self._initialize_db()
             self._initialize_data()

@@ -25,20 +25,15 @@ def main():
     # 4. Création de l'Interface Utilisateur
     # Instancie la classe représentant la fenêtre principale de l'application.
     main_window = GestionnaireOuvrageApp()
-    # 5. Contrôle d'initialisation
-    # Vérifie si l'initialisation de la fenêtre principale (ex: connexion à la BD) a échoué.
-    if main_window.initialization_failed:
-        # Si échec, arrête le programme immédiatement avec un code d'erreur (1).
-        sys.exit(1)
-    # 6. Affichage
+    # 5. Affichage
     # Rend la fenêtre principale visible à l'utilisateur.
     main_window.show()
-    # 7. Démarrage de la Boucle d'Événements
+    # 6. Démarrage de la Boucle d'Événements
     # Lance la boucle principale de l'application. Le programme bloque ici
     # jusqu'à ce que l'utilisateur ou le code appelle app.quit().
     # 'result' récupère le code de sortie (0 = succès par convention).
     result = app.exec()
-    # 8. Sortie finale
+    # 7. Sortie finale
     # Quitte le script Python avec le code de sortie retourné par app.exec().
     sys.exit(result)
 

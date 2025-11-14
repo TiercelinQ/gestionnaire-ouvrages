@@ -49,7 +49,7 @@ class HeaderWidget(QWidget):
         main_layout.setContentsMargins(15, 10, 15, 10)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
 
-        self.label_version_number = QLabel("1.0.3")
+        self.label_version_number = QLabel("1.1.0")
         self.label_version_number.setObjectName("UserName")
 
         name = self.config_manager.get_user_name()

@@ -1,181 +1,155 @@
-# pylint: disable=no-name-in-module
 """
-Module utilitaire de l'application.
-Contient des fonctions d'assistance (gestion des logs, boîtes de dialogue personnalisées,
-gestion des dates/heures) et des classes de widgets PyQt personnalisés.
+Gère les opérations de chargement, de lecture et de sauvegarde de la configuration
+utilisateur de l'application (chemin de la base de données, thème, nom d'utilisateur, etc.)
+dans le fichier config_user.json.
 """
 
+import sys
+import os
+import json
 import logging
-import sqlite3
-from datetime import datetime
-from typing import Optional, Any, Literal
-from PyQt6.QtWidgets import QMessageBox, QWidget, QListWidget
-from PyQt6.QtGui import QIcon
-from PyQt6.QtCore import QSize
-from .data_models import DBSchema
+from typing import Dict, Any, List
+from app.utils import show_custom_message_box
 
 logger = logging.getLogger(__name__)
 
-LOG_LEVEL_MAP = {
-    'DEBUG': logging.DEBUG,
-    'INFO': logging.INFO,
-    'WARNING': logging.WARNING,
-    'ERROR': logging.ERROR,
-    'CRITICAL': logging.CRITICAL,
-}
-
-ICON_BASE_PATH = ":/status_icons/"
-ICON_SIZE_PX = 32
-
-ICON_MAP = {
-    'ERROR': ICON_BASE_PATH + "error.png",
-    'INFO': ICON_BASE_PATH + "information.png",
-    'QUESTION': ICON_BASE_PATH + "question.png",
-    'SUCCESS': ICON_BASE_PATH + "success.png",
-    'WARNING': ICON_BASE_PATH + "warning.png",
-}
-
-BUTTON_MAP = {
-'Ok': QMessageBox.StandardButton.Ok,
-    'Yes': QMessageBox.StandardButton.Yes,
-    'No': QMessageBox.StandardButton.No,
-    'Cancel': QMessageBox.StandardButton.Cancel,
-    'Save': QMessageBox.StandardButton.Save,
-    'Discard': QMessageBox.StandardButton.Discard,
-    'Restart': QMessageBox.StandardButton.Yes,
-    'Later': QMessageBox.StandardButton.No,
-    'Ouvrir': QMessageBox.StandardButton.Open,
-    'Créer': QMessageBox.StandardButton.Save,
-}
-
-def get_datetime() -> str:
+class ConfigManager:
     """
-    Retourne la date et l'heure actuelles formatées pour la BDD (YYYY-MM-DD HH:MM:SS).
-    """
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-def log_event(db_manager: Any, level: str, source: str, message: str, exception: Optional[Exception] = None):
-    """
-    Enregistre un événement (erreur, succès, info) dans la table logs de la BDD.
-    :param db_manager: L'instance de DBManager.
-    :param level: Niveau de l'événement ('SUCCESS', 'INFO', 'ERROR', 'CRITICAL', etc.).
-    :param source: Nom du module/méthode.
-    :param message: Le message à enregistrer.
-    :param exception: L'objet exception capturé, si c'est une erreur.
-    """
-    logger.info("Génération d'un log - En cours")
-    source_method="utils.log_event"
-    if not db_manager.connexion:
-        log_error_connection_database(None, source_method)
-        return
-
-    error_type = type(exception).__name__ if exception else None
-    user_id = db_manager.current_user_id
-    now = get_datetime()
-
-    log_message = f"{message} | Exception: {exception}" if exception else message
-
-    sql = f"""
-    INSERT INTO {DBSchema.TABLE_LOGS}
-        (timestamp, level, source_module, error_type, message, user_id)
-    VALUES (?, ?, ?, ?, ?, ?)
+    Gère le chargement et la sauvegarde de la configuration utilisateur
+    (chemin BDD, thème, nom d'utilisateur, etc.) dans le fichier config_user.json.
     """
 
-    try:
-        db_manager.cursor.execute(sql, (now, level, source, error_type, log_message, user_id))
-        db_manager.connexion.commit()
-        logger.info("Génération d'un log - Succès")
-    except sqlite3.Error as log_e:
-        logger.info("Génération d'un log - Echec")
-        logger.critical("%s - Erreur: %s",source_method,str(log_e),exc_info=True)
-        log_error_connection_database(None,source_method)
+    CONFIG_FILE = "config_user.json"
+    APP_NAME = "MonGestionnaireOuvrages"
 
-def log_error_connection_database(parent_widget, source_method: str):
-    """
-    Loggue une erreur critique de connexion BDD et affiche une boîte de dialogue.
-    :param parent_widget: Le widget parent pour la boîte de dialogue.
-    :param source_method: Le nom de la méthode ou du module source.
-    """
-    logger.critical("%s - Connexion BDD - Statut: Echec", source_method, exc_info=True)
-    show_custom_message_box(
-        parent_widget,
-        'CRITICAL',
-        "Erreur Critique BDD",
-        "Impossible de se connecter à la base de données.",
-        f"(Source: {source_method})"
-    )
+    def __init__(self):
+        """Initialise le gestionnaire de configuration et charge les données."""
+        self._config_data: Dict[str, Any] = self._load_config()
 
-def show_custom_message_box(
-    parent: QWidget,
-    level: Literal['ERROR', 'INFO', 'QUESTION', 'SUCCESS', 'WARNING'],
-    title: str,
-    text: str,
-    informative_text: Optional[str] = None,
-    buttons: Any = QMessageBox.StandardButton.Ok,
-    min_width: int = 300,
-    base_height: int = 120,
-    line_height: int = 20
-) -> QMessageBox.StandardButton:
-    """
-    Affiche une QMessageBox personnalisée avec une icône et un style harmonisés.
+    def _get_app_config_dir(self) -> str:
+        """Retourne le chemin du répertoire de configuration de l'application (OS-dépendant)."""
+        logger.info("Récupération du chemin du configuration de l'application - En cours")
+        if sys.platform == "win32":
+            app_data = os.environ.get('APPDATA')
+            if app_data:
+                logger.info("Récupération du chemin du configuration de l'application - Succès")
+                return os.path.join(app_data, self.APP_NAME)
+        return os.path.join(os.path.expanduser("~"), f".{self.APP_NAME}")
 
-    :param parent: Le widget parent (obligatoire pour le style QSS).
-    :param level: Le niveau de l'événement ('ERROR', 'INFO', 'QUESTION', 'SUCCESS', 'WARNING').
-    :param title: Le titre de la fenêtre.
-    :param text: Le message principal (affiché en gras).
-    :param informative_text: Le texte secondaire/détail technique.
-    :param buttons: Les boutons standard (par défaut: OK). Peut être un flag
-                    (QMessageBox.StandardButton) ou une liste de chaînes de caractères
-                    ('Yes', 'No').
-    :return: Le bouton cliqué par l'utilisateur (ex: QMessageBox.StandardButton.Ok).
-    """
-    logger.info("Génération de message custom - En cours")
-    # 1. Conversion de la liste de chaînes en StandardButtons
-    final_buttons = buttons
-    if isinstance(buttons, list):
-        if not buttons:
-            final_buttons = QMessageBox.StandardButton.Ok
+    def _get_config_path(self) -> str:
+        """Retourne le chemin complet du fichier de configuration."""
+        config_dir = self._get_app_config_dir()
+        if not os.path.exists(config_dir):
+            os.makedirs(config_dir)
+        return os.path.join(config_dir, self.CONFIG_FILE)
+
+    def _load_config(self) -> Dict[str, Any]:
+        """Charge le fichier de configuration existant ou initialise avec des valeurs par défaut."""
+        logger.info("Chargement des configurations de l'utilisateur - En cours")
+        source_method = "config_manager._load_config"
+        config_path = self._get_config_path()
+        if os.path.exists(config_path):
+            try:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    logger.info("Chargement des configurations de l'utilisateur - Succès")
+                    return json.load(f)
+            except (IOError, json.JSONDecodeError) as e:
+                logger.info("Chargement des configurations de l'utilisateur - Echec")
+                logger.error("%s - Erreur: %s",source_method,str(e),exc_info=True)
+                show_custom_message_box(
+                    None,
+                    'ERROR',
+                    "Erreur Chargement Config",
+                    "Erreur lors du chargement de la configuration de l'utilisateur.",
+                    f"(Source: {source_method})"
+                )
+
+        default_user_name = os.getlogin() if hasattr(os, 'getlogin') else "Utilisateur"
+
+        return {
+            'db_path': None,
+            'theme': 'light',
+            'user_name': default_user_name
+        }
+
+    def save_config(self, key: str, value: Any):
+        """Sauvegarde une clé/valeur dans le fichier de configuration
+        et met à jour les données en mémoire.
+        """
+        logger.info("Sauvegarde des configurations de l'utilisateur - En cours")
+        source_method = "config_manager.save_config"
+        self._config_data[key] = value
+        config_path = self._get_config_path()
+        try:
+            with open(config_path, 'w', encoding='utf-8') as f:
+                json.dump(self._config_data, f, indent=4)
+                logger.info("Sauvegarde des configurations de l'utilisateur - Succès")
+        except IOError as e:
+            logger.info("Sauvegarde des configurations de l'utilisateur - Echec")
+            logger.error("%s - Erreur: %s",source_method,str(e),exc_info=True)
+            show_custom_message_box(
+                None,
+                'ERROR',
+                "Erreur Sauvegarde Config",
+                "Erreur lors de la sauvegarde de la configuration de l'utilisateur.",
+                f"(Source: {source_method})"
+            )
+
+    def get_app_config_dir_path(self) -> str:
+        """
+        Retourne le chemin du répertoire de configuration de l'application.
+        Utilisé par les services externes (comme le logging) pour la centralisation.
+        """
+        return self._get_app_config_dir()
+
+    def get_db_path(self) -> str | None:
+        """Retourne le chemin de la base de données sauvegardé."""
+        return self._config_data.get('db_path')
+
+    def set_db_path(self, path: str):
+        """Définit et sauvegarde le chemin de la base de données."""
+        self.save_config('db_path', path)
+
+    def get_db_storage(self) -> str | None:
+            """Retourne le type de stockage de la base ('local' ou 'cloud')."""
+            return self._config_data.get('db_storage')
+
+    def set_db_storage(self, storage_type: str):
+        """Définit et sauvegarde le type de stockage de la base ('local' ou 'cloud')."""
+        if storage_type not in ('local', 'cloud'):
+            logger.warning("Type de stockage invalide: %s", storage_type)
+            return
+        self.save_config('db_storage', storage_type)
+
+    def update_db_storage(self, db_path: str):
+        """
+        Détermine automatiquement le type de stockage (local ou cloud)
+        en fonction du chemin fourni et met à jour la configuration.
+        """
+        cloud_keywords = ["Mon Google Drive", "Google Drive", "OneDrive", "Dropbox", "iCloud"]
+
+        if any(keyword.lower() in db_path.lower() for keyword in cloud_keywords):
+            self.set_db_storage('cloud')
         else:
-            button_flags = QMessageBox.StandardButton.NoButton
-            for btn_name in buttons:
-                button_flag = BUTTON_MAP.get(btn_name)
-                if button_flag:
-                    button_flags |= button_flag
-            final_buttons = button_flags
+            self.set_db_storage('local')
 
-    # 2. Création et configuration de la MessageBox
-    custom_message_box = QMessageBox(parent)
-    custom_message_box.setWindowTitle(title)
-    icon_path = ICON_MAP.get(level.upper(), ICON_MAP['INFO'])
-    custom_message_box.setIcon(QMessageBox.Icon.NoIcon)
-    custom_pixmap = QIcon(icon_path).pixmap(QSize(ICON_SIZE_PX, ICON_SIZE_PX))
-    custom_message_box.setIconPixmap(custom_pixmap)
-    custom_message_box.setText(f"{text}")
-    if informative_text:
-        custom_message_box.setInformativeText(informative_text)
-    custom_message_box.setStandardButtons(final_buttons)
-    custom_message_box.adjustSize()
-    custom_message_box.setMinimumWidth(min_width)
-    if informative_text:
-        lines = informative_text.count("\n") + 1
-        min_height = base_height + (lines * line_height)
-        custom_message_box.setMinimumHeight(min_height)
-    logger.info("Génération de message custom - Succès")
-    return custom_message_box.exec()
+    def get_theme(self) -> str:
+        """Retourne le nom du thème sauvegardé ou 'dark' par défaut."""
+        return self._config_data.get('theme', 'dark')
 
-class FocusListWidget(QListWidget):
-    """
-    QListWidget personnalisé qui annule la sélection lorsque le widget perd le focus,
-    SAUF si l'actionneur (bouton Editer/Supprimer) a été pressé (is_acting_on_selection).
-    """
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        # Nouveau flag pour empêcher la désélection lors de l'exécution d'une action
-        self.is_acting_on_selection = False
+    def set_theme(self, theme_name: str):
+        """Définit et sauvegarde le nom du thème."""
+        self.save_config('theme', theme_name)
 
-    def focusOutEvent(self, event): # pylint: disable=invalid-name
-        """Redéfinit l'événement de perte de focus."""
-        # Désélectionne tous les éléments
-        self.clearSelection()
-        # Appelle le gestionnaire de focus du parent
-        super().focusOutEvent(event)
+    def get_user_name(self) -> str:
+        """Retourne le nom d'utilisateur sauvegardé ou le nom système par défaut."""
+        default_user_name = os.getlogin() if hasattr(os, 'getlogin') else "Utilisateur"
+        return self._config_data.get('user_name', default_user_name)
+
+    def set_user_name(self, name: str):
+        """Définit et sauvegarde le nom d'utilisateur."""
+        self.save_config('user_name', name)
+
+    def get_available_themes(self) -> List[str]:
+        """Retourne la liste des noms des thèmes disponibles."""
+        return ['dark', 'light']
