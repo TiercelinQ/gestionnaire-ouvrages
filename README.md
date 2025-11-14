@@ -64,7 +64,12 @@
     <img src="assets/captures/2_search.png" alt="Recherche active" width="400">
 </p>
 <p align="center">
+    <img src="assets/captures/3_add.png" alt="Créatoin d'un ouvrage" width="400">
+    <img src="assets/captures/4_edit.png" alt="Édition d'un ouvrage" width="400">
+</p>
+<p align="center">
     <img src="assets/captures/5_settings-1.png" alt="Onglet 'Paramètres'" width="400">
+    <img src="assets/captures/5_settings-2.png" alt="Gestion de la classification" width="400">
 </p>
 <p align="center">
     <img src="assets/captures/5_settings-3.png" alt="Journal d'activité" width="400">
