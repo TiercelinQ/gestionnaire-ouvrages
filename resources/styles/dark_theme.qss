@@ -58,7 +58,7 @@ QLabel#WidgetTitle {
 }
 
 /* Barre Header */
-QLabel#UserName, QLabel#DataBase {
+QLabel#AboutLabel, QLabel#UserName, QLabel#DataBase {
     font-weight: bold;
 }
 
@@ -219,20 +219,20 @@ QPushButton#ThemeToggleButton:pressed {
     background-color: #5c6673;
 }
 
-/* --- 4.2 BOUTON DE REFRESH (#RefreshButton) --- */
-QPushButton#RefreshButton {
+/* --- 4.2 BOUTON DE REFRESH ET CLEAR (#RefreshButton, #ClearButton) --- */
+QPushButton#RefreshButton, QPushButton#ClearButton  {
     border: 1px solid #4a5463;
     border-radius: 18px;
     background-color: #2e343a;
     padding: 2px;
 }
 
-QPushButton#RefreshButton:hover {
+QPushButton#RefreshButton:hover, QPushButton#ClearButton:hover {
     background-color: #393f48;
     border: 1px solid #ffffff;
 }
 
-QPushButton#RefreshButton:pressed {
+QPushButton#RefreshButton:pressed, QPushButton#ClearButton:pressed{
     background-color: #5c6673;
 }
 

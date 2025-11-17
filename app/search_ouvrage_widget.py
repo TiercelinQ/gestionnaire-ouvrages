@@ -58,7 +58,7 @@ class SearchOuvrageWidget(QWidget):
         self.db_manager = db_manager
         self._initial_theme = initial_theme
         self._setup_ui()
-        self.update_refresh_icon(self._initial_theme)
+        self.update_icons(self._initial_theme)
         # Rafraîchit automatiquement les données affichées dans le tableau
         self.refresh_timer = QTimer(self)
         self.refresh_timer.timeout.connect(self.load_ouvrages)
@@ -67,15 +67,21 @@ class SearchOuvrageWidget(QWidget):
     def _setup_ui(self):
         # 1. Zone de Recherche
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Par Auteur, Titre, Edition ou Catégorie...")
+        self.search_input.setPlaceholderText("Recherche par Auteur, Titre, Edition ou Catégorie...")
         self.search_input.textChanged.connect(self.load_ouvrages)
 
         # 2. Boutons d'action
         self.btn_refresh = QPushButton()
-        self.btn_refresh.setObjectName("RefreshButton")
+        self.btn_refresh.setObjectName("SecondaryActionButton")
         self.btn_refresh.setToolTip("Actualiser la liste des ouvrages")
         self.btn_refresh.setFixedSize(QSize(36, 36))
         self.btn_refresh.clicked.connect(self.load_ouvrages)
+
+        self.btn_clear = QPushButton()
+        self.btn_clear.setObjectName("SecondaryActionButton")
+        self.btn_clear.setToolTip("Effacer la recherche et afficher tous les ouvrages")
+        self.btn_clear.setFixedSize(QSize(36, 36))
+        self.btn_clear.clicked.connect(self._handle_clear)
 
         btn_add = QPushButton("Ajouter un Ouvrage")
         btn_add.setObjectName("PrimaryActionButton")
@@ -87,9 +93,9 @@ class SearchOuvrageWidget(QWidget):
 
         # Layout des boutons et de la recherche
         top_layout = QHBoxLayout()
-        top_layout.addWidget(QLabel("Recherche:"))
         top_layout.addWidget(self.search_input)
         top_layout.addWidget(self.btn_refresh)
+        top_layout.addWidget(self.btn_clear)
         top_layout.addWidget(btn_add)
         top_layout.addWidget(btn_export)
 
@@ -133,16 +139,21 @@ class SearchOuvrageWidget(QWidget):
         self.footer_label.setObjectName("ResultFooterLabel")
         main_layout.addWidget(self.footer_label)
 
-    def update_refresh_icon(self, theme_name: str):
+    def update_icons(self, theme_name: str):
         """Met à jour l'icône du bouton d'actualisation en fonction du thème."""
 
         if theme_name == 'dark':
-            icon_path = ":/theme_icons/refresh_white.svg"
+            icon_path_refresh = ":/theme_icons/refresh_white.svg"
+            icon_path_clear = ":/theme_icons/clear_white.svg"
         else:
-            icon_path = ":/theme_icons/refresh_black.svg"
+            icon_path_refresh = ":/theme_icons/refresh_black.svg"
+            icon_path_clear = ":/theme_icons/clear_black.svg"
 
-        self.btn_refresh.setIcon(QIcon(icon_path))
+        self.btn_refresh.setIcon(QIcon(icon_path_refresh))
         self.btn_refresh.setIconSize(QSize(24, 24))
+
+        self.btn_clear.setIcon(QIcon(icon_path_clear))
+        self.btn_clear.setIconSize(QSize(24, 24))
 
     def load_ouvrages(self):
         """
@@ -382,3 +393,8 @@ class SearchOuvrageWidget(QWidget):
         # Ouvrir la modale d'édition
         logger.info("Ouverture au double clique d'un ouvrage - Succès")
         self._handle_edit_ouvrage_by_id(ouvrage_id)
+
+    def _handle_clear(self):
+        """Vide la recherche et recharge tous les ouvrages."""
+        self.search_input.clear()
+        self.load_ouvrages()

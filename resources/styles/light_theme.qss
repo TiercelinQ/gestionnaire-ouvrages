@@ -58,7 +58,7 @@ QLabel#WidgetTitle {
 }
 
 /* Barre Header */
-QLabel#UserName, QLabel#DataBase {
+QLabel#AboutLabel, QLabel#UserName, QLabel#DataBase {
     font-weight: bold;
 }
 

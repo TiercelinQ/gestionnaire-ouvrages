@@ -170,7 +170,7 @@ class GestionnaireOuvrageApp(QMainWindow):
         self.config_manager.save_config('theme', theme_name)
         self._force_full_style_update(theme_name)
         if hasattr(self, 'search_ouvrage_widget'):
-            self.search_ouvrage_widget.update_refresh_icon(theme_name)
+            self.search_ouvrage_widget.update_icons(theme_name)
 
     def _force_full_style_update(self, theme_name: str):
         """

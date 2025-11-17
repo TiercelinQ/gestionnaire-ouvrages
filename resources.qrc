@@ -9,6 +9,8 @@
         <file alias="refresh_white.svg">resources/icons/refresh_white.svg</file>
         <file alias="arrow_down_black.svg">resources/icons/arrow_down_black.svg</file>
         <file alias="arrow_down_white.svg">resources/icons/arrow_down_white.svg</file>
+        <file alias="clear_black.svg">resources/icons/clear_black.svg</file>
+        <file alias="clear_white.svg">resources/icons/clear_white.svg</file>
     </qresource>
     <qresource prefix="status_icons">
         <file alias="error.png">resources/icons/error.png</file>
