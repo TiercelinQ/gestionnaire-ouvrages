@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QSize, pyqtSignal, QTimer
 from PyQt6.QtGui import QIcon
 from app.db_manager import DBManager
+from app.config_manager import ConfigManager
 from app.ouvrage_add_modal import OuvrageAddModal
 from app.ouvrage_edit_modal import OuvrageEditModal
 from app.utils import show_custom_message_box
@@ -53,9 +54,10 @@ class SearchOuvrageWidget(QWidget):
     ]
     ACTION_COL_INDEX = 5
 
-    def __init__(self, db_manager: DBManager, initial_theme: str = 'light'):
+    def __init__(self, db_manager: DBManager, config_manager: ConfigManager,initial_theme: str = 'light'):
         super().__init__()
         self.db_manager = db_manager
+        self.config_manager = config_manager
         self._initial_theme = initial_theme
         self._setup_ui()
         self.update_icons(self._initial_theme)
@@ -292,7 +294,7 @@ class SearchOuvrageWidget(QWidget):
     def _handle_edit_ouvrage_by_id(self, ouvrage_id: int):
         """Ouvre la modale pour l'édition/suppression d'un ouvrage (OuvrageEditModal)."""
         main_window = self.window()
-        modal = OuvrageEditModal(self.db_manager, ouvrage_id=ouvrage_id, parent=main_window)
+        modal = OuvrageEditModal(self.db_manager, self.config_manager, ouvrage_id=ouvrage_id, parent=main_window)
         modal.ouvrage_updated.connect(self.load_ouvrages)
         modal.ouvrage_deleted.connect(self.load_ouvrages)
         modal.exec()

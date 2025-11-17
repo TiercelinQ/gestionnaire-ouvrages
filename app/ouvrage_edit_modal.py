@@ -14,7 +14,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import pyqtSignal
 import resources_rc # pylint: disable=unused-import
 from app.db_manager import DBManager
-from app.utils import show_custom_message_box
+from app.config_manager import ConfigManager
+from app.utils import show_custom_message_box, normalize_cover_path
 from app.ouvrage_form_common import OuvrageFormMixin
 
 class OuvrageEditModal(QDialog, OuvrageFormMixin):
@@ -24,9 +25,10 @@ class OuvrageEditModal(QDialog, OuvrageFormMixin):
     ouvrage_updated = pyqtSignal()
     ouvrage_deleted = pyqtSignal()
 
-    def __init__(self, db_manager: DBManager, ouvrage_id: int, parent: Optional[QWidget] = None):
+    def __init__(self, db_manager: DBManager, config_manager: ConfigManager, ouvrage_id: int, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.db_manager = db_manager
+        self.config_manager = config_manager
         self.ouvrage_id_to_edit = ouvrage_id
         self.original_ouvrage_data: Dict[str, Any] = {}
 
@@ -187,9 +189,13 @@ class OuvrageEditModal(QDialog, OuvrageFormMixin):
         self.input_remarques.setText(data.get('remarques', ''))
 
         # Couvertures
-        self.input_couv_prem_chemin.setText(data.get('couverture_premiere_chemin', ''))
+        self.input_couv_prem_chemin.setText(
+            normalize_cover_path(self.config_manager, data.get('couverture_premiere_chemin', ''))
+        )
         self.input_couv_prem_location.setText(data.get('couverture_premiere_emplacement', ''))
-        self.input_couv_quat_chemin.setText(data.get('couverture_quatrieme_chemin', ''))
+        self.input_couv_quat_chemin.setText(
+            normalize_cover_path(self.config_manager, data.get('couverture_quatrieme_chemin', ''))
+        )
         self.input_couv_quat_location.setText(data.get('couverture_quatrieme_emplacement', ''))
 
         # Informations système

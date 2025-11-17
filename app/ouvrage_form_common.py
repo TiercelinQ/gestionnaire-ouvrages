@@ -16,7 +16,7 @@ from PyQt6.QtCore import Qt, QDateTime, QSize, pyqtSignal
 from PyQt6.QtGui import QPixmap, QMouseEvent, QIntValidator
 import resources_rc # pylint: disable=unused-import
 from app.db_manager import DBManager
-from app.utils import show_custom_message_box
+from app.utils import show_custom_message_box, make_relative_cover_path
 
 PREVIEW_MAX_SIZE = QSize(150, 250)
 INITIAL_MIN_WIDTH = 150
@@ -341,7 +341,7 @@ class OuvrageFormMixin:
 
     def _create_right_column(self) -> QWidget:
         """Crée le widget de la colonne du résumé et des couvertures, avec les couvertures côte-à-côte."""
-        target_min_width = 400
+        target_min_width = 600
         right_column_widget = QWidget()
         right_column_widget.setMinimumWidth(target_min_width)
         right_layout = QVBoxLayout(right_column_widget)
@@ -639,9 +639,9 @@ class OuvrageFormMixin:
             'localisation_details':self.input_localisation_details.text().strip() or None,
             'resume': self.input_resume.toPlainText().strip() or None,
             'remarques': self.input_remarques.toPlainText().strip() or None,
-            'couverture_premiere_chemin': self.input_couv_prem_chemin.text().strip() or None,
+            'couverture_premiere_chemin': make_relative_cover_path(self.input_couv_prem_chemin.text().strip()) or None,
             'couverture_premiere_emplacement': self.input_couv_prem_location.text().strip() or None,
-            'couverture_quatrieme_chemin': self.input_couv_quat_chemin.text().strip() or None,
+            'couverture_quatrieme_chemin': make_relative_cover_path(self.input_couv_quat_chemin.text().strip()) or None,
             'couverture_quatrieme_emplacement': self.input_couv_quat_location.text().strip() or None,
         }
 

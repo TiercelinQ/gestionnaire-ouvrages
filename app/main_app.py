@@ -236,7 +236,7 @@ class GestionnaireOuvrageApp(QMainWindow):
         self.tab_widget = QTabWidget()
         self.tab_widget.setObjectName("MainTabWidget")
         # --- Onglet 1 : Gestion des Ouvrages (Recherche/Ajout via Modale) ---
-        self.search_ouvrage_widget = SearchOuvrageWidget(self.db_manager, initial_theme=initial_theme_name)
+        self.search_ouvrage_widget = SearchOuvrageWidget(self.db_manager, self.config_manager, initial_theme=initial_theme_name)
         self.tab_widget.addTab(self.search_ouvrage_widget, "Ouvrages")
         # --- Onglet 2 : Gestion des Paramètres ---
         self.tab_parameters = ParametersWidget(self.db_manager, self.config_manager)
