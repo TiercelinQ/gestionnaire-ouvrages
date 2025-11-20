@@ -199,8 +199,14 @@ class DBManager:
         Cette méthode est un proxy vers DBLists.
         """
         return self.lists.get_all_localisations()
+    def get_location_id_by_name(self, name: str) -> int | None:
+        """
+        Retourne l'ID de la localisation à partir de son nom.
+        """
+        return self.lists.get_location_id_by_name(name)
 
     # ---  Gestion des ouvrages ---
+    # Search
     def get_all_ouvrages(self) -> List[Dict[str, Any]]:
         """
         Récupère toutes les ouvrages de la base de données.
@@ -213,6 +219,7 @@ class DBManager:
         Cette méthode est un proxy vers DBOuvrages.
         """
         return self.ouvrages.get_total_ouvrage_count()
+    # CRUD
     def get_ouvrage_details(self, ouvrage_id: int) -> Optional[Dict[str, Any]]:
         """
         Récupère toutes données liées à un ouvrage de la base de données.
@@ -237,6 +244,46 @@ class DBManager:
         Cette méthode est un proxy vers DBOuvrages.
         """
         return self.ouvrages.delete_ouvrage(ouvrage_id)
+    # Dashboard
+    def get_ouvrages_by_location(self):
+        """
+        Retourne un dict {localisation: count} avec le nombre d'ouvrages par localisation.
+        """
+        return self.ouvrages.get_ouvrages_by_location()
+    def get_cover_completion_stats_by_location(self, column, location):
+        """
+        Retourne le nombre d'ouvrages avec couverture renseignée vs sans couverture,
+        filtré par localisation ("Toutes", "Non renseignée" ou une localisation précise).
+        """
+        return self.ouvrages.get_cover_completion_stats_by_location(column, location)
+    def get_top_categories_by_location(self, location, limit):
+        """
+        Retourne les catégories les plus fréquentes pour une localisation donnée.
+        - "Toutes" : top catégories globales
+        - "Non renseignée" : ouvrages sans localisation
+        - localisation précise : ouvrages liés à cette localisation
+        """
+        return self.ouvrages.get_top_categories_by_location(location, limit)
+    def get_last_books_by_location(self, location: str, limit: int = 5) -> list[dict[str, str]]:
+        """
+        Retourne les derniers ouvrages créés pour une localisation donnée.
+        """
+        return self.ouvrages.get_last_books_by_location(location, limit)
+    def get_categories_by_location(self):
+        """
+        Retourne un dict {localisation: {categorie: count}}.
+        Exemple :
+        {
+            "Salon": {"Roman": 10, "BD": 5},
+            "Chambre": {"Essai": 3}
+        }
+        """
+        return self.ouvrages.get_categories_by_location()
+    def get_periodes_by_location(self) -> dict[str, dict[str, int]]:
+        """
+        Retourne un dict {localisation: {periode: count}}.
+        """
+        return self.ouvrages.get_periodes_by_location()
 
     # --- Gestion du journal d'activité ---
     def get_activity_log(self, filters: Optional[dict] = None) -> List[Tuple]:

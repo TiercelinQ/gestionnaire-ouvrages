@@ -21,6 +21,7 @@ from app.ui_manager import UIManager
 from app.db_manager import DBManager
 from app.config_manager import ConfigManager
 from app.header_widget import HeaderWidget
+from app.dashboard_widget import DashboardWidget
 from app.search_ouvrage_widget import SearchOuvrageWidget
 from app.parameters_widget import ParametersWidget
 from app.utils import show_custom_message_box, is_cloud_path, BUTTON_MAP
@@ -39,7 +40,7 @@ class GestionnaireOuvrageApp(QMainWindow):
         app_icon = QIcon(":/global_icons/iconBookInventoryApp.png")
         self.setWindowIcon(app_icon)
         self.setWindowTitle("Gestionnaire d'Ouvrages")
-        self.setMinimumSize(1000, 700)
+        self.setMinimumSize(1280, 720)
 
         # --- Gestionnaires principaux ---
         self.config_manager = ConfigManager()
@@ -171,6 +172,8 @@ class GestionnaireOuvrageApp(QMainWindow):
         self._force_full_style_update(theme_name)
         if hasattr(self, 'search_ouvrage_widget'):
             self.search_ouvrage_widget.update_icons(theme_name)
+        if hasattr(self, 'dashboard_widget'):
+            self.dashboard_widget.refresh_theme(theme_name)
 
     def _force_full_style_update(self, theme_name: str):
         """
@@ -182,8 +185,8 @@ class GestionnaireOuvrageApp(QMainWindow):
         widgets_to_polish = []
         if hasattr(self, 'header_widget'):
             widgets_to_polish.append(self.header_widget)
-        if hasattr(self, 'tab_parameters'):
-            widgets_to_polish.append(self.tab_parameters)
+        if hasattr(self, 'parameter_widget'):
+            widgets_to_polish.append(self.parameter_widget)
         if hasattr(self, 'search_ouvrage_widget'):
             widgets_to_polish.append(self.search_ouvrage_widget)
 
@@ -235,28 +238,31 @@ class GestionnaireOuvrageApp(QMainWindow):
         # 2. Zone des Onglets
         self.tab_widget = QTabWidget()
         self.tab_widget.setObjectName("MainTabWidget")
-        # --- Onglet 1 : Gestion des Ouvrages (Recherche/Ajout via Modale) ---
+        # --- Onglet 1 : Tableau de bord ---
+        self.dashboard_widget = DashboardWidget(self.db_manager, self.config_manager)
+        self.tab_widget.addTab(self.dashboard_widget, "Tableau de bord")
+        # --- Onglet 2 : Gestion des Ouvrages ---
         self.search_ouvrage_widget = SearchOuvrageWidget(self.db_manager, self.config_manager, initial_theme=initial_theme_name)
         self.tab_widget.addTab(self.search_ouvrage_widget, "Ouvrages")
-        # --- Onglet 2 : Gestion des Paramètres ---
-        self.tab_parameters = ParametersWidget(self.db_manager, self.config_manager)
-        self.tab_parameters.setObjectName("ParametersPage")
-        self.tab_widget.addTab(self.tab_parameters, "Paramètres")
+        # --- Onglet 3 : Gestion des Paramètres ---
+        self.parameter_widget = ParametersWidget(self.db_manager, self.config_manager)
+        self.parameter_widget.setObjectName("ParametersPage")
+        self.tab_widget.addTab(self.parameter_widget, "Paramètres")
 
         # Connexions des signaux
         if hasattr(self, '_handle_tab_change'):
             self.tab_widget.currentChanged.connect(self._handle_tab_change)
 
-        if hasattr(self.tab_parameters, 'configuration_updated'):
+        if hasattr(self.parameter_widget, 'configuration_updated'):
             if hasattr(self.search_ouvrage_widget, 'load_ouvrages'):
-                self.tab_parameters.configuration_updated.connect(self.search_ouvrage_widget.load_ouvrages)
+                self.parameter_widget.configuration_updated.connect(self.search_ouvrage_widget.load_ouvrages)
 
-        user_settings_widget = getattr(self.tab_parameters, 'user_settings_widget', None)
+        user_settings_widget = getattr(self.parameter_widget, 'user_settings_widget', None)
         if user_settings_widget and hasattr(user_settings_widget, 'restart_requested'):
             user_settings_widget.restart_requested.connect(self._restart_application)
 
-        if hasattr(self.tab_parameters, 'user_settings_widget'):
-            self.tab_parameters.user_settings_widget.username_changed.connect(self.header_widget.update_user_name_info)
+        if hasattr(self.parameter_widget, 'user_settings_widget'):
+            self.parameter_widget.user_settings_widget.username_changed.connect(self.header_widget.update_user_name_info)
 
         main_layout.addWidget(self.tab_widget)
         self.setCentralWidget(main_container)
@@ -273,7 +279,7 @@ class GestionnaireOuvrageApp(QMainWindow):
         if index == 0:
             self.search_ouvrage_widget.load_ouvrages()
         elif index == 1:
-            self.tab_parameters.refresh_classifications()
+            self.parameter_widget.refresh_classifications()
 
     # --- Gestion fermeture application --- #
     def closeEvent(self, event): # pylint: disable=invalid-name

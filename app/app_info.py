@@ -1,7 +1,7 @@
 # app_info.py
 
 APP_NAME = "Gestionnaire Ouvrages"
-VERSION = "1.1.2"
+VERSION = "1.2.0"
 AUTHOR = "Quentin TIERCELIN"
 DESCRIPTION = "Application de gestion d'ouvrages, avec une gestion de la classification avancée."
 LICENSE = "Propriétaire"

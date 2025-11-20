@@ -112,3 +112,12 @@ class DBLists:
                 message="Erreur récupération localisations.",
                 exception=e)
             return []
+
+    def get_location_id_by_name(self, name: str) -> int | None:
+        """
+        Retourne l'ID de la localisation à partir de son nom.
+        """
+        sql = f"SELECT id FROM {DBSchema.TABLE_LOCALISATIONS} WHERE nom = ?"
+        self.db_manager.cursor.execute(sql, (name,))
+        row = self.db_manager.cursor.fetchone()
+        return None if not row else row["id"]

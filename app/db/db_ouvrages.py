@@ -6,6 +6,7 @@ sur la table principale 'ouvrages' de la base de données.
 
 import sqlite3
 import logging
+from datetime import datetime
 from typing import List, Tuple, Optional, Dict, Any
 from app.data_models import DBSchema
 from app.utils import log_event, log_error_connection_database, get_datetime
@@ -37,6 +38,7 @@ class DBOuvrages:
             o.titre,
             o.auteur,
             o.edition,
+            o.id_localisation AS id_localisation,
             c.nom AS categorie_nom
         FROM {DBSchema.TABLE_OUVRAGES} o
         LEFT JOIN {DBSchema.TABLE_CATEGORIES} c ON o.id_categorie = c.id
@@ -63,6 +65,9 @@ class DBOuvrages:
         """Retourne le nombre total d'ouvrages enregistrés."""
         logger.info("Calcule du nombre total d'ouvrages - En cours")
         source_method = "db_ouvrages.get_total_ouvrages_count"
+        if not self.db_manager.connexion:
+            log_error_connection_database(self.parent_widget, source_method)
+            return []
         sql = "SELECT COUNT(id) FROM ouvrages"
         try:
             self.db_manager.cursor.execute(sql)
@@ -271,3 +276,335 @@ class DBOuvrages:
                 message=f"Erreur suppression ouvrage {ouvrage_id}.",
                 exception=e)
             return False, f"Erreur BDD lors de la suppression de l'ouvrage : <b>{ouvrage_id}</b>. Veuillez consulter le journal d'activités."
+
+    # --- Requêtes KPI --- #
+    def get_ouvrages_by_location(self) -> dict[str, int]:
+        """
+        Retourne un dict {localisation_nom: count} avec le nombre d'ouvrages par localisation.
+        """
+        logger.info("Répartition ouvrages par localisation - En cours")
+        source_method = 'db_manager.get_ouvrages_by_location'
+
+        if not self.db_manager.connexion:
+            log_error_connection_database(self.parent_widget, source_method)
+            return []
+
+        try:
+            sql = f"""
+            SELECT COALESCE(loc.nom, 'Non renseignée') AS localisation_nom,
+                COUNT(*) AS total
+            FROM {DBSchema.TABLE_OUVRAGES} o
+            LEFT JOIN {DBSchema.TABLE_LOCALISATIONS} loc ON o.id_localisation = loc.id
+            GROUP BY COALESCE(loc.nom, 'Non renseignée')
+            ORDER BY total DESC;
+            """
+
+            self.db_manager.cursor.execute(sql)
+            rows = self.db_manager.cursor.fetchall()
+
+            result = {}
+            for row in rows:
+                loc_nom = row["localisation_nom"] if hasattr(row, "keys") else row[0]
+                total = row["total"] if hasattr(row, "keys") else row[1]
+                result[loc_nom] = total
+
+            logger.info("Répartition ouvrages par localisation - Succès")
+            return result
+        except sqlite3.Error as e:
+            logger.info("Répartition ouvrages par localisation - Echec")
+            logger.error("%s - Erreur: %s", source_method, e, exc_info=True)
+            log_event(
+                db_manager=self.db_manager,
+                level='ERROR',
+                source=source_method,
+                message=f"Erreur répartition ouvrages par localisation.",
+                exception=e)
+            return {}
+
+    def get_cover_completion_stats_by_location(self, column: str, location: str = "Toutes") -> tuple[int, int]:
+        """
+        Retourne le nombre d'ouvrages avec couverture renseignée vs sans couverture,
+        filtré par localisation ("Toutes", "Non renseignée" ou une localisation précise).
+        """
+        logger.info("Comptage complétion ouvrages - En cours")
+        source_method = "db_manager.get_cover_completion_stats_by_location"
+
+        if not self.db_manager.connexion:
+            log_error_connection_database(self.parent_widget, source_method)
+            return 0, 0
+
+        try:
+            if column not in ("couverture_premiere_chemin", "couverture_quatrieme_chemin"):
+                raise ValueError(f"Colonne non supportée: {column}")
+
+            if location == "Toutes":
+                sql_total = f"SELECT COUNT(*) AS total FROM {DBSchema.TABLE_OUVRAGES}"
+                sql_with = f"SELECT COUNT(*) AS total FROM {DBSchema.TABLE_OUVRAGES} WHERE {column} IS NOT NULL"
+                params_total, params_with = (), ()
+            elif location == "Non renseignée":
+                sql_total = f"SELECT COUNT(*) AS total FROM {DBSchema.TABLE_OUVRAGES} WHERE id_localisation IS NULL"
+                sql_with = f"SELECT COUNT(*) AS total FROM {DBSchema.TABLE_OUVRAGES} WHERE id_localisation IS NULL AND {column} IS NOT NULL"
+                params_total, params_with = (), ()
+            else:
+                sql_total = f"""
+                    SELECT COUNT(*) AS total
+                    FROM {DBSchema.TABLE_OUVRAGES} o
+                    JOIN {DBSchema.TABLE_LOCALISATIONS} loc ON o.id_localisation = loc.id
+                    WHERE loc.nom = ?
+                """
+                sql_with = f"""
+                    SELECT COUNT(*) AS total
+                    FROM {DBSchema.TABLE_OUVRAGES} o
+                    JOIN {DBSchema.TABLE_LOCALISATIONS} loc ON o.id_localisation = loc.id
+                    WHERE loc.nom = ? AND {column} IS NOT NULL
+                """
+                params_total, params_with = (location,), (location,)
+
+            self.db_manager.cursor.execute(sql_total, params_total)
+            total = self.db_manager.cursor.fetchone()["total"]
+
+            if total == 0:
+                return 0, 0
+
+            self.db_manager.cursor.execute(sql_with, params_with)
+            with_cover = self.db_manager.cursor.fetchone()["total"]
+
+            without_cover = total - with_cover
+
+            logger.info("Comptage complétion ouvrages - Succès")
+            return with_cover, without_cover
+
+        except sqlite3.Error as e:
+            logger.info("Comptage complétion ouvrages - Échec")
+            logger.error("%s - Erreur: %s", source_method, e, exc_info=True)
+            log_event(
+                db_manager=self.db_manager,
+                level="ERROR",
+                source=source_method,
+                message="Erreur comptage complétion ouvrages.",
+                exception=e,
+            )
+            return 0, 0
+
+    def get_top_categories_by_location(self, location: str, limit: int = 3) -> list[tuple[str, int]]:
+        """
+        Retourne les catégories les plus fréquentes pour une localisation donnée.
+        - "Toutes" : top catégories globales
+        - "Non renseignée" : ouvrages sans localisation
+        - localisation précise : ouvrages liés à cette localisation
+        """
+        logger.info("Récupération top catégorie par localisation - En cours")
+        source_method = 'db_ouvrages.get_top_categories_by_localisation'
+        if not self.db_manager.connexion:
+            log_error_connection_database(self.parent_widget, source_method)
+            return []
+        try:
+            if location == "Toutes":
+                sql = f"""
+                SELECT c.nom AS categorie, COUNT(*) AS total
+                FROM {DBSchema.TABLE_OUVRAGES} o
+                LEFT JOIN {DBSchema.TABLE_CATEGORIES} c ON o.id_categorie = c.id
+                GROUP BY c.nom
+                ORDER BY total DESC
+                LIMIT ?
+                """
+                params = (limit,)
+            elif location == "Non renseignée":
+                sql = f"""
+                SELECT c.nom AS categorie, COUNT(*) AS total
+                FROM {DBSchema.TABLE_OUVRAGES} o
+                LEFT JOIN {DBSchema.TABLE_CATEGORIES} c ON o.id_categorie = c.id
+                WHERE o.id_localisation IS NULL
+                GROUP BY c.nom
+                ORDER BY total DESC
+                LIMIT ?
+                """
+                params = (limit,)
+
+            else:
+                sql = f"""
+                SELECT c.nom AS categorie, COUNT(*) AS total
+                FROM {DBSchema.TABLE_OUVRAGES} o
+                JOIN {DBSchema.TABLE_LOCALISATIONS} loc ON o.id_localisation = loc.id
+                LEFT JOIN {DBSchema.TABLE_CATEGORIES} c ON o.id_categorie = c.id
+                WHERE loc.nom = ?
+                GROUP BY c.nom
+                ORDER BY total DESC
+                LIMIT ?
+                """
+                params = (location, limit)
+
+            self.db_manager.cursor.execute(sql, params)
+            rows = self.db_manager.cursor.fetchall()
+            logger.info("Récupération top catégorie par localisation - Succès")
+            return [(r["categorie"], r["total"]) for r in rows]
+        except sqlite3.Error as e:
+            logger.info("Récupération top catégorie par localisation - Echec")
+            logger.error("%s - Erreur: %s", source_method, e, exc_info=True)
+            log_event(
+                db_manager=self.db_manager,
+                level='ERROR',
+                source=source_method,
+                message=f"Erreur Récupération top catégorie par localisation.",
+                exception=e)
+            return []
+
+    def get_last_books_by_location(self, location: str, limit: int = 5) -> list[dict[str, str]]:
+        """
+        Retourne les derniers ouvrages créés pour une localisation donnée.
+        """
+        logger.info("Récupération derniers ouvrages par localisation - En cours")
+        source_method = 'db_manager.get_last_books_by_location'
+        if not self.db_manager.connexion:
+            log_error_connection_database(self.parent_widget, source_method)
+            return []
+        try:
+            if location == "Toutes":
+                sql = f"""
+                SELECT titre, auteur, date_creation
+                FROM {DBSchema.TABLE_OUVRAGES}
+                ORDER BY date_creation DESC
+                LIMIT ?
+                """
+                params = (limit,)
+
+            elif location == "Non renseignée":
+                sql = f"""
+                SELECT titre, auteur, date_creation
+                FROM {DBSchema.TABLE_OUVRAGES}
+                WHERE id_localisation IS NULL
+                ORDER BY date_creation DESC
+                LIMIT ?
+                """
+                params = (limit,)
+            else:
+                sql = f"""
+                SELECT o.titre, o.auteur, o.date_creation
+                FROM {DBSchema.TABLE_OUVRAGES} o
+                JOIN {DBSchema.TABLE_LOCALISATIONS} loc ON o.id_localisation = loc.id
+                WHERE loc.nom = ?
+                ORDER BY o.date_creation DESC
+                LIMIT ?
+                """
+                params = (location, limit)
+
+            self.db_manager.cursor.execute(sql, params)
+            rows = self.db_manager.cursor.fetchall()
+            logger.info("Récupération derniers ouvrages par localisation - Succès")
+
+            result = []
+            for r in rows:
+                titre = r["titre"] if hasattr(r, "keys") else r[0]
+                auteur = r["auteur"] if hasattr(r, "keys") else r[1]
+                raw_date = r["date_creation"] if hasattr(r, "keys") else r[2]
+
+                dt = datetime.strptime(raw_date.split('.')[0], "%Y-%m-%d %H:%M:%S")
+                date_fmt = dt.strftime("%d %b. %Y à %H:%M")
+
+                result.append({"titre": titre, "auteur": auteur, "date": date_fmt})
+            return result
+        except sqlite3.Error as e:
+            logger.info("Récupération derniers ouvrages par localisation - Échec")
+            logger.error("%s - Erreur: %s", source_method, e, exc_info=True)
+            log_event(
+                db_manager=self.db_manager,
+                level='ERROR',
+                source=source_method,
+                message=f"Erreur récupération derniers ouvrages par localisation.",
+                exception=e)
+            return
+
+    def get_categories_by_location(self) -> dict[str, dict[str, int]]:
+        """
+        Retourne un dict {localisation: {categorie: count}}.
+        Exemple :
+        {
+            "Salon": {"Roman": 10, "BD": 5},
+            "Chambre": {"Essai": 3}
+        }
+        """
+        logger.info("Répartition catégories par localisation - En cours")
+        source_method = 'db_manager.get_categories_by_location'
+        if not self.db_manager.connexion:
+            log_error_connection_database(self.parent_widget, source_method)
+            return []
+        try:
+            sql = f"""
+            SELECT COALESCE(loc.nom, 'Non renseignée') AS localisation,
+                cat.nom AS categorie,
+                COUNT(*) AS total
+            FROM {DBSchema.TABLE_OUVRAGES} o
+            LEFT JOIN {DBSchema.TABLE_LOCALISATIONS} loc ON o.id_localisation = loc.id
+            JOIN {DBSchema.TABLE_CATEGORIES} cat ON o.id_categorie = cat.id
+            GROUP BY COALESCE(loc.nom, 'Non renseignée'), cat.nom
+            ORDER BY localisation, total DESC;
+            """
+            self.db_manager.cursor.execute(sql)
+            rows = self.db_manager.cursor.fetchall()
+
+            result: dict[str, dict[str, int]] = {}
+            for row in rows:
+                loc = row["localisation"]
+                cat = row["categorie"]
+                count = row["total"]
+                if loc not in result:
+                    result[loc] = {}
+                result[loc][cat] = count
+
+            logger.info("Répartition catégories par localisation - Succès")
+            return result
+        except sqlite3.Error as e:
+            logger.info("Répartition catégories par localisation - Echec")
+            logger.error("%s - Erreur: %s", source_method, e, exc_info=True)
+            log_event(
+                db_manager=self.db_manager,
+                level='ERROR',
+                source=source_method,
+                message=f"Erreur répartition catégories par localisation.",
+                exception=e)
+            return {}
+
+    def get_periodes_by_location(self) -> dict[str, dict[str, int]]:
+        """
+        Retourne un dict {localisation: {periode: count}}.
+        """
+        logger.info("Répartition périodes par localisation - En cours")
+        source_method = 'db_manager.get_periodes_by_location'
+        if not self.db_manager.connexion:
+            log_error_connection_database(self.parent_widget, source_method)
+            return []
+        try:
+            sql = f"""
+            SELECT COALESCE(loc.nom, 'Non renseignée') AS localisation_nom,
+                COALESCE(per.nom, 'Non renseignée') AS periode,
+                COUNT(*) AS total
+            FROM ouvrages o
+            LEFT JOIN localisations loc ON o.id_localisation = loc.id
+            LEFT JOIN periodes per ON o.id_periode = per.id
+            GROUP BY COALESCE(loc.nom, 'Non renseignée'), COALESCE(per.nom, 'Non renseignée')
+            ORDER BY localisation_nom, total DESC;
+            """
+            self.db_manager.cursor.execute(sql)
+            rows = self.db_manager.cursor.fetchall()
+
+            result: dict[str, dict[str, int]] = {}
+            for row in rows:
+                loc = row["localisation_nom"]
+                per = row["periode"]
+                count = row["total"]
+                if loc not in result:
+                    result[loc] = {}
+                result[loc][per] = count
+
+            logger.info("Répartition périodes par localisation - Succès")
+            return result
+        except sqlite3.Error as e:
+            logger.info("Répartition périodes par localisation - Echec")
+            logger.error("%s - Erreur: %s", source_method, e, exc_info=True)
+            log_event(
+                db_manager=self.db_manager,
+                level='ERROR',
+                source=source_method,
+                message=f"Erreur répartition périodes par localisation.",
+                exception=e)
+            return {}
