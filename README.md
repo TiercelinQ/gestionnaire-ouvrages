@@ -6,15 +6,16 @@
 
 ## Table des matières
 
- 1. [Fonctionnalités](#fonctionnalités)
- 2. [Installation](#installation)
- 3. [Bonus](#bonus)
- 3. [Dépendances](#dépendances)
- 4. [Aperçu](#aperçu)
- 5. [Structure du projet](#structure-du-projet)
- 6. [Licence](#licence)
- 7. [Auteur](#auteur)
-
+- [Gestionnaire d'Ouvrages](#gestionnaire-douvrages)
+  - [Table des matières](#table-des-matières)
+  - [Fonctionnalités](#fonctionnalités)
+  - [Installation](#installation)
+    - [Bonus](#bonus)
+  - [Langage, Outils et Dépendances](#langage-outils-et-dépendances)
+  - [Aperçu](#aperçu)
+  - [Structure du projet](#structure-du-projet)
+  - [Licence](#licence)
+  - [Auteur](#auteur)
 
 ## Fonctionnalités
 
@@ -31,15 +32,17 @@
 ## Installation
 
 1. [Télécharger la dernière version](https://github.com/TiercelinQ/gestionnaire-ouvrages/releases)
-3. Dézipper le fichier zip au sein de votre poste de travail
-4. Ouvrir le dossier **GestionnaireOuvrages**
-5. Executer le fichier **GestionnaireOuvrages** (extension .exe) situé dans le dossier
+2. Dézipper le fichier zip au sein de votre poste de travail
+3. Ouvrir le dossier **GestionnaireOuvrages**
+4. Executer le fichier **GestionnaireOuvrages** (extension .exe) situé dans le dossier
 
 > [!WARNING]
+>
 > - L'application doit être exécuter directement au sein du dossier **GestionnaireOuvrages**.
 > - Ne pas hésiter à créer un raccourcis sur le poste de travail ("Bureau par exemple) ou à épingler l'application dans le menu "Démarrer" ou dans la barre de tâche.
 
 > [!IMPORTANT]
+>
 > - Dès qu'une nouvelle version est disponible et qu'elle ne touche pas au coeur même de l'application, voici les instructions:
 > - Télécharger la dernière version
 > - Ouvrir le fichier zip
@@ -48,20 +51,26 @@
 > - En théorie, le raccourci créé de la version précédente doit toujours être opérationnel. Dans le cas contraire, ne pas hésiter à créer un raccourcis sur son poste de travail ou à épingler l'application dans le menu "Démarrer" ou dans la barre de tâche.
 
 ### Bonus
+
 - Vous pouvez télécharger une base de classification d'ouvrages (Catégories, Genres et Sous-Genres) pour votre gestionnaire à ce lien: [Classification JSON](https://github.com/TiercelinQ/gestionnaire-ouvrages/blob/main/assets/modeles/classification_cats-genres-subgenres.json)
 - Ce fichier JSON est à importer via le bouton dédié au sein de l'onglet "Paramètres", menu "Catégories & Genres".
 
-## Dépendances
+## Langage, Outils et Dépendances
 
-- Python 3.13.9
-- PyQt6
-- SQlite3
+- Python 3.13.9 (Engine)
+- PyQt6 (GUI)
+- SQlite3 (Database)
+- matplotlib (Chart)
 
 ## Aperçu
 
 <p align="center">
-    <img src="assets/captures/1_main.png" alt="Interface principale" width="400">
-    <img src="assets/captures/2_search.png" alt="Recherche active" width="400">
+    <img src="assets/captures/0_dashboard-1.png" alt="Onglet Tableau de bord" width="400">
+    <img src="assets/captures/0_dashboard-2.png" alt="Onglet Tableau de bord avec filtre active" width="400">
+</p>
+<p align="center">
+    <img src="assets/captures/1_main.png" alt="Onglet Ouvrage" width="400">
+    <img src="assets/captures/2_search.png" alt="Onglet Ouvrage avec recherche active" width="400">
 </p>
 <p align="center">
     <img src="assets/captures/3_add.png" alt="Créatoin d'un ouvrage" width="400">
@@ -79,9 +88,12 @@
 
 ```plaintext
 ├── app
+│   ├── app_info.py
 │   ├── config_manager.py
+│   ├── dashboard_widget.py
 │   ├── data_models.py
 │   ├── db
+│   │   ├── db_classifications.py
 │   │   ├── db_export.py
 │   │   ├── db_import.py
 │   │   ├── db_init_data.py
@@ -109,6 +121,8 @@
 │   └── utils.py
 ├── assets
 │   ├── captures
+│   │   ├── 0_dashboard-1.png
+│   │   ├── 0_dashboard-2.png
 │   │   ├── 1_main.png
 │   │   ├── 2_search.png
 │   │   ├── 3_add.png
@@ -126,6 +140,8 @@
 │   │   │   └── iconBookInventoryApp.png
 │   │   ├── arrow_down_black.svg
 │   │   ├── arrow_down_white.svg
+│   │   ├── clear_black.svg
+│   │   ├── clear_white.svg
 │   │   ├── delete_white.svg
 │   │   ├── edit_white.svg
 │   │   ├── error.png
