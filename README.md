@@ -36,6 +36,15 @@
 3. Ouvrir le dossier **GestionnaireOuvrages**
 4. Executer le fichier **GestionnaireOuvrages** (extension .exe) situé dans le dossier
 
+> [!CAUTION]
+>
+> - L'application peut fonctionner avec une base de données en local (directement stockée dans un ordinateur personnel) comme en "cloud" (directement stockée dans service de stockage et de synchronisation de fichiers en ligne. Exemple: OneDrive, Google Drive etc.)
+> - Si la base de données est stockée et exploitée à travers un service de stockage et de synchronisation de fichiers en ligne, il sera impossible d'avoir un accès en lecture ET écriture, en concurrence, si au moins 2 utilisateurs interagissent avec.
+> - Si la base de données est stockée dans un service de stockage et de synchronisation de fichiers en ligne, il est primordial d'appliquer l'une des deux méthodologies suivantes:
+>
+> 1. soit par une discipline d'accès (exemple: Si l’utilisateur A doit modifier la base, il ferme l’application après ses changements pour laisser Google Drive synchroniser. L’utilisateur B attend que la synchronisation soit terminée avant d’ouvrir l’application. Donc, pas d’ouverture simultanée en mode écriture.).
+> 2. soit avec la création de deux bases distinctes, en local et prévoir une synchronisation (fusion de vos deux bases) régulièrement.
+
 > [!WARNING]
 >
 > - L'application doit être exécuter directement au sein du dossier **GestionnaireOuvrages**.
