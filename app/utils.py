@@ -14,42 +14,9 @@ from PyQt6.QtWidgets import QMessageBox, QWidget, QListWidget
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QSize, Qt
 from .data_models import DBSchema
+from app.app_constants import LOG_LEVEL_MAP, ICON_MAP, ICON_SIZE_PX, BUTTON_MAP, CLOUD_KEYWORDS
 
 logger = logging.getLogger(__name__)
-
-LOG_LEVEL_MAP = {
-    'DEBUG': logging.DEBUG,
-    'INFO': logging.INFO,
-    'WARNING': logging.WARNING,
-    'ERROR': logging.ERROR,
-    'CRITICAL': logging.CRITICAL,
-}
-
-ICON_BASE_PATH = ":/status_icons/"
-ICON_SIZE_PX = 32
-
-ICON_MAP = {
-    'ERROR': ICON_BASE_PATH + "error.png",
-    'INFO': ICON_BASE_PATH + "information.png",
-    'QUESTION': ICON_BASE_PATH + "question.png",
-    'SUCCESS': ICON_BASE_PATH + "success.png",
-    'WARNING': ICON_BASE_PATH + "warning.png",
-}
-
-BUTTON_MAP = {
-'Ok': QMessageBox.StandardButton.Ok,
-    'Yes': QMessageBox.StandardButton.Yes,
-    'No': QMessageBox.StandardButton.No,
-    'Cancel': QMessageBox.StandardButton.Cancel,
-    'Save': QMessageBox.StandardButton.Save,
-    'Discard': QMessageBox.StandardButton.Discard,
-    'Restart': QMessageBox.StandardButton.Yes,
-    'Later': QMessageBox.StandardButton.No,
-    'Ouvrir': QMessageBox.StandardButton.Open,
-    'Créer': QMessageBox.StandardButton.Save,
-}
-
-CLOUD_KEYWORDS = ["OneDrive", "Google Drive","Mon Google Drive","Dropbox", "iCloud"]
 
 def get_datetime() -> str:
     """
@@ -114,74 +81,36 @@ def is_cloud_path(path: str) -> bool:
     Retourne True si le chemin contient des mots-clés connus (OneDrive, Google Drive, Dropbox, iCloud).
     """
     abs_path = os.path.abspath(path).lower()
-    cloud_keywords = ["onedrive", "google drive", "googledrive", "dropbox", "icloud"]
-    return any(keyword in abs_path for keyword in cloud_keywords)
+    return any(keyword.lower() in abs_path for keyword in CLOUD_KEYWORDS)
 
 def get_storage_root(path: str) -> str:
     """
     Retourne la racine cloud si trouvée, sinon le dossier parent du fichier .db.
+    - Si path est un fichier .db → retourne son dossier parent.
+    - Si path contient un mot-clé cloud → retourne la racine cloud jusqu'au dossier.
+    - Sinon → retourne dirname(path).
     """
     logger.info("Récupération racine générale bibliothèque - En cours")
+
+    # Cas 1 : si c'est un fichier .db → on prend son dossier parent
+    if path.lower().endswith(".db"):
+        root = os.path.dirname(path)
+        logger.info("Racine générale bibliothèque - Fichier .db détecté → %s", root)
+        return root
+
+    # Cas 2 : recherche d'un mot-clé cloud dans le chemin
     parts = path.split(os.sep)
     for i, p in enumerate(parts):
         for keyword in CLOUD_KEYWORDS:
             if keyword.lower() in p.lower():
-                logger.info("Récupération racine générale bibliothèque - Terminé")
-                logger.info("Racine générale bibliothèque - %s",os.sep.join(parts[:i+1]))
-                return os.sep.join(parts[:i+1])
-    return os.path.dirname(path)
+                root = os.sep.join(parts[:i+1])
+                logger.info("Racine générale bibliothèque - Cloud détecté → %s", root)
+                return root
 
-def make_relative_cover_path(path: str) -> str:
-    """
-    Retourne le chemin relatif après la racine cloud si trouvée,
-    sinon après le dossier parent du .db.
-    """
-    logger.info("Création chemin relatif bibliothèque - En cours")
-    if not path:
-        logger.info("Création chemin relatif bibliothèque - Terminé")
-        logger.info("Création chemin relatif bibliothèque - Aucun Chemin")
-        return ""
-    for keyword in CLOUD_KEYWORDS:
-        if keyword.lower() in path.lower():
-            parts = path.split(keyword, 1)
-            logger.info("Création chemin relatif bibliothèque - Terminé")
-            logger.info("Création chemin relatif bibliothèque - %s",os.path.join(keyword, parts[1].lstrip("\\/")))
-            return os.path.join(keyword, parts[1].lstrip("\\/"))
-    logger.info("Création chemin relatif bibliothèque - Terminé")
-    logger.info("Création chemin relatif bibliothèque - %s",os.path.basename(path))
-    return os.path.basename(path)
-
-def normalize_cover_path(config_manager, stored_path: str) -> str:
-    """
-    Reconstruit un chemin valide pour l'utilisateur courant.
-    - Si chemin relatif → on le rattache à la racine cloud ou au dossier parent du .db.
-    - Si chemin absolu avec cloud → on le convertit.
-    - Sinon → on garde tel quel (cas local pur).
-    """
-    logger.info("Reconstruction chemin couverture valide - En cours")
-    db_path = config_manager.get_db_path()
-    user_root = get_storage_root(db_path)
-    logger.info("Reconstruction chemin couverture valide - db_path: %s",db_path)
-    logger.info("Reconstruction chemin couverture valide - user_root: %s",user_root)
-
-    if not stored_path:
-        return ""
-
-    if not os.path.isabs(stored_path):
-        logger.info("Reconstruction chemin couverture valide - Terminé")
-        logger.info("Reconstruction chemin couverture valide - Relatif: %s",os.path.join(user_root, stored_path))
-        return os.path.join(user_root, stored_path)
-
-    for keyword in CLOUD_KEYWORDS:
-        if keyword.lower() in stored_path.lower():
-            parts = stored_path.split(keyword, 1)
-            relative = parts[1].lstrip("\\/")
-            logger.info("Reconstruction chemin couverture valide - Terminé")
-            logger.info("Reconstruction chemin couverture valide - Cloud: %s",os.path.join(user_root, keyword, relative))
-            return os.path.join(user_root, keyword, relative)
-    logger.info("Reconstruction chemin couverture valide - Terminé")
-    logger.info("Reconstruction chemin couverture valide - stored_path: %s",stored_path)
-    return stored_path
+    # Cas 3 : fallback → dossier parent
+    root = os.path.dirname(path)
+    logger.info("Racine générale bibliothèque - Local → %s", root)
+    return root
 
 def show_custom_message_box(
     parent: QWidget,
@@ -245,6 +174,102 @@ def show_custom_message_box(
     logger.info("Génération de message custom - Succès")
     return custom_message_box.exec()
 
+class CoverPathManager:
+    """
+    Gestionnaire centralisé pour les chemins de couvertures.
+    """
+
+    @staticmethod
+    def make_relative(path: str, db_path: str) -> str:
+        """
+        Convertit un chemin absolu en chemin relatif par rapport à la racine de stockage
+        associée à la base de données.
+
+        Cette méthode est utilisée pour uniformiser les chemins des couvertures afin
+        qu'ils soient indépendants de l'emplacement local de OneDrive ou du disque
+        dur de l'utilisateur. Elle calcule un chemin relatif à partir du répertoire
+        racine de la base (`get_storage_root(db_path)`).
+
+        Args:
+            path (str): Chemin absolu ou relatif vers une image de couverture.
+            db_path (str): Chemin absolu vers le fichier de base de données, utilisé
+                        pour déterminer la racine de stockage.
+
+        Returns:
+            str: Chemin relatif par rapport à la racine de stockage. Si le calcul
+                échoue (ex. chemin hors racine), retourne le chemin original.
+        """
+        if not path:
+            return ""
+        root = get_storage_root(db_path)
+        try:
+            return os.path.relpath(path, start=root)
+        except ValueError:
+            return path
+
+    @staticmethod
+    def normalize(stored_path: str, db_path: str) -> str:
+        """
+        Reconstruit un chemin absolu local à partir d'un chemin stocké en base.
+
+        Cette méthode garantit que les chemins relatifs ou cloud sont correctement
+        rattachés à la racine locale de l'utilisateur. Elle gère trois cas :
+        - Si le chemin est relatif : rattache directement à la racine.
+        - Si le chemin est absolu et contient un mot-clé cloud (ex. 'OneDrive') :
+            recalcule un chemin relatif puis le rattache à la racine.
+        - Sinon : retourne le chemin tel quel (cas local hors cloud).
+
+        Args:
+            stored_path (str): Chemin stocké en base (relatif ou absolu).
+            db_path (str): Chemin absolu vers le fichier de base de données, utilisé
+                        pour déterminer la racine de stockage.
+
+        Returns:
+            str: Chemin absolu reconstruit pour l'environnement local de l'utilisateur.
+        """
+        if not stored_path:
+            return ""
+        root = get_storage_root(db_path)
+        if not os.path.isabs(stored_path):
+            return os.path.join(root, stored_path)
+        for keyword in CLOUD_KEYWORDS:
+            if keyword.lower() in stored_path.lower():
+                try:
+                    relative = os.path.relpath(stored_path, start=root)
+                    return os.path.join(root, relative)
+                except ValueError:
+                    return stored_path
+        return stored_path
+
+    @staticmethod
+    def detect_location(path: str, db_path: str) -> str | None:
+        """
+        Détermine l'emplacement d'une image de couverture (Cloud ou Local).
+
+        La logique repose sur la nature du chemin :
+        - Si le chemin est relatif : considéré comme 'Cloud'.
+        - Si le chemin absolu contient un mot-clé cloud (ex. 'OneDrive') :
+            considéré comme 'Cloud'.
+        - Sinon : considéré comme 'Local'.
+
+        Args:
+            path (str): Chemin absolu ou relatif vers une image de couverture.
+            db_path (str): Chemin de la base de données (non utilisé directement
+                        ici mais conservé pour cohérence d'API).
+
+        Returns:
+            str | None: 'Cloud' si le chemin est relatif ou lié à OneDrive,
+                        'Local' sinon. Retourne None si le chemin est vide.
+        """
+        if not path:
+            return None
+        if not os.path.isabs(path):
+            return "Cloud"
+        for keyword in CLOUD_KEYWORDS:
+            if keyword.lower() in path.lower():
+                return "Cloud"
+        return "Local"
+
 class FocusListWidget(QListWidget):
     """
     QListWidget personnalisé qui annule la sélection lorsque le widget perd le focus,
@@ -252,12 +277,9 @@ class FocusListWidget(QListWidget):
     """
     def __init__(self, parent=None):
         super().__init__(parent)
-        # Nouveau flag pour empêcher la désélection lors de l'exécution d'une action
         self.is_acting_on_selection = False
 
     def focusOutEvent(self, event): # pylint: disable=invalid-name
         """Redéfinit l'événement de perte de focus."""
-        # Désélectionne tous les éléments
         self.clearSelection()
-        # Appelle le gestionnaire de focus du parent
         super().focusOutEvent(event)

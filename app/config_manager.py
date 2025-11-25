@@ -10,6 +10,7 @@ import json
 import logging
 from typing import Dict, Any, List
 from app.utils import show_custom_message_box
+from app.app_constants import APP_NAME, CONFIG_FILE, CLOUD_KEYWORDS
 
 logger = logging.getLogger(__name__)
 
@@ -18,10 +19,6 @@ class ConfigManager:
     Gère le chargement et la sauvegarde de la configuration utilisateur
     (chemin BDD, thème, nom d'utilisateur, etc.) dans le fichier config_user.json.
     """
-
-    CONFIG_FILE = "config_user.json"
-    APP_NAME = "MonGestionnaireOuvrages"
-
     def __init__(self):
         """Initialise le gestionnaire de configuration et charge les données."""
         self._config_data: Dict[str, Any] = self._load_config()
@@ -33,15 +30,15 @@ class ConfigManager:
             app_data = os.environ.get('APPDATA')
             if app_data:
                 logger.info("Récupération du chemin du configuration de l'application - Succès")
-                return os.path.join(app_data, self.APP_NAME)
-        return os.path.join(os.path.expanduser("~"), f".{self.APP_NAME}")
+                return os.path.join(app_data, APP_NAME)
+        return os.path.join(os.path.expanduser("~"), f".{APP_NAME}")
 
     def _get_config_path(self) -> str:
         """Retourne le chemin complet du fichier de configuration."""
         config_dir = self._get_app_config_dir()
         if not os.path.exists(config_dir):
             os.makedirs(config_dir)
-        return os.path.join(config_dir, self.CONFIG_FILE)
+        return os.path.join(config_dir, CONFIG_FILE)
 
     def _load_config(self) -> Dict[str, Any]:
         """Charge le fichier de configuration existant ou initialise avec des valeurs par défaut."""
@@ -127,9 +124,7 @@ class ConfigManager:
         Détermine automatiquement le type de stockage (local ou cloud)
         en fonction du chemin fourni et met à jour la configuration.
         """
-        cloud_keywords = ["Mon Google Drive", "Google Drive", "OneDrive", "Dropbox", "iCloud"]
-
-        if any(keyword.lower() in db_path.lower() for keyword in cloud_keywords):
+        if any(keyword.lower() in db_path.lower() for keyword in CLOUD_KEYWORDS):
             self.set_db_storage('cloud')
         else:
             self.set_db_storage('local')

@@ -6,16 +6,15 @@ import resources_rc # pylint: disable=unused-import
 from app.log.init_logging import setup_exception_hook
 from PyQt6.QtWidgets import QApplication
 from app.main_app import GestionnaireOuvrageApp
+from app.app_info import VERSION
 
 logger = logging.getLogger(__name__)
-
-APP_VERSION = 1.0
 
 def main():
     """
     Point d'entrée principal de l'application.
     """
-    logger.info("Ouverture Application - version %s", APP_VERSION)
+    logger.info("Ouverture Application - version %s", VERSION)
     # 1. Gestion des erreurs
     setup_exception_hook()
     # 2. Initialisation de l'application

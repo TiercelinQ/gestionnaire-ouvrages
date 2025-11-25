@@ -24,7 +24,7 @@ from app.header_widget import HeaderWidget
 from app.dashboard_widget import DashboardWidget
 from app.search_ouvrage_widget import SearchOuvrageWidget
 from app.parameters_widget import ParametersWidget
-from app.utils import show_custom_message_box, is_cloud_path, BUTTON_MAP
+from app.utils import show_custom_message_box
 
 logger = logging.getLogger(__name__)
 
@@ -32,8 +32,6 @@ class GestionnaireOuvrageApp(QMainWindow):
     """
     Application Principale de gestion d'ouvrages
     """
-    DEFAULT_DB_FILE_NAME = "MonGestionnaireOuvrages.db"
-
     def __init__(self):
         super().__init__()
         # --- Configuration de la fenêtre ---

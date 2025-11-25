@@ -19,6 +19,7 @@ from app.config_manager import ConfigManager
 from app.ouvrage_add_modal import OuvrageAddModal
 from app.ouvrage_edit_modal import OuvrageEditModal
 from app.utils import show_custom_message_box
+from app.app_constants import COLUMNS, ACTION_COL_INDEX
 
 logger = logging.getLogger(__name__)
 
@@ -56,16 +57,6 @@ class SearchOuvrageWidget(QWidget):
     Permet la recherche, l'édition, la suppression et l'exportation.
     """
     ouvrage_edited = pyqtSignal()
-
-    COLUMNS = [
-        ("ID", 0),
-        ("Auteur", 200),
-        ("Titre", 300),
-        ("Édition", 150),
-        ("Catégorie", 150),
-        ("Actions", 160)
-    ]
-    ACTION_COL_INDEX = 5
 
     def __init__(self, db_manager: DBManager, config_manager: ConfigManager, initial_theme: str = 'light'):
         """
@@ -175,10 +166,10 @@ class SearchOuvrageWidget(QWidget):
         # 4. Tableau des Ouvrages
         self.table_ouvrages = QTableWidget()
         self.table_ouvrages.setObjectName("OuvragesTable")
-        self.table_ouvrages.setColumnCount(len(self.COLUMNS))
+        self.table_ouvrages.setColumnCount(len(COLUMNS))
 
         # Configuration des en-têtes et des colonnes
-        self.table_ouvrages.setHorizontalHeaderLabels([col[0] for col in self.COLUMNS])
+        self.table_ouvrages.setHorizontalHeaderLabels([col[0] for col in COLUMNS])
         self.table_ouvrages.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table_ouvrages.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
         self.table_ouvrages.setAlternatingRowColors(False)
@@ -191,7 +182,7 @@ class SearchOuvrageWidget(QWidget):
         self.table_ouvrages.verticalHeader().setDefaultSectionSize(36)
 
         # Configuration de la politique de redimensionnement des en-têtes
-        for i, col_data in enumerate(self.COLUMNS):
+        for i, col_data in enumerate(COLUMNS):
             col_name = col_data[0]
             col_width = col_data[1]
             if col_name == "ID":
@@ -456,7 +447,7 @@ class SearchOuvrageWidget(QWidget):
             # Colonne Actions
             action_item = QTableWidgetItem("")
             action_item.setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-            self.table_ouvrages.setItem(row_idx, self.ACTION_COL_INDEX, action_item)
+            self.table_ouvrages.setItem(row_idx, ACTION_COL_INDEX, action_item)
 
             # Ajout des boutons Éditer / Supprimer
             self._action_buttons(row_idx, ouvrage['id'])
@@ -466,7 +457,7 @@ class SearchOuvrageWidget(QWidget):
 
         # ----- Finalisation -----
         self.table_ouvrages.setSortingEnabled(True)
-        self.table_ouvrages.resizeColumnToContents(self.ACTION_COL_INDEX)
+        self.table_ouvrages.resizeColumnToContents(ACTION_COL_INDEX)
 
     def _action_buttons(self, row: int, ouvrage_id: int):
         """
@@ -512,7 +503,7 @@ class SearchOuvrageWidget(QWidget):
         h_layout.addStretch()
 
         # ----- Insertion dans la cellule -----
-        self.table_ouvrages.setCellWidget(row, self.ACTION_COL_INDEX, actions_widget)
+        self.table_ouvrages.setCellWidget(row, ACTION_COL_INDEX, actions_widget)
 
     def _handle_add_ouvrage(self):
         """
@@ -529,7 +520,7 @@ class SearchOuvrageWidget(QWidget):
         - Rafraîchit automatiquement le tableau une fois l’ajout validé.
         """
         main_window = self.window()
-        modal = OuvrageAddModal(self.db_manager, parent=main_window)
+        modal = OuvrageAddModal(self.db_manager, self.config_manager, parent=main_window)
         modal.ouvrage_updated.connect(self.load_ouvrages)
         modal.exec()
 
@@ -688,7 +679,7 @@ class SearchOuvrageWidget(QWidget):
         logger.info("Ouverture au double clique d'un ouvrage - En cours")
 
         # ----- Ignorer la colonne Actions -----
-        if column == self.ACTION_COL_INDEX:
+        if column == ACTION_COL_INDEX:
             return
 
         # ----- Récupération de l'ID -----

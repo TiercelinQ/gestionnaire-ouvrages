@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QWidget, QPushBut
 from PyQt6.QtCore import pyqtSignal, Qt
 import resources_rc # pylint: disable=unused-import
 from app.db_manager import DBManager
+from app.config_manager import ConfigManager
 from app.utils import show_custom_message_box
 from app.ouvrage_form_common import OuvrageFormMixin
 
@@ -20,9 +21,10 @@ class OuvrageAddModal(QDialog, OuvrageFormMixin):
     """
     ouvrage_updated = pyqtSignal()
 
-    def __init__(self, db_manager: DBManager, parent: Optional[QWidget] = None):
+    def __init__(self, db_manager: DBManager, config_manager: ConfigManager, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.db_manager = db_manager
+        self.config_manager = config_manager
 
         self.setWindowTitle("Ajouter un Nouvel Ouvrage")
         self.setModal(True)

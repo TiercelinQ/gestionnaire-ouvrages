@@ -15,10 +15,7 @@ from app.ui_manager import UIManager
 from app.db_manager import DBManager
 from app.config_manager import ConfigManager
 from app.utils import show_custom_message_box
-
-ICON_BASE_PATH_THEME = ":/theme_icons/"
-ICON_BASE_PATH_ABOUT = ":/global_icons/"
-ICON_SIZE = QSize(30, 30)
+from app.app_constants import ICON_BASE_PATH_THEME, ICON_SIZE
 
 class ClickableLabel(QLabel):
     clicked = pyqtSignal()

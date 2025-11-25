@@ -15,7 +15,7 @@ from PyQt6.QtCore import pyqtSignal
 import resources_rc # pylint: disable=unused-import
 from app.db_manager import DBManager
 from app.config_manager import ConfigManager
-from app.utils import show_custom_message_box, normalize_cover_path
+from app.utils import show_custom_message_box, CoverPathManager
 from app.ouvrage_form_common import OuvrageFormMixin
 
 class OuvrageEditModal(QDialog, OuvrageFormMixin):
@@ -190,11 +190,11 @@ class OuvrageEditModal(QDialog, OuvrageFormMixin):
 
         # Couvertures
         self.input_couv_prem_chemin.setText(
-            normalize_cover_path(self.config_manager, data.get('couverture_premiere_chemin', ''))
+            CoverPathManager.normalize(data.get('couverture_premiere_chemin', ''), self.config_manager.get_db_path())
         )
         self.input_couv_prem_location.setText(data.get('couverture_premiere_emplacement', ''))
         self.input_couv_quat_chemin.setText(
-            normalize_cover_path(self.config_manager, data.get('couverture_quatrieme_chemin', ''))
+            CoverPathManager.normalize(data.get('couverture_quatrieme_chemin', ''), self.config_manager.get_db_path())
         )
         self.input_couv_quat_location.setText(data.get('couverture_quatrieme_emplacement', ''))
 

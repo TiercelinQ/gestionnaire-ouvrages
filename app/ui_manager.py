@@ -34,8 +34,6 @@ class UIManager:
     Gère les aspects de l'interface utilisateur, notamment les thèmes Clair/Sombre.
     L'application du style se fait au niveau de l'application complète.
     """
-    SETTINGS_FILE = "MonGestionnaireOuvrages"
-
     def __init__(self, main_window: QWidget):
         """
         Initialise l'UIManager.

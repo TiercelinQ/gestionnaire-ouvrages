@@ -16,11 +16,9 @@ from PyQt6.QtCore import Qt, QDateTime, QSize, pyqtSignal
 from PyQt6.QtGui import QPixmap, QMouseEvent, QIntValidator
 import resources_rc # pylint: disable=unused-import
 from app.db_manager import DBManager
-from app.utils import show_custom_message_box, make_relative_cover_path
-
-PREVIEW_MAX_SIZE = QSize(150, 250)
-INITIAL_MIN_WIDTH = 150
-INITIAL_MIN_HEIGHT = 200
+from app.config_manager import ConfigManager
+from app.utils import show_custom_message_box, CoverPathManager
+from app.app_constants import PREVIEW_MAX_SIZE, INITIAL_MIN_HEIGHT, INITIAL_MIN_WIDTH
 
 class ClickableLabel(QLabel):
     """Un QLabel qui émet un signal au clic. Utilisé pour l'aperçu de la couverture."""
@@ -30,7 +28,6 @@ class ClickableLabel(QLabel):
         """Émet le signal au clic de la souris."""
         self.clicked.emit()
         super().mousePressEvent(event)
-
 
 class CoverPreviewModal(QDialog):
     """
@@ -72,13 +69,11 @@ class CoverPreviewModal(QDialog):
         else:
             self.image_label.setText("Erreur: Fichier image non trouvé.")
 
-
 class PlainTextEdit(QTextEdit):
     """PlainTextEdit qui n'accepte que du texte brut lors du collage."""
     def insertFromMimeData(self, source):
         # On ignore tout formatage et on insère uniquement le texte brut
         self.insertPlainText(source.text())
-
 
 class OuvrageFormMixin:
     """
@@ -124,6 +119,7 @@ class OuvrageFormMixin:
     input_couv_quat_location: QLineEdit
 
     db_manager: DBManager
+    config_manager: ConfigManager
 
     def _create_input_fields(self):
         """Initialise tous les champs de saisie (LineEdit, ComboBox, TextEdit) avec les mêmes validators, tooltips et placeholders."""
@@ -530,10 +526,10 @@ class OuvrageFormMixin:
     def _browse_cover(self, is_back_cover: bool):
         """Ouvre une boîte de dialogue pour sélectionner le chemin de l'image de couverture."""
         if is_back_cover:
-            title = "Sélectionner la 4ème de Couverture"
+            title = "Sélectionner la 4e de Couverture"
             input_chemin = self.input_couv_quat_chemin
         else:
-            title = "Sélectionner la Couverture Avant"
+            title = "Sélectionner la 1re de Couverture"
             input_chemin = self.input_couv_prem_chemin
             input_chemin.setReadOnly(False)
 
@@ -613,6 +609,11 @@ class OuvrageFormMixin:
     # --- Collecte des données ---
     def _collect_data(self) -> Optional[Dict[str, Any]]:
         """Collecte les données du formulaire, avec validation obligatoire Titre + Auteur."""
+        db_path = self.config_manager.get_db_path()
+
+        prem_path = self.input_couv_prem_chemin.text().strip()
+        quat_path = self.input_couv_quat_chemin.text().strip()
+
         data = {
             'titre': self.input_titre.text().strip(),
             'sous_titre': self.input_sous_titre.text().strip() or None,
@@ -639,10 +640,10 @@ class OuvrageFormMixin:
             'localisation_details':self.input_localisation_details.text().strip() or None,
             'resume': self.input_resume.toPlainText().strip() or None,
             'remarques': self.input_remarques.toPlainText().strip() or None,
-            'couverture_premiere_chemin': make_relative_cover_path(self.input_couv_prem_chemin.text().strip()) or None,
-            'couverture_premiere_emplacement': self.input_couv_prem_location.text().strip() or None,
-            'couverture_quatrieme_chemin': make_relative_cover_path(self.input_couv_quat_chemin.text().strip()) or None,
-            'couverture_quatrieme_emplacement': self.input_couv_quat_location.text().strip() or None,
+            'couverture_premiere_chemin': CoverPathManager.make_relative(prem_path, db_path) or None,
+            'couverture_premiere_emplacement': CoverPathManager.detect_location(prem_path, db_path),
+            'couverture_quatrieme_chemin': CoverPathManager.make_relative(quat_path, db_path) or None,
+            'couverture_quatrieme_emplacement': CoverPathManager.detect_location(quat_path, db_path),
         }
 
         if not data['titre'] or not data['auteur']:
