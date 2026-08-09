@@ -1,0 +1,31 @@
+# --- Dependencies & build --------------------------------------------------
+node_modules/
+/dist/
+/out/
+/release/
+.env
+
+# --- App runtime data (defensive; normally under app.getPath("userData"), outside the repo) -
+*.db
+preferences.json
+session.bin
+logs/
+
+# --- Claude Code -----------------------------------------------------------
+# Personal, never committed.
+.claude/settings.local.json
+.claude/agent-memory/
+# NOTE: .claude/settings.json IS a delivered asset — do NOT ignore it.
+
+# Local work plan — never committed.
+tasks/
+
+# Private specs. Only the published changelog and the API evolution note are committed.
+docs/specs/
+docs/sessions/
+docs/api/
+
+# OS noise.
+.DS_Store
+Thumbs.db
+desktop.ini

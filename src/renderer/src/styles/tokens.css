@@ -1,0 +1,158 @@
+/* ============================================================
+   tokens.css — Gestionnaire Ouvrage v1.0.0
+   Référence : design-system.md v2.0 (Electron) — palette Espresso
+   Accent #78350F (H 22, S 78 %, L 26 %) + quatre surcharges par thème.
+   ============================================================ */
+
+:root {
+  color-scheme: light; /* les contrôles natifs suivent le thème */
+
+  /* --- TYPOGRAPHIE --- */
+  --font-family: system-ui, "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-xs: 12px;
+  --font-sm: 14px;
+  --font-base: 16px;
+  --font-lg: 18px;
+  --font-xl: 20px;
+  --font-2xl: 24px;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+
+  /* --- COULEURS — thème clair (neutres teintés par l'accent) --- */
+  --bg: #ffffff;
+  --bg-subtle: #fbf8f7;
+  --bg-elevated: #ffffff;
+  --bg-muted: #f4f0ee;
+  --text: #241a14;
+  --text-subtle: #7b6d65;
+  --text-muted: #aea098;
+  --border: #efe6e1;
+  --border-subtle: #f7f3f0;
+  --border-strong: #b0a096;
+
+  /* --- ACCENT — paliers (identiques dans les deux thèmes) --- */
+  --primary-50: #fcf0e8;
+  --primary-400: #eea377;
+  --primary-600: #78350f;
+  --primary-700: #5f2a0c;
+  --primary-800: #4d220a;
+  --primary-900: #3b1a07;
+
+  /* --- ACCENT — tokens d'usage --- */
+  --primary: var(--primary-600);
+  --primary-bg: var(--primary-50);
+  --primary-hover: var(--primary-700);
+  --primary-pressed: var(--primary-800);
+
+  /* --- SÉMANTIQUES — dérivées, teintes harmonisées ±6° vers l'accent --- */
+  --success-600: #328f5b;
+  --success-50: #eff6f2;
+  --warning-600: #a56a27;
+  --warning-50: #f8f3ee;
+  --danger-600: #ba3d3b;
+  --danger-50: #faf0ef;
+  --danger-700: #9f3432;
+  --danger-800: #882c2b;
+  --info-600: var(--primary);
+  --info-50: var(--primary-bg);
+
+  /* --- ICÔNES (consomment les tokens ci-dessus) --- */
+  --icon-default: var(--text-subtle);
+  --icon-active: var(--primary);
+  --icon-success: var(--success-600);
+  --icon-warning: var(--warning-600);
+  --icon-danger: var(--danger-600);
+  --icon-info: var(--info-600);
+  --icon-muted: var(--text-muted);
+  --icon-stroke: 1.75;
+
+  /* --- ESPACEMENTS --- */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-7: 28px;
+  --spacing-8: 32px;
+
+  /* --- TAILLES FIXES --- */
+  --topbar-height: 48px;
+  --statusbar-height: 28px;
+  --drawer-width: 420px; /* 320 par défaut ; élargi pour l'historique (Phase 3) */
+  --content-xl: 1024px;
+  --modal-large-width: 1200px;
+  --modal-large-height: 85vh;
+  --row-height: 36px; /* miroir de ROW_HEIGHT (shared/config.ts) — virtualisation */
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+
+  /* --- FORME / BORDURES / OPACITÉ --- */
+  --radius: 5px;
+  --border-width: 1px;
+  --border-width-emphasis: 2px;
+  --border-width-accent: 4px;
+  --opacity-disabled: 0.4;
+  --opacity-overlay: 0.4;
+
+  /* --- TRANSITIONS --- */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-default: 160ms var(--ease-out);
+  --transition-slow: 240ms var(--ease-out);
+
+  /* --- SUPERPOSITION --- */
+  --z-content: 0;
+  --z-drawer-overlay: 100;
+  --z-drawer: 110;
+  --z-modal-overlay: 200;
+  --z-modal: 210;
+  --z-dropdown: 300;
+  --z-toast: 400;
+
+  /* --- SÉLECTION / TEXTE SUR FOND COLORÉ --- */
+  --selection-bg: var(--primary-bg);
+  --selection-text: var(--text);
+  --text-on-primary: #ffffff;
+  --text-on-danger: #ffffff;
+
+  /* --- GRAPHIQUES --- */
+  --chart-primary: var(--primary);
+  --chart-success: var(--success-600);
+  --chart-warning: var(--warning-600);
+  --chart-danger: var(--danger-600);
+  --chart-info: var(--info-600);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #1c1917;
+  --bg-subtle: #272320;
+  --bg-elevated: #322a25;
+  --bg-muted: #382e29;
+  --text: #f0efef;
+  --text-subtle: #ad9d94;
+  --text-muted: #77685f;
+  --border: #544a45;
+  --border-subtle: #352c27;
+  --border-strong: #6f5d52;
+
+  /* L'accent #78350F ne fait que 1,93:1 sur ce fond : l'usage bascule sur le palier clair. */
+  --primary: var(--primary-400);
+  --primary-bg: var(--primary-900);
+
+  /* Le blanc ne passe pas sur #EEA377 (2,07:1) : le texte sur accent devient quasi noir. */
+  --text-on-primary: #241a14;
+
+  --success-600: #6ec493;
+  --success-50: #2b382d;
+  --warning-600: #d29d60;
+  --warning-50: #3d3124;
+  --danger-600: #cb7372;
+  --danger-50: #3c2927;
+}

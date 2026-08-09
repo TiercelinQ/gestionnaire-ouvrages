@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": ["Bash(npm:*)", "Bash(npx:*)", "Bash(node:*)", "Read", "Write", "Edit"],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets/**)",
+      "Write(**/.env)",
+      "Write(**/.env.*)",
+      "Write(**/secrets/**)",
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Edit(**/secrets/**)",
+      "Write(**/node_modules/**)",
+      "Write(**/out/**)",
+      "Write(release/**)",
+      "Write(**/dist/**)"
+    ]
+  },
+  "hooks": {
+    "Stop": [{ "hooks": [{ "type": "command", "command": "node scripts/stop-lint.cjs" }] }]
+  }
+}

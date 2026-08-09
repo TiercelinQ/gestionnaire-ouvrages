@@ -1,0 +1,19 @@
+# Packaging Windows — npm run dist
+appId: com.qtiercelin.gestionnaireouvrage
+# Nom affiché : il nomme l'exécutable, le raccourci et l'entrée Programmes.
+productName: Gestionnaire Ouvrage
+directories:
+  output: release
+files:
+  - out/**
+  - package.json
+win:
+  target:
+    - nsis
+    - portable
+  # PNG 256 x 256 : electron-builder produit lui-même l'ICO multi-résolution.
+  icon: resources/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
