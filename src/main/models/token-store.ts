@@ -59,7 +59,7 @@ export function lireSession(): SessionPersistee | null {
 
 /**
  * Chiffre puis écrit la session.
- * @throws {ChiffrementIndisponibleError} si le système ne fournit pas de chiffrement —
+ * @throws {ChiffrementIndisponibleError} si le système ne fournit pas de chiffrement -
  * le jeton n'est jamais écrit en clair.
  */
 export function ecrireSession(session: SessionPersistee): void {

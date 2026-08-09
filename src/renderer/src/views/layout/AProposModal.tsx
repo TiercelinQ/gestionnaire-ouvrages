@@ -28,9 +28,9 @@ export function AProposModal({ ouvert, onFermer }: AProposModalProps): React.JSX
     <Modal ouvert={ouvert} titre={t("apropos.titre")} onFermer={onFermer}>
       <dl className="liste-definition">
         <dt>{t("apropos.application")}</dt>
-        <dd>{info?.nom ?? "—"}</dd>
+        <dd>{info?.nom ?? "-"}</dd>
         <dt>{t("apropos.version")}</dt>
-        <dd>{info?.version ?? "—"}</dd>
+        <dd>{info?.version ?? "-"}</dd>
         <dt>{t("apropos.versionMinimale")}</dt>
         <dd>{info?.versionsMinimales?.electron ?? t("apropos.inconnue")}</dd>
         <dt>{t("apropos.auteur")}</dt>

@@ -24,7 +24,7 @@ vi.mock("node:fs", () => {
 
 const { couvertureModel } = await import("../../src/main/models/couverture.model");
 
-describe("couverture.model — les quatre cas de chemin du parc existant", () => {
+describe("couverture.model - les quatre cas de chemin du parc existant", () => {
   beforeEach(() => {
     existsSync.mockReset();
     readFileSync.mockReset();

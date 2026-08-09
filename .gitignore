@@ -15,9 +15,9 @@ logs/
 # Personal, never committed.
 .claude/settings.local.json
 .claude/agent-memory/
-# NOTE: .claude/settings.json IS a delivered asset — do NOT ignore it.
+# NOTE: .claude/settings.json IS a delivered asset - do NOT ignore it.
 
-# Local work plan — never committed.
+# Local work plan - never committed.
 tasks/
 
 # Private specs. Only the published changelog and the API evolution note are committed.

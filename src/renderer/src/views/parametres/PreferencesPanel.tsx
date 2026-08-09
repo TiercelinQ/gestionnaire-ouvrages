@@ -46,9 +46,9 @@ export function PreferencesPanel({ theme, onTheme }: PreferencesPanelProps): Rea
         <h3 className="section-titre">{t("preferences.compte")}</h3>
         <dl className="liste-definition">
           <dt>{t("preferences.nom")}</dt>
-          <dd>{utilisateur?.nom_affichage ?? "—"}</dd>
+          <dd>{utilisateur?.nom_affichage ?? "-"}</dd>
           <dt>{t("preferences.email")}</dt>
-          <dd>{utilisateur?.email ?? "—"}</dd>
+          <dd>{utilisateur?.email ?? "-"}</dd>
         </dl>
       </section>
 
@@ -56,7 +56,11 @@ export function PreferencesPanel({ theme, onTheme }: PreferencesPanelProps): Rea
         <h3 className="section-titre">{t("preferences.couvertures")}</h3>
         <p className="texte-secondaire">{t("preferences.couverturesAide")}</p>
         <p className="chemin-dossier">{dossier ?? t("preferences.aucunDossier")}</p>
-        <button type="button" className="btn btn-secondary btn-sm" onClick={() => void choisirDossier()}>
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          onClick={() => void choisirDossier()}
+        >
           <FolderOpen className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
           {t("action.parcourir")}
         </button>

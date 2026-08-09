@@ -76,11 +76,11 @@ export function HistoriqueDrawer({
             ) : null}
             {entree.action === "modification" ? (
               <p className="historique-valeurs">
-                <span className="historique-avant">{entree.ancienne_valeur ?? "—"}</span>
+                <span className="historique-avant">{entree.ancienne_valeur ?? "-"}</span>
                 <span className="historique-fleche" aria-hidden="true">
                   →
                 </span>
-                <span className="historique-apres">{entree.nouvelle_valeur ?? "—"}</span>
+                <span className="historique-apres">{entree.nouvelle_valeur ?? "-"}</span>
               </p>
             ) : null}
           </li>

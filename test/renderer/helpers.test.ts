@@ -10,12 +10,12 @@ import {
 
 describe("conversion vers l'heure de Paris", () => {
   it("ajoute_deux_heures_en_ete", () => {
-    // 2026-08-08T14:22:07Z — heure d'été, UTC+2.
+    // 2026-08-08T14:22:07Z - heure d'été, UTC+2.
     expect(formaterHeure("2026-08-08T14:22:07Z")).toBe("16:22");
   });
 
   it("ajoute_une_heure_en_hiver", () => {
-    // 2026-01-15T14:22:07Z — heure d'hiver, UTC+1.
+    // 2026-01-15T14:22:07Z - heure d'hiver, UTC+1.
     expect(formaterHeure("2026-01-15T14:22:07Z")).toBe("15:22");
   });
 

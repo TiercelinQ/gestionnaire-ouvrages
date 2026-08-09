@@ -37,10 +37,7 @@ function cacheDir() {
     case "darwin":
       return path.join(os.homedir(), "Library", "Caches", "electron");
     default:
-      return path.join(
-        process.env.XDG_CACHE_HOME || path.join(os.homedir(), ".cache"),
-        "electron",
-      );
+      return path.join(process.env.XDG_CACHE_HOME || path.join(os.homedir(), ".cache"), "electron");
   }
 }
 
@@ -81,7 +78,7 @@ async function main() {
   if (isInstalled()) return;
 
   if (!fs.existsSync(ELECTRON_DIR)) {
-    console.error("[ensure-electron] Package 'electron' absent — lancer 'npm install' d'abord.");
+    console.error("[ensure-electron] Package 'electron' absent - lancer 'npm install' d'abord.");
     process.exit(1);
   }
 
@@ -89,16 +86,12 @@ async function main() {
   if (process.env.ELECTRON_RUN_AS_NODE) {
     retryDownloadWithCleanEnv();
     if (isInstalled()) {
-      console.log(
-        "[ensure-electron] Binaire téléchargé après nettoyage de ELECTRON_RUN_AS_NODE.",
-      );
+      console.log("[ensure-electron] Binaire téléchargé après nettoyage de ELECTRON_RUN_AS_NODE.");
       return;
     }
   }
 
-  const { version } = JSON.parse(
-    fs.readFileSync(path.join(ELECTRON_DIR, "package.json"), "utf8"),
-  );
+  const { version } = JSON.parse(fs.readFileSync(path.join(ELECTRON_DIR, "package.json"), "utf8"));
 
   // 2) Sinon, restaurer depuis le cache local (extraction échouée).
   const zipPath = findCachedZip(version);
@@ -131,7 +124,7 @@ async function main() {
   }
   if (!extract) {
     console.error(
-      "[ensure-electron] Module d'extraction introuvable (@electron-internal/extract-zip ou extract-zip) — dépendance transitive d'electron manquante.",
+      "[ensure-electron] Module d'extraction introuvable (@electron-internal/extract-zip ou extract-zip) - dépendance transitive d'electron manquante.",
     );
     process.exit(1);
   }

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { normaliser } from "../../src/renderer/src/utils/normalize";
 
-describe("normaliser — doit reproduire la normalisation du serveur", () => {
+describe("normaliser - doit reproduire la normalisation du serveur", () => {
   it("retire_les_diacritiques", () => {
     expect(normaliser("Périodes")).toBe("periodes");
     expect(normaliser("Éditions Gallimard")).toBe("editions gallimard");

@@ -1,6 +1,6 @@
 /* ============================================================
-   tokens.css — Gestionnaire Ouvrage v1.0.0
-   Référence : design-system.md v2.0 (Electron) — palette Espresso
+   tokens.css - Gestionnaire Ouvrage v1.0.0
+   Référence : design-system.md v2.0 (Electron) - palette Espresso
    Accent #78350F (H 22, S 78 %, L 26 %) + quatre surcharges par thème.
    ============================================================ */
 
@@ -22,7 +22,7 @@
   --leading-tight: 1.25;
   --leading-normal: 1.5;
 
-  /* --- COULEURS — thème clair (neutres teintés par l'accent) --- */
+  /* --- COULEURS - thème clair (neutres teintés par l'accent) --- */
   --bg: #ffffff;
   --bg-subtle: #fbf8f7;
   --bg-elevated: #ffffff;
@@ -34,7 +34,7 @@
   --border-subtle: #f7f3f0;
   --border-strong: #b0a096;
 
-  /* --- ACCENT — paliers (identiques dans les deux thèmes) --- */
+  /* --- ACCENT - paliers (identiques dans les deux thèmes) --- */
   --primary-50: #fcf0e8;
   --primary-400: #eea377;
   --primary-600: #78350f;
@@ -42,13 +42,13 @@
   --primary-800: #4d220a;
   --primary-900: #3b1a07;
 
-  /* --- ACCENT — tokens d'usage --- */
+  /* --- ACCENT - tokens d'usage --- */
   --primary: var(--primary-600);
   --primary-bg: var(--primary-50);
   --primary-hover: var(--primary-700);
   --primary-pressed: var(--primary-800);
 
-  /* --- SÉMANTIQUES — dérivées, teintes harmonisées ±6° vers l'accent --- */
+  /* --- SÉMANTIQUES - dérivées, teintes harmonisées ±6° vers l'accent --- */
   --success-600: #328f5b;
   --success-50: #eff6f2;
   --warning-600: #a56a27;
@@ -87,7 +87,7 @@
   --content-xl: 1024px;
   --modal-large-width: 1200px;
   --modal-large-height: 85vh;
-  --row-height: 36px; /* miroir de ROW_HEIGHT (shared/config.ts) — virtualisation */
+  --row-height: 36px; /* miroir de ROW_HEIGHT (shared/config.ts) - virtualisation */
   --icon-sm: 16px;
   --icon-md: 20px;
   --icon-lg: 24px;

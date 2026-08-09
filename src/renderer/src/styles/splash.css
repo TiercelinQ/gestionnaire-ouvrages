@@ -1,5 +1,5 @@
 /* ============================================================
-   splash.css — Gestionnaire Ouvrage v1.0.0
+   splash.css - Gestionnaire Ouvrage v1.0.0
    Consomme uniquement les tokens de tokens.css. Aucune valeur littérale.
    ============================================================ */
 
@@ -20,7 +20,7 @@
   user-select: none;
 }
 
-/* token: icon-lg — l'icône de l'application, agrandie pour l'écran de démarrage */
+/* token: icon-lg - l'icône de l'application, agrandie pour l'écran de démarrage */
 .splash-icone {
   width: calc(var(--icon-lg) * 3);
   height: calc(var(--icon-lg) * 3);

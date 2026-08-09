@@ -29,7 +29,7 @@ const FORMAT_NOMBRE = new Intl.NumberFormat("fr-FR");
 /**
  * Convertit une date ISO en temps universel vers l'heure de Paris.
  * Le serveur ne renvoie jamais d'heure locale, la conversion est à la charge du client,
- * passage été/hiver compris — géré ici par le fuseau nommé.
+ * passage été/hiver compris - géré ici par le fuseau nommé.
  */
 export function formaterDate(iso: string | null | undefined): string {
   if (!iso) return "";

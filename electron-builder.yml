@@ -1,4 +1,4 @@
-# Packaging Windows — npm run dist
+# Packaging Windows - npm run dist
 appId: com.qtiercelin.gestionnaireouvrage
 # Nom affiché : il nomme l'exécutable, le raccourci et l'entrée Programmes.
 productName: Gestionnaire Ouvrage

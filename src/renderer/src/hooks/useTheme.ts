@@ -6,7 +6,7 @@ function themeSysteme(): Theme {
 }
 
 /**
- * Thème courant. Applique `data-theme` sur `<html>` — tous les tokens sont redéfinis
+ * Thème courant. Applique `data-theme` sur `<html>` - tous les tokens sont redéfinis
  * dans le bloc `[data-theme="dark"]` de tokens.css, aucune surcharge ailleurs.
  */
 export function useTheme(initial: Theme | null): {

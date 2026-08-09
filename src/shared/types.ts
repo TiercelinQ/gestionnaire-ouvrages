@@ -331,7 +331,7 @@ declare global {
 }
 
 // ---------------------------------------------------------------------------
-// Gardes de type — utilisées par les contrôleurs pour valider les entrées IPC
+// Gardes de type - utilisées par les contrôleurs pour valider les entrées IPC
 // ---------------------------------------------------------------------------
 
 export function estChaineNonVide(valeur: unknown): valeur is string {
@@ -344,8 +344,7 @@ export function estEntierPositif(valeur: unknown): valeur is number {
 
 export function estRessourceNomenclature(valeur: unknown): valeur is RessourceNomenclature {
   return (
-    typeof valeur === "string" &&
-    (RESSOURCES_NOMENCLATURE as readonly string[]).includes(valeur)
+    typeof valeur === "string" && (RESSOURCES_NOMENCLATURE as readonly string[]).includes(valeur)
   );
 }
 

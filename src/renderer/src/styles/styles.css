@@ -1,5 +1,5 @@
 /* ============================================================
-   styles.css — Gestionnaire Ouvrage v1.0.0
+   styles.css - Gestionnaire Ouvrage v1.0.0
    Référence : design-system.md v2.0 (Electron) · layout.md v4.1
    Aucune valeur littérale : uniquement var(--token).
    ============================================================ */
@@ -124,7 +124,7 @@ ul {
     border-color var(--transition-default);
 }
 
-/* token: border — le survol renforce le trait, jamais un aplat */
+/* token: border - le survol renforce le trait, jamais un aplat */
 .tab:hover {
   border-color: var(--border);
 }
@@ -309,7 +309,7 @@ ul {
   background: var(--primary-pressed);
 }
 
-/* token: border / text — profondeur par le trait */
+/* token: border / text - profondeur par le trait */
 .btn-secondary {
   background: transparent;
   color: var(--text);
@@ -376,7 +376,7 @@ ul {
 }
 
 /* --- ICÔNES ---------------------------------------------------- */
-/* token: icon-* — Lucide rend un SVG en currentColor */
+/* token: icon-* - Lucide rend un SVG en currentColor */
 .icon {
   flex: none;
 }
@@ -547,7 +547,7 @@ ul {
   white-space: nowrap;
 }
 
-/* token: primary — colonne de tri cliquable */
+/* token: primary - colonne de tri cliquable */
 .data-table thead th.is-sortable {
   cursor: pointer;
   user-select: none;
@@ -679,7 +679,7 @@ ul {
 }
 
 /* --- FICHE D'OUVRAGE ------------------------------------------- */
-/* token: spacing-6 — trois colonnes (docs/specs/03-surfaces.md) */
+/* token: spacing-6 - trois colonnes (docs/specs/03-surfaces.md) */
 .formulaire-fiche {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1057,7 +1057,7 @@ ul {
 }
 
 /* --- TOASTS ---------------------------------------------------- */
-/* token: z-toast / spacing-4 — ancrage bas centre (docs/specs/03-surfaces.md) */
+/* token: z-toast / spacing-4 - ancrage bas centre (docs/specs/03-surfaces.md) */
 #toast-container {
   position: fixed;
   bottom: calc(var(--statusbar-height) + var(--spacing-4));
