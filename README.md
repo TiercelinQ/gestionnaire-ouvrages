@@ -141,7 +141,7 @@ The application owns no schema: the API does. Locally it stores only two files u
 
 ## Known limitation
 
-`GET /v1/ouvrages` currently returns six fields per book. Location filtering, cover-completion counters, latest additions and the period chart need four more; those screens hide themselves until the API provides them. The requested change is specified in `docs/api/evolution-liste-ouvrages.md`. CSV export covers the columns the list provides - exporting every field would cost one request per book.
+CSV export covers the four columns the list displays: author, title, edition, category. The API serves the remaining fields one record at a time, so exporting everything would cost one request per book.
 
 ## Claude Code
 

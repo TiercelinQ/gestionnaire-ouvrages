@@ -29,7 +29,7 @@ Fonctionnalités v1.0 : connexion et session, liste avec recherche, tri et défi
 - **Icône en `resources/icon.png` au lieu de `.ico`** - PNG 256 x 256 fourni, electron-builder génère l'ICO au packaging.
 - **Canal push `api:status`** - indicateur passif de disponibilité, seul moyen d'informer sans sondage.
 - **Paliers d'accent calculés relativement à l'accent** - l'accent Espresso est à L 26 % ; appliquer les cibles absolues donnerait un survol plus clair que l'état normal.
-- **Sept champs optionnels sur `OuvrageListe`** - `GET /v1/ouvrages` n'en renvoie que six ; les écrans qui dépendent des autres se masquent tant que le Worker ne les fournit pas. Évolution demandée : `docs/api/evolution-liste-ouvrages.md`.
+- **Sept champs optionnels sur `OuvrageListe`** - le Worker les fournit depuis le 9 août 2026 (`docs/api/evolution-liste-ouvrages.md`), les écrans concernés sont donc actifs. Les champs restent optionnels dans le type et `detecterChamps` reste en place : c'est le seul mécanisme qui permet à l'application de tourner devant un Worker antérieur.
 - **Quatrième `tsconfig.test.json`** - les tests du processus principal importent `src/main/**`, absent du projet renderer, et les projets `composite` refusent un fichier non listé.
 - **ESLint 9 au lieu de 10** - `eslint-plugin-react` plafonne à eslint 9.7 ; le conflit bloque l'installation.
 - **Chargements initiaux écrits dans les effets** - `react-hooks/set-state-in-effect` interdit un `setState` atteignable synchronement depuis un effet et ne traverse pas les appels de fonction. Chaque effet porte sa propre fonction asynchrone avec drapeau d'annulation. Ne pas revenir à un appel de `recharger()` depuis un effet.
