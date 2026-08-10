@@ -77,7 +77,11 @@ export function CouvertureField({
         )}
       </div>
 
-      {chemin ? <p className="couverture-chemin" title={chemin}>{chemin}</p> : null}
+      {chemin ? (
+        <p className="couverture-chemin" title={chemin}>
+          {chemin}
+        </p>
+      ) : null}
 
       <div className="couverture-actions">
         <button type="button" className="btn btn-secondary btn-sm" onClick={() => void choisir()}>

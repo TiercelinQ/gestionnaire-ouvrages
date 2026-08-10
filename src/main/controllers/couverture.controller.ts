@@ -24,19 +24,22 @@ export function registerCouvertureController(): void {
     return { ok: true, data: resultat.canceled ? null : (resultat.filePaths[0] ?? null) };
   });
 
-  ipcMain.handle(IPC.COUVERTURE_READ, (_evenement, chemin: unknown): IpcResult<CouvertureResolue> => {
-    if (chemin !== null && typeof chemin !== "string") {
-      log.warn("Chemin de couverture de type inattendu");
-      return {
-        ok: false,
-        error: {
-          type: "danger",
-          message: "Chemin de couverture invalide.",
-          code: CODE_TECHNIQUE,
-          champ: null,
-        },
-      };
-    }
-    return couvertureModel.read(chemin);
-  });
+  ipcMain.handle(
+    IPC.COUVERTURE_READ,
+    (_evenement, chemin: unknown): IpcResult<CouvertureResolue> => {
+      if (chemin !== null && typeof chemin !== "string") {
+        log.warn("Chemin de couverture de type inattendu");
+        return {
+          ok: false,
+          error: {
+            type: "danger",
+            message: "Chemin de couverture invalide.",
+            code: CODE_TECHNIQUE,
+            champ: null,
+          },
+        };
+      }
+      return couvertureModel.read(chemin);
+    },
+  );
 }

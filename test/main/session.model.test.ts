@@ -83,7 +83,11 @@ describe("session.model", () => {
   it("n_ecrit_aucune_session_quand_la_connexion_echoue", async () => {
     client.post.mockResolvedValue({
       ok: false,
-      error: { type: "danger", code: "identifiants_incorrects", message: "E-mail ou mot de passe incorrect" },
+      error: {
+        type: "danger",
+        code: "identifiants_incorrects",
+        message: "E-mail ou mot de passe incorrect",
+      },
     });
 
     const resultat = await sessionModel.login({ email: "q@example.com", mot_de_passe: "faux" });

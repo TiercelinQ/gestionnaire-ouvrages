@@ -103,9 +103,13 @@ export function ClassificationPanel(): React.JSX.Element {
     if (!edition) return;
     setOccupe(true);
     // Only the name is sent: the omitted parent key keeps its current value.
-    const resultat = await window.api.nomenclatureUpdate(edition.colonne.ressource, edition.element.id, {
-      nom: nomEdite.trim(),
-    });
+    const resultat = await window.api.nomenclatureUpdate(
+      edition.colonne.ressource,
+      edition.element.id,
+      {
+        nom: nomEdite.trim(),
+      },
+    );
     setOccupe(false);
     if (!resultat.ok) {
       echouer(resultat.error);
@@ -163,7 +167,9 @@ export function ClassificationPanel(): React.JSX.Element {
                   type="button"
                   className="btn btn-primary btn-sm"
                   onClick={() => void ajouter(colonne)}
-                  disabled={desactive || occupe || (nouveaux[colonne.ressource] ?? "").trim() === ""}
+                  disabled={
+                    desactive || occupe || (nouveaux[colonne.ressource] ?? "").trim() === ""
+                  }
                 >
                   <Plus className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
                 </button>

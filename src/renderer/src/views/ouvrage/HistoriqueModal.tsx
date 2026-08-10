@@ -115,10 +115,18 @@ export function HistoriqueModal({
                         {entree.champ_libelle ?? ABSENT}
                       </td>
                       <td title={avant}>
-                        {avant === ABSENT ? ABSENT : <span className="historique-avant">{avant}</span>}
+                        {avant === ABSENT ? (
+                          ABSENT
+                        ) : (
+                          <span className="historique-avant">{avant}</span>
+                        )}
                       </td>
                       <td title={apres}>
-                        {apres === ABSENT ? ABSENT : <span className="historique-apres">{apres}</span>}
+                        {apres === ABSENT ? (
+                          ABSENT
+                        ) : (
+                          <span className="historique-apres">{apres}</span>
+                        )}
                       </td>
                     </tr>
                   );

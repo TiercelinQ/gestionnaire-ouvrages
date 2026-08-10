@@ -6,7 +6,9 @@ import { CODE_TECHNIQUE, type IpcResult, type OuvrageListe } from "../../shared/
 import { exportModel } from "../models/export.model";
 
 function estListe(charge: unknown): charge is OuvrageListe[] {
-  return Array.isArray(charge) && charge.every((ligne) => typeof ligne === "object" && ligne !== null);
+  return (
+    Array.isArray(charge) && charge.every((ligne) => typeof ligne === "object" && ligne !== null)
+  );
 }
 
 export function registerExportController(): void {

@@ -16,9 +16,8 @@ vi.mock("electron", () => ({
 const modele = { list: vi.fn(), create: vi.fn(), update: vi.fn(), remove: vi.fn() };
 vi.mock("../../src/main/models/nomenclature.model", () => ({ nomenclatureModel: modele }));
 
-const { registerNomenclatureController } = await import(
-  "../../src/main/controllers/nomenclature.controller"
-);
+const { registerNomenclatureController } =
+  await import("../../src/main/controllers/nomenclature.controller");
 registerNomenclatureController();
 
 async function appeler(canal: string, ...args: unknown[]): Promise<IpcResult<unknown>> {

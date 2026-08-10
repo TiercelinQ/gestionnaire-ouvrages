@@ -120,7 +120,11 @@ export function ListePanel({ ressource, titre, elements }: ListePanelProps): Rea
                 title={t("action.supprimer")}
                 onClick={() => setSuppression(element)}
               >
-                <Trash2 className="icon icon-sm icon-danger" strokeWidth={1.75} aria-hidden="true" />
+                <Trash2
+                  className="icon icon-sm icon-danger"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
               </button>
             </span>
           </li>

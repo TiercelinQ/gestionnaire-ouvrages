@@ -28,7 +28,8 @@ const api: WindowApi = {
   ouvrageCreate: (input: OuvrageInput) => ipcRenderer.invoke(IPC.OUVRAGE_CREATE, input),
   ouvrageUpdate: (id: number, input: OuvrageUpdateInput) =>
     ipcRenderer.invoke(IPC.OUVRAGE_UPDATE, id, input),
-  ouvrageDelete: (id: number, version: number) => ipcRenderer.invoke(IPC.OUVRAGE_DELETE, id, version),
+  ouvrageDelete: (id: number, version: number) =>
+    ipcRenderer.invoke(IPC.OUVRAGE_DELETE, id, version),
   ouvrageRestore: (id: number) => ipcRenderer.invoke(IPC.OUVRAGE_RESTORE, id),
   ouvrageHistory: (id: number) => ipcRenderer.invoke(IPC.OUVRAGE_HISTORY, id),
   corbeilleList: () => ipcRenderer.invoke(IPC.CORBEILLE_LIST),

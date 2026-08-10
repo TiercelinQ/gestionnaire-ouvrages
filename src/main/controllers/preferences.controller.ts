@@ -15,24 +15,21 @@ export function registerPreferencesController(): void {
     data: preferencesModel.getAll(),
   }));
 
-  ipcMain.handle(
-    IPC.PREF_SET,
-    (_evenement, cle: unknown, valeur: unknown): IpcResult<void> => {
-      if (!estCle(cle)) {
-        return {
-          ok: false,
-          error: {
-            type: "danger",
-            message: "Préférence inconnue.",
-            code: CODE_TECHNIQUE,
-            champ: null,
-          },
-        };
-      }
-      preferencesModel.set(cle, valeur as Preferences[typeof cle]);
-      return { ok: true, data: undefined };
-    },
-  );
+  ipcMain.handle(IPC.PREF_SET, (_evenement, cle: unknown, valeur: unknown): IpcResult<void> => {
+    if (!estCle(cle)) {
+      return {
+        ok: false,
+        error: {
+          type: "danger",
+          message: "Préférence inconnue.",
+          code: CODE_TECHNIQUE,
+          champ: null,
+        },
+      };
+    }
+    preferencesModel.set(cle, valeur as Preferences[typeof cle]);
+    return { ok: true, data: undefined };
+  });
 
   /** Picking the cover root folder: a system dialog, hence controller side. */
   ipcMain.handle(IPC.PREF_PICK_FOLDER, async (evenement): Promise<IpcResult<string | null>> => {
