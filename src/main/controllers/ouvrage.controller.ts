@@ -25,7 +25,9 @@ function versionValide(valeur: unknown): valeur is number {
 export function registerOuvrageController(): void {
   ipcMain.handle(IPC.OUVRAGE_LIST, (): Promise<IpcResult<OuvrageListe[]>> => ouvrageModel.list());
 
-  ipcMain.handle(IPC.CORBEILLE_LIST, (): Promise<IpcResult<OuvrageCorbeille[]>> => ouvrageModel.trash());
+  ipcMain.handle(IPC.CORBEILLE_LIST, (): Promise<IpcResult<OuvrageCorbeille[]>> =>
+    ouvrageModel.trash(),
+  );
 
   ipcMain.handle(
     IPC.OUVRAGE_GET,
@@ -36,7 +38,8 @@ export function registerOuvrageController(): void {
   ipcMain.handle(
     IPC.OUVRAGE_CREATE,
     (_evenement, charge: unknown): Promise<IpcResult<OuvrageFiche>> | IpcResult<never> => {
-      if (!estOuvrageInput(charge)) return refus("Le titre et l'auteur sont obligatoires.", "titre");
+      if (!estOuvrageInput(charge))
+        return refus("Le titre et l'auteur sont obligatoires.", "titre");
       return ouvrageModel.create(charge);
     },
   );
@@ -49,7 +52,8 @@ export function registerOuvrageController(): void {
       charge: unknown,
     ): Promise<IpcResult<OuvrageFiche>> | IpcResult<never> => {
       if (!estEntierPositif(id)) return refus("Identifiant d'ouvrage invalide.");
-      if (!estOuvrageInput(charge)) return refus("Le titre et l'auteur sont obligatoires.", "titre");
+      if (!estOuvrageInput(charge))
+        return refus("Le titre et l'auteur sont obligatoires.", "titre");
       const version = (charge as unknown as OuvrageUpdateInput).version;
       if (!versionValide(version)) return refus("La version est obligatoire.", "version");
       return ouvrageModel.update(id, charge as OuvrageUpdateInput);

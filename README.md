@@ -21,19 +21,19 @@ Cataloguer, organiser et parcourir une collection personnelle d'ouvrages avec un
 
 ## Pile technique
 
-| Couche        | Technologie                                                            |
-| ------------- | ---------------------------------------------------------------------- |
-| Exécution     | Node.js 24+ · Electron 43                                              |
-| Langage       | TypeScript strict                                                      |
-| Rendu         | React 19, composants fonctionnels et hooks uniquement                  |
-| Construction  | electron-vite                                                          |
-| Architecture  | MVC strict - principal = modèles, rendu = vues, IPC = contrôleurs      |
-| Style         | CSS centralisé : `tokens.css` (variables) + `styles.css`               |
-| Icônes        | Lucide (`lucide-react`)                                                |
-| Graphiques    | Recharts                                                               |
-| Journalisation| electron-log                                                           |
-| Tests         | Vitest + Testing Library                                               |
-| Empaquetage   | electron-builder (NSIS + portable)                                     |
+| Couche         | Technologie                                                       |
+| -------------- | ----------------------------------------------------------------- |
+| Exécution      | Node.js 24+ · Electron 43                                         |
+| Langage        | TypeScript strict                                                 |
+| Rendu          | React 19, composants fonctionnels et hooks uniquement             |
+| Construction   | electron-vite                                                     |
+| Architecture   | MVC strict - principal = modèles, rendu = vues, IPC = contrôleurs |
+| Style          | CSS centralisé : `tokens.css` (variables) + `styles.css`          |
+| Icônes         | Lucide (`lucide-react`)                                           |
+| Graphiques     | Recharts                                                          |
+| Journalisation | electron-log                                                      |
+| Tests          | Vitest + Testing Library                                          |
+| Empaquetage    | electron-builder (NSIS + portable)                                |
 
 Aucune base locale : toutes les données viennent de l'API. Aucun client HTTP tiers, le `fetch` natif de Node suffit. Aucune bibliothèque de virtualisation, la liste est plate et la hauteur de ligne fixe.
 
@@ -97,31 +97,31 @@ src/
 
 Convention `entite:action`. Déclarés dans `src/shared/ipc-channels.ts` ; aucune chaîne de canal n'apparaît ailleurs.
 
-| Canal                 | Contrôleur   | `window.api`                                |
-| --------------------- | ------------ | ------------------------------------------- |
-| `session:status`      | session      | `sessionStatus()`                           |
-| `session:login`       | session      | `sessionLogin(identifiants)`                |
-| `session:logout`      | session      | `sessionLogout()`                           |
-| `app:info`            | session      | `appInfo()`                                 |
-| `ouvrage:list`        | ouvrage      | `ouvrageList()`                             |
-| `ouvrage:get`         | ouvrage      | `ouvrageGet(id)`                            |
-| `ouvrage:create`      | ouvrage      | `ouvrageCreate(input)`                      |
-| `ouvrage:update`      | ouvrage      | `ouvrageUpdate(id, input)`                  |
-| `ouvrage:delete`      | ouvrage      | `ouvrageDelete(id, version)`                |
-| `ouvrage:restore`     | ouvrage      | `ouvrageRestore(id)`                        |
-| `ouvrage:history`     | ouvrage      | `ouvrageHistory(id)`                        |
-| `corbeille:list`      | ouvrage      | `corbeilleList()`                           |
-| `nomenclature:list`   | nomenclature | `nomenclatureList()`                        |
-| `nomenclature:create` | nomenclature | `nomenclatureCreate(ressource, input)`      |
-| `nomenclature:update` | nomenclature | `nomenclatureUpdate(ressource, id, input)`  |
-| `nomenclature:delete` | nomenclature | `nomenclatureDelete(ressource, id)`         |
-| `couverture:pick`     | couverture   | `couverturePick()`                          |
-| `couverture:read`     | couverture   | `couvertureRead(chemin)`                    |
-| `export:csv`          | export       | `exportCsv(lignes)`                         |
-| `pref:get`            | preferences  | `getPreferences()`                          |
-| `pref:set`            | preferences  | `setPreference(cle, valeur)`                |
-| `pref:pickFolder`     | preferences  | `pickCoversFolder()`                        |
-| `api:status` (poussé) | -            | `onApiStatus(callback)`                     |
+| Canal                 | Contrôleur   | `window.api`                               |
+| --------------------- | ------------ | ------------------------------------------ |
+| `session:status`      | session      | `sessionStatus()`                          |
+| `session:login`       | session      | `sessionLogin(identifiants)`               |
+| `session:logout`      | session      | `sessionLogout()`                          |
+| `app:info`            | session      | `appInfo()`                                |
+| `ouvrage:list`        | ouvrage      | `ouvrageList()`                            |
+| `ouvrage:get`         | ouvrage      | `ouvrageGet(id)`                           |
+| `ouvrage:create`      | ouvrage      | `ouvrageCreate(input)`                     |
+| `ouvrage:update`      | ouvrage      | `ouvrageUpdate(id, input)`                 |
+| `ouvrage:delete`      | ouvrage      | `ouvrageDelete(id, version)`               |
+| `ouvrage:restore`     | ouvrage      | `ouvrageRestore(id)`                       |
+| `ouvrage:history`     | ouvrage      | `ouvrageHistory(id)`                       |
+| `corbeille:list`      | ouvrage      | `corbeilleList()`                          |
+| `nomenclature:list`   | nomenclature | `nomenclatureList()`                       |
+| `nomenclature:create` | nomenclature | `nomenclatureCreate(ressource, input)`     |
+| `nomenclature:update` | nomenclature | `nomenclatureUpdate(ressource, id, input)` |
+| `nomenclature:delete` | nomenclature | `nomenclatureDelete(ressource, id)`        |
+| `couverture:pick`     | couverture   | `couverturePick()`                         |
+| `couverture:read`     | couverture   | `couvertureRead(chemin)`                   |
+| `export:csv`          | export       | `exportCsv(lignes)`                        |
+| `pref:get`            | preferences  | `getPreferences()`                         |
+| `pref:set`            | preferences  | `setPreference(cle, valeur)`               |
+| `pref:pickFolder`     | preferences  | `pickCoversFolder()`                       |
+| `api:status` (poussé) | -            | `onApiStatus(callback)`                    |
 
 ## Données
 

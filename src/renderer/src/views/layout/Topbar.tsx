@@ -73,7 +73,12 @@ export function Topbar({
 
       <div className="topbar-actions">
         {utilisateur ? <span className="topbar-compte">{utilisateur.nom_affichage}</span> : null}
-        <button type="button" className="btn-ghost btn-icon" onClick={onAPropos} title={t("action.apropos")}>
+        <button
+          type="button"
+          className="btn-ghost btn-icon"
+          onClick={onAPropos}
+          title={t("action.apropos")}
+        >
           <Info className="icon icon-lg" strokeWidth={1.75} aria-hidden="true" />
         </button>
         <button

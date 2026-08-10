@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Job name "quality" is the contract with the branch ruleset: it is the
+  # required status check that gates every merge into main.
+  quality:
+    # windows-latest, not ubuntu: the app is Windows-only and the main-process
+    # tests exercise Windows path semantics (drive letters, backslashes), which
+    # node resolves differently on Linux. Public repository, so Actions minutes
+    # are unlimited and the slower Windows runner costs nothing.
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+
+      # postinstall (scripts/ensure-electron.cjs) downloads the Electron binary:
+      # electron >= 42 dropped its own postinstall, so nothing else fetches it.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check (main, renderer, tests)
+        run: npm run typecheck
+
+      - name: Lint (ESLint)
+        run: npm run lint
+
+      - name: Format check (Prettier)
+        run: npm run format:check
+
+      # jsdom, window.api mocked, no BrowserWindow: no display server needed.
+      - name: Tests (Vitest)
+        run: npm test
+
+      - name: Build (electron-vite)
+        run: npm run build

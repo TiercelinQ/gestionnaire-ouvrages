@@ -46,7 +46,10 @@ export function ToastProvider({ children }: { children: ReactNode }): React.JSX.
     [toast],
   );
 
-  const api = useMemo<ToastApi>(() => ({ toast, toastErreur, fermer }), [toast, toastErreur, fermer]);
+  const api = useMemo<ToastApi>(
+    () => ({ toast, toastErreur, fermer }),
+    [toast, toastErreur, fermer],
+  );
 
   return (
     <ToastContext.Provider value={api}>

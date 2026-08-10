@@ -65,7 +65,9 @@ function ChargementPreferences(): React.JSX.Element {
     void (async () => {
       const resultat = await window.api.getPreferences();
       if (annule) return;
-      setPreferences(resultat.ok ? resultat.data : { theme: null, coversRoot: null, windowBounds: null });
+      setPreferences(
+        resultat.ok ? resultat.data : { theme: null, coversRoot: null, windowBounds: null },
+      );
     })();
     return () => {
       annule = true;
@@ -104,7 +106,8 @@ function Routeur({ theme, onTheme }: RouteurProps): React.JSX.Element {
   const session = useSession();
 
   if (session.etat === "chargement") return <Attente />;
-  if (session.etat === "mise-a-jour") return <UpdateRequiredView message={session.messageMiseAJour} />;
+  if (session.etat === "mise-a-jour")
+    return <UpdateRequiredView message={session.messageMiseAJour} />;
   if (session.etat === "connexion") return <LoginView />;
   return <Shell theme={theme} onTheme={onTheme} />;
 }

@@ -71,7 +71,10 @@ export class ApiClient {
 
   /** Last published state, useful when the renderer starts. */
   statutCourant(): ApiStatus {
-    return { etat: this.dernierEchange ? "connecte" : "hors-ligne", dernierEchange: this.dernierEchange };
+    return {
+      etat: this.dernierEchange ? "connecte" : "hors-ligne",
+      dernierEchange: this.dernierEchange,
+    };
   }
 
   async get<T>(chemin: string, mode?: ModeEntetes): Promise<IpcResult<T>> {

@@ -45,12 +45,15 @@ function isInstalled() {
   return fs.existsSync(PATH_TXT) && fs.existsSync(path.join(DIST_DIR, relExecPath()));
 }
 
-// In a shell started by an Electron app (VS Code, Cursor and the like),
-// ELECTRON_RUN_AS_NODE=1 is inherited by child node processes. Under that flag
-// the official Electron installer (install.js) swallows the binary download
-// (exit 0, no zip cached). So the installer is re-run with a cleaned
-// environment before any restoration from the cache.
-function retryDownloadWithCleanEnv() {
+// Electron >= 42 no longer declares a "postinstall" script, so npm never runs
+// install.js and a clean install leaves no binary at all. The installer is
+// therefore invoked here.
+//
+// It is invoked with a cleaned environment because, in a shell started by an
+// Electron app (VS Code, Cursor and the like), ELECTRON_RUN_AS_NODE=1 is
+// inherited by child node processes, and under that flag install.js swallows
+// the download (exit 0, no zip cached).
+function runOfficialInstaller() {
   const installer = path.join(ELECTRON_DIR, "install.js");
   if (!fs.existsSync(installer)) return;
   const env = { ...process.env };
@@ -82,13 +85,11 @@ async function main() {
     process.exit(1);
   }
 
-  // 1) Re-run the official download with a cleaned environment.
-  if (process.env.ELECTRON_RUN_AS_NODE) {
-    retryDownloadWithCleanEnv();
-    if (isInstalled()) {
-      console.log("[ensure-electron] Binaire téléchargé après nettoyage de ELECTRON_RUN_AS_NODE.");
-      return;
-    }
+  // 1) Run the official downloader.
+  runOfficialInstaller();
+  if (isInstalled()) {
+    console.log("[ensure-electron] Binaire téléchargé par l'installeur officiel.");
+    return;
   }
 
   const { version } = JSON.parse(fs.readFileSync(path.join(ELECTRON_DIR, "package.json"), "utf8"));

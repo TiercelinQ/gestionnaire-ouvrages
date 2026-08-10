@@ -7,12 +7,7 @@ import { ListePanel } from "./parametres/ListePanel";
 import { PreferencesPanel } from "./parametres/PreferencesPanel";
 
 type Rubrique =
-  | "classification"
-  | "illustrations"
-  | "periodes"
-  | "reliures"
-  | "localisations"
-  | "preferences";
+  "classification" | "illustrations" | "periodes" | "reliures" | "localisations" | "preferences";
 
 const RUBRIQUES: { cle: Rubrique; libelle: string }[] = [
   { cle: "classification", libelle: t("classification.titre") },

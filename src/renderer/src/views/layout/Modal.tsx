@@ -52,7 +52,12 @@ export function Modal({
       >
         <header className="modal-header">
           <h2 className="modal-title">{titre}</h2>
-          <button type="button" className="btn-ghost btn-icon" onClick={onFermer} title={t("action.fermer")}>
+          <button
+            type="button"
+            className="btn-ghost btn-icon"
+            onClick={onFermer}
+            title={t("action.fermer")}
+          >
             <X className="icon icon-md" strokeWidth={1.75} aria-hidden="true" />
           </button>
         </header>

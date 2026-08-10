@@ -21,7 +21,9 @@ function validerIdentifiants(charge: unknown): Identifiants | null {
 }
 
 export function registerSessionController(): void {
-  ipcMain.handle(IPC.SESSION_STATUS, (): Promise<IpcResult<SessionStatut>> => sessionModel.status());
+  ipcMain.handle(IPC.SESSION_STATUS, (): Promise<IpcResult<SessionStatut>> =>
+    sessionModel.status(),
+  );
 
   ipcMain.handle(
     IPC.SESSION_LOGIN,
