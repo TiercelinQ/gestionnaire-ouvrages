@@ -8,6 +8,12 @@ Le format s'appuie sur Keep a Changelog, et le projet suit le versionnage séman
 ### Modifié
 
 - Chaque proposition de modification est désormais vérifiée automatiquement par GitHub avant d'être intégrée : contrôle des types, du style de code, du formatage, des 91 tests et de la compilation.
+- Les versions publiées sont construites et mises en ligne automatiquement : l'installeur et la version portable sont désormais téléchargeables depuis la page des versions du dépôt, accompagnés des notes tirées de ce journal.
+- Les montées de dépendances sont proposées chaque semaine et passent par les mêmes contrôles que le reste.
+
+### Corrigé
+
+- Une installation propre du projet ne récupérait plus l'exécutable Electron, rendant l'application impossible à lancer depuis un clone neuf. Electron ayant retiré son propre script d'installation à partir de la version 42, le garde-fou du projet le déclenche désormais lui-même.
 
 ## [1.1.1] - 2026-08-10
 
