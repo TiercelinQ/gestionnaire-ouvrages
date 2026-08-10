@@ -5,6 +5,20 @@ Le format s'appuie sur Keep a Changelog, et le projet suit le versionnage séman
 
 ## [Non publié]
 
+## [1.1.1] - 2026-08-10
+
+### Corrigé
+
+- Il était impossible de saisir quoi que ce soit dans la fiche d'un ouvrage : la valeur tapée disparaissait aussitôt. La fiche se rechargeait en boucle et écrasait la saisie, chaque rechargement déclenchant le suivant par l'indicateur de disponibilité de l'API. Le chargement ne dépend plus que de l'ouvrage ciblé, et un test de non-régression le verrouille.
+- Dans l'historique, les lignes passaient devant la ligne d'en-tête au défilement et les valeurs longues se découpaient sur plusieurs lignes. Le tableau reprend la mécanique de la liste des ouvrages : en-tête hors du conteneur défilant, largeurs de colonnes figées, texte tronqué avec l'intégralité en infobulle.
+- Les colonnes « Avant » et « Après » de l'historique étaient réduites à quelques pixels et illisibles. Les colonnes date, auteur et action sont resserrées à leur largeur utile, les deux dernières se partagent l'espace restant.
+
+### Modifié
+
+- Les libellés d'en-tête de tableau, et tout texte partageant leur couleur, passent au noir pur en thème clair et au blanc pur en thème sombre.
+- L'icône à gauche du nom de l'application dans la barre supérieure devient `library-big`.
+- Le bouton « Voir l'historique » quitte la troisième colonne de la fiche pour le pied de la modale, à l'opposé de « Annuler » et « Enregistrer ».
+
 ## [1.1.0] - 2026-08-10
 
 ### Modifié

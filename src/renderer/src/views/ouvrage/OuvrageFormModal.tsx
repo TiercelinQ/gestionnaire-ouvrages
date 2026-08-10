@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "react";
 import { History } from "lucide-react";
 import {
   CODE_CONFLIT_VERSION,
@@ -99,6 +99,15 @@ export function OuvrageFormModal({
     [echouer, onFermer],
   );
 
+  // The callbacks are read through a ref so that the load effect below depends on `cible`
+  // alone. A caller re-creating them on every render - the api:status push re-renders the
+  // whole shell after each IPC call - would otherwise re-run the effect, overwrite what the
+  // user is typing with the server state, and loop: the reload pushes a new status itself.
+  const rappels = useRef({ echouer, onFermer });
+  useEffect(() => {
+    rappels.current = { echouer, onFermer };
+  }, [echouer, onFermer]);
+
   // The component is remounted on every target change (key on the caller side): a creation
   // restarts from a blank state, and loading a record is written inside the effect itself.
   useEffect(() => {
@@ -109,8 +118,8 @@ export function OuvrageFormModal({
       if (annule) return;
       setChargement(false);
       if (!resultat.ok) {
-        echouer(resultat.error);
-        onFermer();
+        rappels.current.echouer(resultat.error);
+        rappels.current.onFermer();
         return;
       }
       setFiche(resultat.data);
@@ -119,7 +128,7 @@ export function OuvrageFormModal({
     return () => {
       annule = true;
     };
-  }, [cible, echouer, onFermer]);
+  }, [cible]);
 
   function modifier<K extends keyof OuvrageInput>(cle: K, valeur: OuvrageInput[K]): void {
     setForm((courant) => ({ ...courant, [cle]: valeur }));
@@ -273,18 +282,35 @@ export function OuvrageFormModal({
         fermetureClavier={!historique}
         onFermer={onFermer}
         pied={
-          <div className="btn-group">
-            <button type="button" className="btn btn-secondary" onClick={onFermer} disabled={envoi}>
-              {t("action.annuler")}
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => void enregistrer()}
-              disabled={envoi || chargement}
-            >
-              {edition ? t("action.enregistrer") : t("ouvrages.ajouter")}
-            </button>
+          <div className="modal-pied-reparti">
+            {fiche ? (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setHistorique(true)}
+              >
+                <History className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
+                {t("historique.ouvrir")}
+              </button>
+            ) : null}
+            <div className="btn-group">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={onFermer}
+                disabled={envoi}
+              >
+                {t("action.annuler")}
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => void enregistrer()}
+                disabled={envoi || chargement}
+              >
+                {edition ? t("action.enregistrer") : t("ouvrages.ajouter")}
+              </button>
+            </div>
           </div>
         }
       >
@@ -384,14 +410,6 @@ export function OuvrageFormModal({
                   <dt>{t("fiche.version")}</dt>
                   <dd>{fiche.version}</dd>
                 </dl>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => setHistorique(true)}
-                >
-                  <History className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
-                  {t("historique.ouvrir")}
-                </button>
               </>
             ) : null}
           </section>

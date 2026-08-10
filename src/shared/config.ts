@@ -6,7 +6,7 @@
 // --- Application ---
 export const APP_NAME = "GestionnaireOuvrage";
 export const APP_DISPLAY_NAME = "Gestionnaire Ouvrage";
-export const APP_VERSION = "1.1.0";
+export const APP_VERSION = "1.1.1";
 
 // --- API (production environment, see docs/specs/01-scoping.md) ---
 export const API_BASE_URL = "https://gestionnaire-ouvrages-api.qtiercelin-apps.workers.dev";

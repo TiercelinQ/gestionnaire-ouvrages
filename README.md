@@ -1,4 +1,4 @@
-# Gestionnaire Ouvrage - v1.1.0
+# Gestionnaire Ouvrage - v1.1.1
 
 Client de bureau Windows pour cataloguer et consulter une collection personnelle d'ouvrages. Interface de bureau de l'API Gestionnaire Ouvrage (Cloudflare Worker + D1), en remplacement d'une application Python/PyQt6/SQLite dont la base vivait sur un dossier synchronisé.
 

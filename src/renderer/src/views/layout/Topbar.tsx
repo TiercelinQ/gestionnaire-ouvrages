@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Info, Library, LogOut, Moon, Sun } from "lucide-react";
+import { Info, LibraryBig, LogOut, Moon, Sun } from "lucide-react";
 import * as config from "../../../../shared/config";
 import type { Theme, Utilisateur } from "../../../../shared/types";
 import { t } from "../../i18n";
@@ -53,7 +53,7 @@ export function Topbar({
   return (
     <header id="topbar">
       <div className="topbar-marque">
-        <Library className="icon icon-lg icon-active" strokeWidth={1.75} aria-hidden="true" />
+        <LibraryBig className="icon icon-lg icon-active" strokeWidth={1.75} aria-hidden="true" />
         <span className="topbar-nom">{config.APP_DISPLAY_NAME}</span>
       </div>
 

@@ -24,9 +24,13 @@ const ABSENT = "-";
 /**
  * History of a book record, field by field, stacked over the record modal.
  *
+ * Same table mechanics as the book list: the header sits outside the scrolling container so
+ * the scroll track starts below it, column widths are fixed and overflowing text is
+ * truncated. A sticky header inside the table would not do - Chromium drops the sticky
+ * painting of cells under `border-collapse: collapse`, and rows show through the header.
+ *
  * The server translates the labels and resolves the nomenclature identifiers: rows are
- * displayed as they come, with no client-side lookup table. The returned volume is not
- * bounded, hence the scrolling modal body and the sticky table header.
+ * displayed as they come, with no client-side lookup table.
  */
 export function HistoriqueModal({
   ouvert,
@@ -57,9 +61,9 @@ export function HistoriqueModal({
     };
   }, [ouvert, ouvrageId, echouer]);
 
-  function valeur(brute: string | null, classe: string): React.JSX.Element | string {
-    if (!brute) return ABSENT;
-    return <span className={classe}>{brute}</span>;
+  function valeur(entree: EntreeHistorique, cle: "ancienne_valeur" | "nouvelle_valeur"): string {
+    if (entree.action !== "modification") return ABSENT;
+    return entree[cle] ?? ABSENT;
   }
 
   return (
@@ -71,38 +75,58 @@ export function HistoriqueModal({
       ) : null}
 
       {entrees.length > 0 ? (
-        <table className="data-table table-simple">
-          <thead>
-            <tr>
-              <th className="colonne-moyenne">{t("historique.colonneDate")}</th>
-              <th className="colonne-moyenne">{t("historique.colonneAuteur")}</th>
-              <th className="colonne-moyenne">{t("historique.colonneAction")}</th>
-              <th className="colonne-moyenne">{t("historique.colonneChamp")}</th>
-              <th>{t("historique.colonneAvant")}</th>
-              <th>{t("historique.colonneApres")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {entrees.map((entree) => (
-              <tr key={entree.id}>
-                <td className="cellule-date">{formaterDateHeure(entree.date_action)}</td>
-                <td>{entree.auteur}</td>
-                <td>{t(ACTIONS[entree.action])}</td>
-                <td>{entree.champ_libelle ?? ABSENT}</td>
-                <td>
-                  {entree.action === "modification"
-                    ? valeur(entree.ancienne_valeur, "historique-avant")
-                    : ABSENT}
-                </td>
-                <td>
-                  {entree.action === "modification"
-                    ? valeur(entree.nouvelle_valeur, "historique-apres")
-                    : ABSENT}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="table-cadre">
+          {/* Header outside the scrolling container: the scroll track starts below it. */}
+          <div className="table-entete">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th className="colonne-horodatage">{t("historique.colonneDate")}</th>
+                  <th className="colonne-etroite">{t("historique.colonneAuteur")}</th>
+                  <th className="colonne-etroite">{t("historique.colonneAction")}</th>
+                  <th className="colonne-moyenne">{t("historique.colonneChamp")}</th>
+                  <th>{t("historique.colonneAvant")}</th>
+                  <th>{t("historique.colonneApres")}</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+
+          <div className="table-defilante">
+            <table className="data-table">
+              <colgroup>
+                <col className="colonne-horodatage" />
+                <col className="colonne-etroite" />
+                <col className="colonne-etroite" />
+                <col className="colonne-moyenne" />
+                <col />
+                <col />
+              </colgroup>
+              <tbody>
+                {entrees.map((entree) => {
+                  const avant = valeur(entree, "ancienne_valeur");
+                  const apres = valeur(entree, "nouvelle_valeur");
+                  return (
+                    <tr key={entree.id}>
+                      <td>{formaterDateHeure(entree.date_action)}</td>
+                      <td title={entree.auteur}>{entree.auteur}</td>
+                      <td>{t(ACTIONS[entree.action])}</td>
+                      <td title={entree.champ_libelle ?? ABSENT}>
+                        {entree.champ_libelle ?? ABSENT}
+                      </td>
+                      <td title={avant}>
+                        {avant === ABSENT ? ABSENT : <span className="historique-avant">{avant}</span>}
+                      </td>
+                      <td title={apres}>
+                        {apres === ABSENT ? ABSENT : <span className="historique-apres">{apres}</span>}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       ) : null}
     </Modal>
   );

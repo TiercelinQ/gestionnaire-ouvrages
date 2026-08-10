@@ -28,7 +28,9 @@
   --bg-elevated: #ffffff;
   --bg-muted: #eef0f4;
   --text: #141824;
-  --text-subtle: #656b7b;
+  /* Pure black by explicit request: table header labels and every secondary text carrying
+     this token read as fully contrasted rather than greyed. */
+  --text-subtle: #000000;
   --text-muted: #989eae;
   --border: #e1e5ef;
   --border-subtle: #edeef3;
@@ -89,6 +91,7 @@
   --row-height: 36px; /* mirrors ROW_HEIGHT (shared/config.ts) - virtualisation */
   --scrollbar-width: 12px; /* gutter width: aligns the frozen header with the scrolling body */
   --col-narrow: 7rem; /* fixed table column widths (table-layout: fixed) */
+  --col-datetime: 9rem; /* date plus time in tabular-nums, its intrinsic width */
   --col-medium: 11rem;
   --col-wide: 14rem;
   --col-actions: 5.5rem;
@@ -139,7 +142,8 @@
   --bg-elevated: #252832;
   --bg-muted: #292d38;
   --text: #efeff0;
-  --text-subtle: #949bad;
+  /* Pure white, counterpart of the light theme black. */
+  --text-subtle: #ffffff;
   --text-muted: #5f6677;
   --border: #454954;
   --border-subtle: #272b35;

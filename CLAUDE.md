@@ -36,6 +36,8 @@ Fonctionnalités v1.0 : connexion et session, liste avec recherche, tri et défi
 - **Quatrième `tsconfig.test.json`** - les tests du processus principal importent `src/main/**`, absent du projet renderer, et les projets `composite` refusent un fichier non listé.
 - **ESLint 9 au lieu de 10** - `eslint-plugin-react` plafonne à eslint 9.7 ; le conflit bloque l'installation.
 - **Chargements initiaux écrits dans les effets** - `react-hooks/set-state-in-effect` interdit un `setState` atteignable synchronement depuis un effet et ne traverse pas les appels de fonction. Chaque effet porte sa propre fonction asynchrone avec drapeau d'annulation. Ne pas revenir à un appel de `recharger()` depuis un effet.
+- **Un effet qui écrit un formulaire ne dépend jamais d'un rappel reçu en props** - le canal push `api:status` re-rend toute la coquille après chaque appel IPC, donc l'appelant recrée ses lambdas. `OuvrageFormModal` lit `echouer` et `onFermer` à travers une `useRef` et son effet de chargement ne dépend que de `cible` ; sinon la fiche se recharge en boucle et écrase la saisie. Test de non-régression : `test/renderer/OuvrageFormModal.test.tsx`.
+- **`--text-subtle` au noir pur en clair, au blanc pur en sombre** - demande du propriétaire pour les libellés d'en-tête de tableau et tout texte de la même couleur. `--icon-default` consomme ce token et suit.
 
 ## Maintenance
 

@@ -647,6 +647,12 @@ ul {
   width: var(--col-narrow);
 }
 
+/* token: col-datetime - keeps a date column at its intrinsic width so the free columns
+   of the table get the remaining space. */
+.colonne-horodatage {
+  width: var(--col-datetime);
+}
+
 .colonne-moyenne {
   width: var(--col-medium);
 }
@@ -674,35 +680,6 @@ ul {
 
 .espaceur:hover {
   background: transparent;
-}
-
-/* token: bg-subtle / border-strong - table without a frozen header, used inside a modal:
-   the header sticks to the top of the scrolling modal body, widths follow the content
-   and long values wrap instead of being truncated. */
-.table-simple {
-  table-layout: auto;
-}
-
-.table-simple thead th {
-  position: sticky;
-  top: 0;
-  background: var(--bg-subtle);
-  border-bottom: var(--border-width-emphasis) solid var(--border-strong);
-}
-
-.table-simple tbody tr {
-  height: auto;
-}
-
-.table-simple td {
-  padding: var(--spacing-2) var(--spacing-3);
-  white-space: normal;
-  overflow-wrap: anywhere;
-  vertical-align: top;
-}
-
-.cellule-date {
-  white-space: nowrap;
 }
 
 /* --- MODAL ----------------------------------------------------- */
@@ -782,9 +759,28 @@ ul {
   padding: var(--spacing-6);
 }
 
+/* A body holding a table frame hands the scroll over to .table-defilante: scrolling here too
+   would carry the frozen header away with the rows. */
+.modal-body:has(> .table-cadre) {
+  display: flex;
+  overflow: hidden;
+}
+
 .modal-footer {
   padding: var(--spacing-4) var(--spacing-6);
   border-top: var(--border-width) solid var(--border-subtle);
+}
+
+/* token: spacing-4 - secondary action on the left, cancel/confirm on the right. The group
+   stays right even when the left action is absent (record creation). */
+.modal-pied-reparti {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.modal-pied-reparti .btn-group {
+  margin-left: auto;
 }
 
 /* --- RECORD FORM ----------------------------------------------- */
