@@ -83,6 +83,7 @@ src/
 ├── preload/index.ts            contextBridge, one named function per channel
 └── renderer/
     ├── index.html · splash.html    both carrying the strict CSP
+    ├── public/icon.png         copy of resources/icon.png, served to splash.html under img-src 'self'
     └── src/
         ├── App.tsx             error boundary, providers, shell, routing
         ├── views/              screens, layout components, modals, drawer

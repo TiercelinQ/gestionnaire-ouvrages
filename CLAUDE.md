@@ -26,7 +26,7 @@ Fonctionnalités v1.0 : connexion et session, liste avec recherche, tri et défi
 - **`IpcResult` étendu avec `code` et `champ`** - l'API impose de brancher la logique cliente sur le code d'erreur et de positionner le message sous le champ désigné.
 - **`--drawer-width` à 420 px au lieu de 320** - une ligne d'historique porte cinq colonnes de texte.
 - **Deux vues pour un seul modèle `ouvrage`** - la corbeille est un état de l'entité, pas une entité distincte.
-- **Icône en `resources/icon.png` au lieu de `.ico`** - PNG 256 x 256 fourni, electron-builder génère l'ICO au packaging.
+- **Icône en `resources/icon.png` au lieu de `.ico`** - PNG 256 x 256 fourni, electron-builder génère l'ICO au packaging. Copie identique en `src/renderer/public/icon.png` : sous CSP `img-src 'self'`, `splash.html` ne peut lire que le bundle du rendu. Garder les deux fichiers synchronisés si l'icône change.
 - **Canal push `api:status`** - indicateur passif de disponibilité, seul moyen d'informer sans sondage.
 - **Paliers d'accent calculés relativement à l'accent** - l'accent Espresso est à L 26 % ; appliquer les cibles absolues donnerait un survol plus clair que l'état normal.
 - **Sept champs optionnels sur `OuvrageListe`** - le Worker les fournit depuis le 9 août 2026 (`docs/api/evolution-liste-ouvrages.md`), les écrans concernés sont donc actifs. Les champs restent optionnels dans le type et `detecterChamps` reste en place : c'est le seul mécanisme qui permet à l'application de tourner devant un Worker antérieur.
