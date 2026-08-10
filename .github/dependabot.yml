@@ -11,6 +11,27 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    # Majeures bloquees par une contrainte de la pile. Les mineures et les
+    # correctifs de ces memes paquets restent proposes. Chaque entree porte sa
+    # condition de levee : la retirer des que la condition est remplie.
+    ignore:
+      # electron-vite 5 declare peer vite "^5 || ^6 || ^7". Lever quand
+      # electron-vite acceptera vite 8.
+      - dependency-name: "vite"
+        update-types: ["version-update:semver-major"]
+      # @vitejs/plugin-react 6 declare peer vite "^8". Lie a l'entree ci-dessus,
+      # a lever en meme temps.
+      - dependency-name: "@vitejs/plugin-react"
+        update-types: ["version-update:semver-major"]
+      # typescript-eslint 8 declare peer typescript ">=4.8.4 <6.1.0". Lever
+      # quand cette plage s'elargira a la ligne 7.x.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      # @types/node suit la version de Node ciblee par les workflows (24), pas
+      # la derniere publiee : sinon on type contre des API absentes a
+      # l'execution. Lever en meme temps que node-version dans les workflows.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       npm-dependencies:
         patterns: ["*"]
