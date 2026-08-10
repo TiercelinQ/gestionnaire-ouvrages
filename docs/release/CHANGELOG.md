@@ -5,6 +5,14 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-10
+
+### Fixed
+
+- Top bar and status bar stayed in place while scrolling: the shell now fills the window instead of growing with its content, so only the main content area scrolls.
+- Table scrollbar now starts below the header row, which no longer sits inside the scrolling container.
+- Table columns keep a fixed width instead of resizing as virtualised rows enter and leave the DOM; overflowing cell text is truncated.
+
 ## [1.0.0] - 2026-08-09
 
 ### Added

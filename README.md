@@ -1,4 +1,4 @@
-# Gestionnaire Ouvrage - v1.0.0
+# Gestionnaire Ouvrage - v1.0.1
 
 Windows desktop client for cataloguing and browsing a personal book collection. Desktop front end for the Gestionnaire Ouvrage API (Cloudflare Worker + D1), replacing a Python/PyQt6/SQLite application whose database lived on a synchronised folder.
 

@@ -10,8 +10,12 @@
   box-sizing: border-box;
 }
 
+/* #root porte la hauteur au même titre que html et body : sans elle, le
+   height: 100% de #app-shell se résout contre un parent auto et la coquille
+   déborde, ce qui fait défiler body au lieu de #main-content. */
 html,
-body {
+body,
+#root {
   margin: 0;
   height: 100%;
 }
@@ -518,33 +522,58 @@ ul {
 }
 
 /* --- TABLES ---------------------------------------------------- */
-/* token: bg / border-subtle / row-height */
-.table-defilante {
+/* token: border / radius - cadre commun à l'en-tête figé et au corps défilant */
+.table-cadre {
   flex: 1;
-  overflow: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius);
 }
 
+/* token: scrollbar-width / bg-subtle / border-strong - l'en-tête est hors du
+   conteneur défilant pour que la piste de défilement commence sous lui ; il
+   compense la gouttière du corps, sans quoi ses colonnes ne tombent pas en face
+   de celles des lignes. Le fond et la bordure basse sont portés ici plutôt que
+   par les th : ils couvrent ainsi la compensation, qui laisserait sinon une
+   entaille claire à droite du dernier en-tête. */
+.table-entete {
+  flex: none;
+  padding-right: var(--scrollbar-width);
+  background: var(--bg-subtle);
+  border-bottom: var(--border-width-emphasis) solid var(--border-strong);
+}
+
+/* Gouttière toujours réservée (scroll et non auto) : l'alignement sur l'en-tête
+   ne dépend donc pas du nombre de lignes affichées. */
+.table-defilante {
+  flex: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+/* token: font-sm - largeurs figées : en calcul automatique, la virtualisation ne
+   soumet qu'une poignée de lignes et les colonnes changent de largeur au défilement. */
 .data-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: var(--font-sm);
   font-variant-numeric: tabular-nums;
 }
 
-/* token: bg-subtle / border-strong / weight-semibold / text-subtle */
+/* token: weight-semibold / text-subtle - fond et bordure basse portés par
+   .table-entete, sur toute la largeur du cadre. */
 .data-table thead th {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-content);
   padding: var(--spacing-2) var(--spacing-3);
   text-align: left;
   font-weight: var(--weight-semibold);
   color: var(--text-subtle);
-  background: var(--bg-subtle);
-  border-bottom: var(--border-width-emphasis) solid var(--border-strong);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* token: primary - colonne de tri cliquable */
@@ -573,7 +602,6 @@ ul {
 
 .data-table td {
   padding: 0 var(--spacing-3);
-  max-width: 24rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -583,8 +611,23 @@ ul {
   cursor: default;
 }
 
+/* token: col-narrow / col-medium / col-wide - largeur portée par le th, la seule
+   rangée lue en table-layout: fixed. Une colonne laissée sans classe prend le reste. */
+.colonne-etroite {
+  width: var(--col-narrow);
+}
+
+.colonne-moyenne {
+  width: var(--col-medium);
+}
+
+.colonne-large {
+  width: var(--col-wide);
+}
+
+/* token: col-actions */
 .colonne-actions {
-  width: 1%;
+  width: var(--col-actions);
   white-space: nowrap;
   text-align: right;
 }
@@ -1185,8 +1228,8 @@ ul {
 /* --- BARRES DE DÉFILEMENT -------------------------------------- */
 /* token: bg-muted / border-strong / radius */
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
 }
 
 ::-webkit-scrollbar-track {

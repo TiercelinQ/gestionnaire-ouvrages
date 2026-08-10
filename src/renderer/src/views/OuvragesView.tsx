@@ -1,5 +1,14 @@
 import { useRef, useState } from "react";
-import { ChevronDown, ChevronUp, Download, Eraser, Pencil, Plus, RefreshCw, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Download,
+  Eraser,
+  Pencil,
+  Plus,
+  RefreshCw,
+  Trash2,
+} from "lucide-react";
 import type { OuvrageListe } from "../../../shared/types";
 import { t, tp } from "../i18n";
 import { useNomenclatures } from "../hooks/useNomenclatures";
@@ -15,11 +24,12 @@ import { useVirtualRows } from "../hooks/useVirtualRows";
 import { ConfirmModal } from "./layout/ConfirmModal";
 import { OuvrageFormModal } from "./ouvrage/OuvrageFormModal";
 
-const COLONNES: { cle: ColonneTri; libelle: string }[] = [
-  { cle: "auteur", libelle: t("ouvrage.auteur") },
+/** `largeur` est la classe de largeur figée ; la colonne qui n'en porte pas absorbe le reste. */
+const COLONNES: { cle: ColonneTri; libelle: string; largeur?: string }[] = [
+  { cle: "auteur", libelle: t("ouvrage.auteur"), largeur: "colonne-large" },
   { cle: "titre", libelle: t("ouvrage.titre") },
-  { cle: "edition", libelle: t("ouvrage.edition") },
-  { cle: "categorie", libelle: t("ouvrage.categorie") },
+  { cle: "edition", libelle: t("ouvrage.edition"), largeur: "colonne-large" },
+  { cle: "categorie", libelle: t("ouvrage.categorie"), largeur: "colonne-large" },
 ];
 
 /** Ouvrage visé par une suppression, avec la version lue au chargement de la liste. */
@@ -130,82 +140,116 @@ export function OuvragesView(): React.JSX.Element {
         </button>
       </div>
 
-      <div className="table-defilante" ref={conteneur}>
-        <table className="data-table">
-          <thead>
-            <tr>
+      <div className="table-cadre">
+        {/* En-tête hors du conteneur défilant : la piste de défilement commence sous lui. */}
+        <div className="table-entete">
+          <table className="data-table">
+            <thead>
+              <tr>
+                {COLONNES.map((colonne) => (
+                  <th
+                    key={colonne.cle}
+                    className={colonne.largeur ? `is-sortable ${colonne.largeur}` : "is-sortable"}
+                    onClick={() => ouvrages.basculerTri(colonne.cle)}
+                    aria-sort={
+                      ouvrages.colonne === colonne.cle
+                        ? ouvrages.sens === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    {colonne.libelle}
+                    {ouvrages.colonne === colonne.cle ? (
+                      ouvrages.sens === "asc" ? (
+                        <ChevronUp className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
+                      ) : (
+                        <ChevronDown
+                          className="icon icon-sm"
+                          strokeWidth={1.75}
+                          aria-hidden="true"
+                        />
+                      )
+                    ) : null}
+                  </th>
+                ))}
+                <th className="colonne-actions">{t("table.actions")}</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+
+        <div className="table-defilante" ref={conteneur}>
+          <table className="data-table">
+            <colgroup>
               {COLONNES.map((colonne) => (
-                <th
-                  key={colonne.cle}
-                  className="is-sortable"
-                  onClick={() => ouvrages.basculerTri(colonne.cle)}
-                  aria-sort={
-                    ouvrages.colonne === colonne.cle
-                      ? ouvrages.sens === "asc"
-                        ? "ascending"
-                        : "descending"
-                      : "none"
-                  }
-                >
-                  {colonne.libelle}
-                  {ouvrages.colonne === colonne.cle ? (
-                    ouvrages.sens === "asc" ? (
-                      <ChevronUp className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
-                    ) : (
-                      <ChevronDown className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
-                    )
-                  ) : null}
-                </th>
+                <col key={colonne.cle} className={colonne.largeur} />
               ))}
-              <th className="colonne-actions">{t("table.actions")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Espaceurs de virtualisation : hauteurs calculées au défilement, hors de portée du CSS. */}
-            {fenetre.hauteurAvant > 0 ? (
-              <tr className="espaceur" style={{ height: fenetre.hauteurAvant }} aria-hidden="true">
-                <td colSpan={5} />
-              </tr>
-            ) : null}
+              <col className="colonne-actions" />
+            </colgroup>
+            <tbody>
+              {/* Espaceurs de virtualisation : hauteurs calculées au défilement, hors de portée du CSS. */}
+              {fenetre.hauteurAvant > 0 ? (
+                <tr
+                  className="espaceur"
+                  style={{ height: fenetre.hauteurAvant }}
+                  aria-hidden="true"
+                >
+                  <td colSpan={5} />
+                </tr>
+              ) : null}
 
-            {visibles.map((ligne: OuvrageListe) => (
-              <tr key={ligne.id} className="ligne-ouvrage" onDoubleClick={() => setFiche(ligne.id)}>
-                <td title={ligne.auteur}>{ligne.auteur}</td>
-                <td title={ligne.titre}>{ligne.titre}</td>
-                <td title={ligne.edition ?? ""}>{ligne.edition ?? ""}</td>
-                <td title={ligne.categorie_nom ?? ""}>{ligne.categorie_nom ?? ""}</td>
-                <td className="colonne-actions">
-                  <button
-                    type="button"
-                    className="btn-ghost btn-icon"
-                    onClick={() => setFiche(ligne.id)}
-                    title={t("action.editer")}
-                  >
-                    <Pencil className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    className="btn-ghost btn-icon"
-                    onClick={() => setCible({ id: ligne.id, titre: ligne.titre })}
-                    title={t("action.supprimer")}
-                  >
-                    <Trash2 className="icon icon-sm icon-danger" strokeWidth={1.75} aria-hidden="true" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+              {visibles.map((ligne: OuvrageListe) => (
+                <tr
+                  key={ligne.id}
+                  className="ligne-ouvrage"
+                  onDoubleClick={() => setFiche(ligne.id)}
+                >
+                  <td title={ligne.auteur}>{ligne.auteur}</td>
+                  <td title={ligne.titre}>{ligne.titre}</td>
+                  <td title={ligne.edition ?? ""}>{ligne.edition ?? ""}</td>
+                  <td title={ligne.categorie_nom ?? ""}>{ligne.categorie_nom ?? ""}</td>
+                  <td className="colonne-actions">
+                    <button
+                      type="button"
+                      className="btn-ghost btn-icon"
+                      onClick={() => setFiche(ligne.id)}
+                      title={t("action.editer")}
+                    >
+                      <Pencil className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-ghost btn-icon"
+                      onClick={() => setCible({ id: ligne.id, titre: ligne.titre })}
+                      title={t("action.supprimer")}
+                    >
+                      <Trash2
+                        className="icon icon-sm icon-danger"
+                        strokeWidth={1.75}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </td>
+                </tr>
+              ))}
 
-            {fenetre.hauteurApres > 0 ? (
-              <tr className="espaceur" style={{ height: fenetre.hauteurApres }} aria-hidden="true">
-                <td colSpan={5} />
-              </tr>
-            ) : null}
-          </tbody>
-        </table>
+              {fenetre.hauteurApres > 0 ? (
+                <tr
+                  className="espaceur"
+                  style={{ height: fenetre.hauteurApres }}
+                  aria-hidden="true"
+                >
+                  <td colSpan={5} />
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
 
-        {ouvrages.lignes.length === 0 && !ouvrages.chargement ? (
-          <p className="etat-vide">{t("ouvrages.aucun")}</p>
-        ) : null}
+          {ouvrages.lignes.length === 0 && !ouvrages.chargement ? (
+            <p className="etat-vide">{t("ouvrages.aucun")}</p>
+          ) : null}
+        </div>
       </div>
 
       <OuvrageFormModal

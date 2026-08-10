@@ -82,44 +82,60 @@ export function CorbeilleView(): React.JSX.Element {
         </button>
       </div>
 
-      <div className="table-defilante">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>{t("ouvrage.auteur")}</th>
-              <th>{t("ouvrage.titre")}</th>
-              <th>{t("corbeille.supprimeLe")}</th>
-              <th>{t("corbeille.supprimePar")}</th>
-              <th>{t("corbeille.joursRestants")}</th>
-              <th className="colonne-actions">{t("table.actions")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lignes.map((ligne) => (
-              <tr key={ligne.id}>
-                <td title={ligne.auteur}>{ligne.auteur}</td>
-                <td title={ligne.titre}>{ligne.titre}</td>
-                <td>{formaterDateHeure(ligne.supprime_le)}</td>
-                <td>{ligne.supprime_par_nom ?? ""}</td>
-                <td className="cellule-nombre">{formaterNombre(ligne.jours_restants)}</td>
-                <td className="colonne-actions">
-                  <button
-                    type="button"
-                    className="btn-ghost btn-icon"
-                    onClick={() => void restaurer(ligne)}
-                    title={t("action.restaurer")}
-                  >
-                    <Undo2 className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
-                  </button>
-                </td>
+      <div className="table-cadre">
+        {/* En-tête hors du conteneur défilant : la piste de défilement commence sous lui. */}
+        <div className="table-entete">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th className="colonne-large">{t("ouvrage.auteur")}</th>
+                <th>{t("ouvrage.titre")}</th>
+                <th className="colonne-moyenne">{t("corbeille.supprimeLe")}</th>
+                <th className="colonne-moyenne">{t("corbeille.supprimePar")}</th>
+                <th className="colonne-etroite">{t("corbeille.joursRestants")}</th>
+                <th className="colonne-actions">{t("table.actions")}</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+          </table>
+        </div>
 
-        {lignes.length === 0 && !chargement ? (
-          <p className="etat-vide">{t("corbeille.vide")}</p>
-        ) : null}
+        <div className="table-defilante">
+          <table className="data-table">
+            <colgroup>
+              <col className="colonne-large" />
+              <col />
+              <col className="colonne-moyenne" />
+              <col className="colonne-moyenne" />
+              <col className="colonne-etroite" />
+              <col className="colonne-actions" />
+            </colgroup>
+            <tbody>
+              {lignes.map((ligne) => (
+                <tr key={ligne.id}>
+                  <td title={ligne.auteur}>{ligne.auteur}</td>
+                  <td title={ligne.titre}>{ligne.titre}</td>
+                  <td>{formaterDateHeure(ligne.supprime_le)}</td>
+                  <td>{ligne.supprime_par_nom ?? ""}</td>
+                  <td className="cellule-nombre">{formaterNombre(ligne.jours_restants)}</td>
+                  <td className="colonne-actions">
+                    <button
+                      type="button"
+                      className="btn-ghost btn-icon"
+                      onClick={() => void restaurer(ligne)}
+                      title={t("action.restaurer")}
+                    >
+                      <Undo2 className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {lignes.length === 0 && !chargement ? (
+            <p className="etat-vide">{t("corbeille.vide")}</p>
+          ) : null}
+        </div>
       </div>
     </section>
   );

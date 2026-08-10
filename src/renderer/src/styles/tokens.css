@@ -88,6 +88,11 @@
   --modal-large-width: 1200px;
   --modal-large-height: 85vh;
   --row-height: 36px; /* miroir de ROW_HEIGHT (shared/config.ts) - virtualisation */
+  --scrollbar-width: 12px; /* largeur de la gouttière : aligne l'en-tête figé sur le corps défilant */
+  --col-narrow: 7rem; /* colonnes de table à largeur figée (table-layout: fixed) */
+  --col-medium: 11rem;
+  --col-wide: 14rem;
+  --col-actions: 5.5rem;
   --icon-sm: 16px;
   --icon-md: 20px;
   --icon-lg: 24px;
