@@ -5,6 +5,8 @@ Le format s'appuie sur Keep a Changelog, et le projet suit le versionnage séman
 
 ## [Non publié]
 
+## [1.1.2] - 2026-08-10
+
 ### Modifié
 
 - Chaque proposition de modification est désormais vérifiée automatiquement par GitHub avant d'être intégrée : contrôle des types, du style de code, du formatage, des 91 tests et de la compilation.
