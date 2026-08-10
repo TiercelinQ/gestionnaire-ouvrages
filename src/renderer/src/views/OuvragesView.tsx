@@ -24,7 +24,7 @@ import { useVirtualRows } from "../hooks/useVirtualRows";
 import { ConfirmModal } from "./layout/ConfirmModal";
 import { OuvrageFormModal } from "./ouvrage/OuvrageFormModal";
 
-/** `largeur` est la classe de largeur figée ; la colonne qui n'en porte pas absorbe le reste. */
+/** `largeur` is the fixed-width class; the column without one absorbs the remainder. */
 const COLONNES: { cle: ColonneTri; libelle: string; largeur?: string }[] = [
   { cle: "auteur", libelle: t("ouvrage.auteur"), largeur: "colonne-large" },
   { cle: "titre", libelle: t("ouvrage.titre") },
@@ -32,7 +32,7 @@ const COLONNES: { cle: ColonneTri; libelle: string; largeur?: string }[] = [
   { cle: "categorie", libelle: t("ouvrage.categorie"), largeur: "colonne-large" },
 ];
 
-/** Ouvrage visé par une suppression, avec la version lue au chargement de la liste. */
+/** Book targeted by a deletion, with the version read when the list was loaded. */
 interface CibleSuppression {
   id: number;
   titre: string;
@@ -53,7 +53,7 @@ export function OuvragesView(): React.JSX.Element {
   async function supprimer(): Promise<void> {
     if (!cible) return;
     setSuppression(true);
-    // La version est relue sur la fiche : la liste ne la porte pas et le serveur l'exige.
+    // The version is re-read from the record: the list does not carry it and the server requires it.
     const courante = await window.api.ouvrageGet(cible.id);
     if (!courante.ok) {
       setSuppression(false);
@@ -141,7 +141,7 @@ export function OuvragesView(): React.JSX.Element {
       </div>
 
       <div className="table-cadre">
-        {/* En-tête hors du conteneur défilant : la piste de défilement commence sous lui. */}
+        {/* Header outside the scrolling container: the scroll track starts below it. */}
         <div className="table-entete">
           <table className="data-table">
             <thead>
@@ -159,18 +159,24 @@ export function OuvragesView(): React.JSX.Element {
                         : "none"
                     }
                   >
-                    {colonne.libelle}
-                    {ouvrages.colonne === colonne.cle ? (
-                      ouvrages.sens === "asc" ? (
-                        <ChevronUp className="icon icon-sm" strokeWidth={1.75} aria-hidden="true" />
-                      ) : (
-                        <ChevronDown
-                          className="icon icon-sm"
-                          strokeWidth={1.75}
-                          aria-hidden="true"
-                        />
-                      )
-                    ) : null}
+                    <span className="th-contenu">
+                      <span className="th-libelle">{colonne.libelle}</span>
+                      {ouvrages.colonne === colonne.cle ? (
+                        ouvrages.sens === "asc" ? (
+                          <ChevronUp
+                            className="icon icon-sm"
+                            strokeWidth={1.75}
+                            aria-hidden="true"
+                          />
+                        ) : (
+                          <ChevronDown
+                            className="icon icon-sm"
+                            strokeWidth={1.75}
+                            aria-hidden="true"
+                          />
+                        )
+                      ) : null}
+                    </span>
                   </th>
                 ))}
                 <th className="colonne-actions">{t("table.actions")}</th>
@@ -188,7 +194,7 @@ export function OuvragesView(): React.JSX.Element {
               <col className="colonne-actions" />
             </colgroup>
             <tbody>
-              {/* Espaceurs de virtualisation : hauteurs calculées au défilement, hors de portée du CSS. */}
+              {/* Virtualisation spacers: heights computed while scrolling, out of reach of CSS. */}
               {fenetre.hauteurAvant > 0 ? (
                 <tr
                   className="espaceur"

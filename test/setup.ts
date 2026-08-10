@@ -3,11 +3,11 @@ import { afterEach, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
 import type { WindowApi } from "../src/shared/types";
 
-// Sans globals Vitest, le nettoyage automatique de Testing Library n'est pas branché :
-// les rendus s'accumuleraient dans le même document d'un test à l'autre.
+// Without Vitest globals, the automatic Testing Library cleanup is not wired: renders
+// would pile up in the same document from one test to the next.
 afterEach(cleanup);
 
-/** `window.api` simulé : aucun test ne touche le réseau ni le disque. */
+/** Mocked `window.api`: no test touches the network or the disk. */
 const api: WindowApi = {
   sessionStatus: vi.fn().mockResolvedValue({ ok: true, data: { authentifie: true } }),
   sessionLogin: vi.fn(),
@@ -55,7 +55,7 @@ const api: WindowApi = {
 
 globalThis.window.api = api;
 
-// jsdom n'implémente ni matchMedia ni ResizeObserver, tous deux utilisés par l'interface.
+// jsdom implements neither matchMedia nor ResizeObserver, both used by the interface.
 globalThis.window.matchMedia = vi.fn().mockReturnValue({
   matches: false,
   addEventListener: vi.fn(),

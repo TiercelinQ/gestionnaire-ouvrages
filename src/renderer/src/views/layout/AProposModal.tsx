@@ -8,7 +8,7 @@ export interface AProposModalProps {
   onFermer(): void;
 }
 
-/** Identité de l'application et seuil de version accepté par le serveur. */
+/** Application identity and version threshold accepted by the server. */
 export function AProposModal({ ouvert, onFermer }: AProposModalProps): React.JSX.Element {
   const [info, setInfo] = useState<AppInfo | null>(null);
 

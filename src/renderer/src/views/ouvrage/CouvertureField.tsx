@@ -20,10 +20,10 @@ const MESSAGE_RAISON = {
 } as const;
 
 /**
- * Champ de couverture : sélection, miniature, aperçu.
+ * Cover field: picking, thumbnail, preview.
  *
- * L'API ne stocke aucun binaire, seulement le chemin. Le fichier choisi n'est ni copié
- * ni transmis : son chemin est enregistré tel quel.
+ * The API stores no binary, only the path. The chosen file is neither copied nor
+ * transmitted: its path is recorded as it is.
  */
 export function CouvertureField({
   libelle,
@@ -56,7 +56,7 @@ export function CouvertureField({
       echouer(resultat.error);
       return;
     }
-    // Chemin absolu du fichier choisi : l'emplacement suit la convention héritée de la v1.
+    // Absolute path of the chosen file: the location follows the convention inherited from v1.
     if (resultat.data) onChange(resultat.data, "Local");
   }
 

@@ -13,10 +13,10 @@ import { useSession } from "../../hooks/useSession";
 import { useToast } from "../../hooks/useToast";
 import { Modal } from "../layout/Modal";
 import { CouvertureField } from "./CouvertureField";
-import { HistoriqueDrawer } from "./HistoriqueDrawer";
+import { HistoriqueModal } from "./HistoriqueModal";
 
 export interface OuvrageFormModalProps {
-  /** Identifiant à éditer, `"nouveau"` pour une création, `null` si la modale est fermée. */
+  /** Identifier to edit, `"nouveau"` for a creation, `null` when the modal is closed. */
   cible: number | "nouveau" | null;
   onFermer(): void;
   onEnregistre(): void;
@@ -54,7 +54,7 @@ const VIDE: OuvrageInput = {
   couverture_quatrieme_emplacement: null,
 };
 
-/** Extrait les champs modifiables d'une fiche : le reste est calculé par le serveur. */
+/** Extracts the editable fields of a record: the rest is computed by the server. */
 function versInput(fiche: OuvrageFiche): OuvrageInput {
   const input: Record<string, unknown> = {};
   for (const cle of Object.keys(VIDE)) input[cle] = fiche[cle as keyof OuvrageInput];
@@ -74,7 +74,7 @@ export function OuvrageFormModal({
   const [fiche, setFiche] = useState<OuvrageFiche | null>(null);
   const [erreurChamp, setErreurChamp] = useState<{ champ: string; message: string } | null>(null);
   const [conflit, setConflit] = useState<string | null>(null);
-  // Une édition démarre en chargement, une création non : la modale est remontée à chaque cible.
+  // An edit starts in the loading state, a creation does not: the modal is remounted per target.
   const [chargement, setChargement] = useState(typeof cible === "number");
   const [envoi, setEnvoi] = useState(false);
   const [historique, setHistorique] = useState(false);
@@ -99,8 +99,8 @@ export function OuvrageFormModal({
     [echouer, onFermer],
   );
 
-  // Le composant est remonté à chaque changement de cible (clé côté appelant) : une création
-  // repart d'un état vierge, et le chargement d'une fiche s'écrit dans l'effet lui-même.
+  // The component is remounted on every target change (key on the caller side): a creation
+  // restarts from a blank state, and loading a record is written inside the effect itself.
   useEffect(() => {
     if (typeof cible !== "number") return;
     let annule = false;
@@ -126,8 +126,8 @@ export function OuvrageFormModal({
   }
 
   /**
-   * Changer un parent réinitialise ses enfants : le formulaire ne doit jamais produire
-   * une combinaison partielle, le serveur ne contrôlant que les paires effectivement fournies.
+   * Changing a parent resets its children: the form must never produce a partial combination,
+   * the server only validating the pairs actually supplied.
    */
   function changerCategorie(valeur: string): void {
     setForm((courant) => ({
@@ -270,6 +270,7 @@ export function OuvrageFormModal({
         ouvert={cible !== null}
         titre={edition ? t("ouvrage.editerTitre") : t("ouvrage.ajouterTitre")}
         taille="large"
+        fermetureClavier={!historique}
         onFermer={onFermer}
         pied={
           <div className="btn-group">
@@ -397,7 +398,7 @@ export function OuvrageFormModal({
         </form>
       </Modal>
 
-      <HistoriqueDrawer
+      <HistoriqueModal
         key={`${fiche?.id ?? 0}-${historique ? "ouvert" : "ferme"}`}
         ouvert={historique}
         ouvrageId={fiche?.id ?? null}

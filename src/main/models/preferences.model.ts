@@ -17,7 +17,7 @@ function fichier(): string {
   return join(app.getPath("userData"), config.PREFERENCES_FILENAME);
 }
 
-/** Préférences courantes, fusionnées avec les valeurs par défaut. */
+/** Current preferences, merged with the default values. */
 export function getAll(): Preferences {
   if (cache) return cache;
 
@@ -31,14 +31,14 @@ export function getAll(): Preferences {
     const contenu = JSON.parse(readFileSync(chemin, "utf8")) as Partial<Preferences>;
     cache = { ...DEFAUTS, ...contenu };
   } catch (err) {
-    // Fichier corrompu : on repart des valeurs par défaut plutôt que de bloquer le démarrage.
+    // Corrupted file: fall back to the default values rather than block startup.
     log.error("Lecture des préférences impossible", err);
     cache = { ...DEFAUTS };
   }
   return cache;
 }
 
-/** Écrit une préférence et persiste l'ensemble. */
+/** Writes one preference and persists the whole set. */
 export function set<K extends keyof Preferences>(cle: K, valeur: Preferences[K]): void {
   const preferences = { ...getAll(), [cle]: valeur };
   cache = preferences;
@@ -49,7 +49,7 @@ export function set<K extends keyof Preferences>(cle: K, valeur: Preferences[K])
   }
 }
 
-/** Dossier racine servant à résoudre les chemins de couverture relatifs. */
+/** Root folder used to resolve relative cover paths. */
 export function coversRoot(): string | null {
   return getAll().coversRoot;
 }

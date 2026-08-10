@@ -13,7 +13,7 @@ const existsSync = vi.fn();
 const readFileSync = vi.fn();
 const statSync = vi.fn();
 vi.mock("node:fs", () => {
-  // L'export `default` est requis : certaines dépendances importent le module entier.
+  // The `default` export is required: some dependencies import the whole module.
   const fs = {
     existsSync: (chemin: string): boolean => existsSync(chemin),
     readFileSync: (chemin: string): Buffer => readFileSync(chemin),

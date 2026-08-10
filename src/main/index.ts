@@ -20,10 +20,10 @@ process.on("unhandledRejection", (raison) => {
 });
 
 /**
- * Couleurs de fond des fenêtres, seul endroit où un hexadécimal est répété hors de tokens.css :
- * une option de `BrowserWindow` ne peut pas lire une variable CSS. Sources : `--bg` clair et sombre.
+ * Window background colours, the only place a hexadecimal is repeated outside tokens.css:
+ * a `BrowserWindow` option cannot read a CSS variable. Sources: light and dark `--bg`.
  */
-const FOND = { light: "#FFFFFF", dark: "#1C1917" } as const;
+const FOND = { light: "#FFFFFF", dark: "#17181C" } as const;
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -33,21 +33,26 @@ function themeDemarrage(): Theme {
   return nativeTheme.shouldUseDarkColors ? "dark" : "light";
 }
 
-function urlRenderer(page: "index" | "splash", requete = ""): { url?: string; fichier?: string } {
+function urlRenderer(page: "index" | "splash"): { url?: string; fichier?: string } {
   const serveur = process.env.ELECTRON_RENDERER_URL;
-  if (!app.isPackaged && serveur) return { url: `${serveur}/${page}.html${requete}` };
+  if (!app.isPackaged && serveur) return { url: `${serveur}/${page}.html` };
   return { fichier: join(__dirname, `../renderer/${page}.html`) };
 }
 
-function creerSplash(theme: Theme): BrowserWindow {
+/**
+ * Splash window: the application icon and nothing else. Transparent and shadowless so no
+ * frame shows around it, which also makes it theme-independent.
+ */
+function creerSplash(): BrowserWindow {
   const splash = new BrowserWindow({
     width: config.SPLASH_WIDTH,
     height: config.SPLASH_HEIGHT,
     frame: false,
+    transparent: true,
+    hasShadow: false,
     resizable: false,
     center: true,
     show: true,
-    backgroundColor: FOND[theme],
     icon: join(__dirname, "../../resources/icon.png"),
     webPreferences: {
       contextIsolation: true,
@@ -56,9 +61,9 @@ function creerSplash(theme: Theme): BrowserWindow {
     },
   });
 
-  const cible = urlRenderer("splash", `?theme=${theme}`);
+  const cible = urlRenderer("splash");
   if (cible.url) void splash.loadURL(cible.url);
-  else void splash.loadFile(cible.fichier as string, { query: { theme } });
+  else void splash.loadFile(cible.fichier as string);
 
   return splash;
 }
@@ -109,7 +114,7 @@ function verrouillerNavigation(): void {
   });
 }
 
-// Une seule instance : l'application écrit un jeton chiffré et des préférences.
+// Single instance: the application writes an encrypted token and preferences.
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
@@ -127,13 +132,13 @@ if (!app.requestSingleInstanceLock()) {
     );
 
     const theme = themeDemarrage();
-    const splash = creerSplash(theme);
+    const splash = creerSplash();
     const affichageSplash = Date.now();
 
     registerAllControllers();
     mainWindow = creerFenetre(theme);
 
-    // Le modèle ne connaît pas BrowserWindow : la composition racine relaie l'état au rendu.
+    // The model knows nothing of BrowserWindow: the composition root relays the state to the renderer.
     apiClient.setStatusListener((statut) => {
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send(IPC.API_STATUS, statut);

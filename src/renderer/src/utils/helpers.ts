@@ -1,4 +1,4 @@
-/** Fonctions pures de présentation. Aucune logique métier, aucun accès aux données. */
+/** Pure presentation functions. No business logic, no data access. */
 
 const FUSEAU = "Europe/Paris";
 
@@ -27,9 +27,9 @@ const FORMAT_HEURE = new Intl.DateTimeFormat("fr-FR", {
 const FORMAT_NOMBRE = new Intl.NumberFormat("fr-FR");
 
 /**
- * Convertit une date ISO en temps universel vers l'heure de Paris.
- * Le serveur ne renvoie jamais d'heure locale, la conversion est à la charge du client,
- * passage été/hiver compris - géré ici par le fuseau nommé.
+ * Converts an ISO date in universal time to Paris time.
+ * The server never returns a local time, the conversion is the client's job, daylight
+ * saving included - handled here by the named time zone.
  */
 export function formaterDate(iso: string | null | undefined): string {
   if (!iso) return "";
@@ -53,13 +53,13 @@ export function formaterNombre(valeur: number): string {
   return FORMAT_NOMBRE.format(valeur);
 }
 
-/** Renvoie `null` pour une chaîne vide : l'API traite absence, `null` et chaîne vide à l'identique. */
+/** Returns `null` for an empty string: the API treats absence, `null` and empty string alike. */
 export function videVersNull(valeur: string): string | null {
   const propre = valeur.trim();
   return propre.length === 0 ? null : propre;
 }
 
-/** Convertit une valeur de liste déroulante en identifiant de nomenclature. */
+/** Converts a dropdown value into a nomenclature identifier. */
 export function versIdentifiant(valeur: string): number | null {
   const nombre = Number.parseInt(valeur, 10);
   return Number.isInteger(nombre) && nombre > 0 ? nombre : null;

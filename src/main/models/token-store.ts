@@ -6,7 +6,7 @@ import * as config from "../../shared/config";
 import type { Utilisateur } from "../../shared/types";
 import { ChiffrementIndisponibleError } from "./errors";
 
-/** Session persistée localement. Le jeton vaut trente jours d'accès : il est chiffré au repos. */
+/** Session persisted locally. The token is worth thirty days of access: it is encrypted at rest. */
 export interface SessionPersistee {
   jeton: string;
   expire_le: string;
@@ -26,9 +26,9 @@ function expiree(session: SessionPersistee): boolean {
 }
 
 /**
- * Lit la session persistée. Renvoie `null` si aucune session n'est stockée,
- * si le fichier est illisible, ou si la date d'expiration mémorisée est dépassée.
- * Le contenu est mis en cache mémoire pour éviter un déchiffrement par requête.
+ * Reads the persisted session. Returns `null` if no session is stored, if the file is
+ * unreadable, or if the remembered expiry date has passed.
+ * The content is cached in memory to avoid one decryption per request.
  */
 export function lireSession(): SessionPersistee | null {
   if (cacheCharge) return cache;
@@ -49,7 +49,7 @@ export function lireSession(): SessionPersistee | null {
       effacerSession();
     }
   } catch (err) {
-    // Fichier corrompu ou chiffré par un autre profil Windows : on repart d'une session vide.
+    // File corrupted or encrypted by another Windows profile: restart from an empty session.
     log.error("Lecture de la session impossible", err);
     cache = null;
     effacerSession();
@@ -58,9 +58,9 @@ export function lireSession(): SessionPersistee | null {
 }
 
 /**
- * Chiffre puis écrit la session.
- * @throws {ChiffrementIndisponibleError} si le système ne fournit pas de chiffrement -
- * le jeton n'est jamais écrit en clair.
+ * Encrypts then writes the session.
+ * @throws {ChiffrementIndisponibleError} if the system provides no encryption -
+ * the token is never written in clear text.
  */
 export function ecrireSession(session: SessionPersistee): void {
   if (!safeStorage.isEncryptionAvailable()) {
@@ -73,7 +73,7 @@ export function ecrireSession(session: SessionPersistee): void {
   cacheCharge = true;
 }
 
-/** Efface la session locale, sur déconnexion ou sur réponse `401 session_expiree`. */
+/** Clears the local session, on sign-out or on a `401 session_expiree` response. */
 export function effacerSession(): void {
   const chemin = fichier();
   try {
@@ -85,7 +85,7 @@ export function effacerSession(): void {
   cacheCharge = true;
 }
 
-/** Jeton courant, ou `null`. Jamais journalisé ni transmis au processus de rendu. */
+/** Current token, or `null`. Never logged nor passed to the renderer process. */
 export function lireJeton(): string | null {
   return lireSession()?.jeton ?? null;
 }

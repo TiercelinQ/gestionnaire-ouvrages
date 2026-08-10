@@ -34,8 +34,8 @@ export function Topbar({
 }: TopbarProps): React.JSX.Element {
   const onglets = useRef<HTMLElement>(null);
 
-  // Geste signature : le soulignement glisse vers l'onglet actif. Seul visuel positionné
-  // en JavaScript, limité à deux variables CSS (design-system.md §8).
+  // Signature gesture: the underline slides to the active tab. The only visual positioned
+  // in JavaScript, limited to two CSS variables (design-system.md section 8).
   useEffect(() => {
     const conteneur = onglets.current;
     if (!conteneur) return;

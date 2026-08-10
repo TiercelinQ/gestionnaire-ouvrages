@@ -3,6 +3,7 @@ node_modules/
 /dist/
 /out/
 /release/
+*.tsbuildinfo
 .env
 
 # --- App runtime data (defensive; normally under app.getPath("userData"), outside the repo) -

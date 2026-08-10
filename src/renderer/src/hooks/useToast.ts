@@ -9,16 +9,16 @@ export interface Toast {
 }
 
 export interface ToastApi {
-  /** Affiche un toast. Les erreurs métier passent par `toastErreur`. */
+  /** Shows a toast. Business errors go through `toastErreur`. */
   toast(type: ToastType, message: string, description?: string): void;
-  /** Affiche l'erreur telle que l'API l'a rédigée : le message est destiné à l'utilisateur final. */
+  /** Shows the error as the API worded it: the message targets the end user. */
   toastErreur(erreur: IpcError): void;
   fermer(id: number): void;
 }
 
 export const ToastContext = createContext<ToastApi | null>(null);
 
-/** Accès à la file de toasts. Doit être appelé sous `ToastProvider`. */
+/** Access to the toast queue. Must be called under `ToastProvider`. */
 export function useToast(): ToastApi {
   const api = useContext(ToastContext);
   if (!api) throw new Error("useToast doit être utilisé à l'intérieur de ToastProvider.");

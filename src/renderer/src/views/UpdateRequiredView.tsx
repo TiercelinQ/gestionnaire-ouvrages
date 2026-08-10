@@ -4,17 +4,16 @@ import type { AppInfo } from "../../../shared/types";
 import { t, tp } from "../i18n";
 
 export interface UpdateRequiredViewProps {
-  /** Message serveur, affiché tel quel. */
+  /** Server message, displayed as it comes. */
   message: string;
 }
 
 /**
- * Écran bloquant sur refus de version.
+ * Blocking screen on a version refusal.
  *
- * Le contrôle de version s'exécute avant la résolution de route : toutes les routes sont
- * refusées d'un coup. La situation ne se résout que par l'installation d'une nouvelle
- * version, aucun bouton de réessai n'est donc proposé - réessayer consommerait un quota
- * partagé sans jamais aboutir.
+ * The version check runs before route resolution: every route is refused at once. The
+ * situation only resolves by installing a new version, so no retry button is offered -
+ * retrying would consume a shared quota without ever succeeding.
  */
 export function UpdateRequiredView({ message }: UpdateRequiredViewProps): React.JSX.Element {
   const [info, setInfo] = useState<AppInfo | null>(null);
@@ -22,7 +21,7 @@ export function UpdateRequiredView({ message }: UpdateRequiredViewProps): React.
   useEffect(() => {
     let annule = false;
     void (async () => {
-      // Seule route dispensée d'en-têtes : elle répond même à un client refusé.
+      // The only route exempt from headers: it answers even a rejected client.
       const resultat = await window.api.appInfo();
       if (!annule && resultat.ok) setInfo(resultat.data);
     })();

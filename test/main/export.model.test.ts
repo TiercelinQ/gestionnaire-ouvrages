@@ -3,7 +3,7 @@ import type { OuvrageListe } from "../../src/shared/types";
 
 const writeFileSync = vi.fn();
 vi.mock("node:fs", () => {
-  // L'export `default` est requis : certaines dépendances importent le module entier.
+  // The `default` export is required: some dependencies import the whole module.
   const fs = {
     writeFileSync: (chemin: string, contenu: string, encodage: string): void =>
       writeFileSync(chemin, contenu, encodage),

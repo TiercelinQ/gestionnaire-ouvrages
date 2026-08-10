@@ -5,7 +5,7 @@ import { CODE_COMPTE_BLOQUE, type IpcError } from "../../../shared/types";
 import { t } from "../i18n";
 import { useSession } from "../hooks/useSession";
 
-/** Durée du blocage appliqué par le serveur après cinq échecs consécutifs. */
+/** Duration of the lockout the server applies after five consecutive failures. */
 const BLOCAGE_MS = 15 * 60 * 1000;
 
 export function LoginView(): React.JSX.Element {
@@ -28,7 +28,7 @@ export function LoginView(): React.JSX.Element {
     evenement.preventDefault();
     setEnvoi(true);
     setErreur(null);
-    // Le mot de passe n'est pas conservé au-delà de cet appel : aucune option de mémorisation.
+    // The password is not kept beyond this call: no remember-me option.
     const echec = await connecter({ email, mot_de_passe: motDePasse });
     setEnvoi(false);
     if (!echec) return;

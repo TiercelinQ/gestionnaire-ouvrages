@@ -12,13 +12,13 @@ import {
 } from "../../shared/types";
 import { effacerSession, lireJeton } from "./token-store";
 
-/** Portée des en-têtes selon la route appelée. */
+/** Header scope, depending on the route being called. */
 export type ModeEntetes =
-  /** Aucun en-tête : `GET /v1/version`, seule route dispensée. */
+  /** No header: `GET /v1/version`, the only exempt route. */
   | "public"
-  /** Identification de l'application seule : `POST /v1/connexion`. */
+  /** Application identification only: `POST /v1/connexion`. */
   | "version"
-  /** Identification plus jeton : toutes les autres routes. */
+  /** Identification plus token: every other route. */
   | "complet";
 
 export interface OptionsRequete {
@@ -32,7 +32,7 @@ interface EnveloppeErreur {
   message: string;
 }
 
-/** Les deux mécanismes d'attente de l'API se présentent comme des avertissements, pas des échecs durs. */
+/** Both API waiting mechanisms surface as warnings, not as hard failures. */
 const STATUTS_AVERTISSEMENT = new Set([423, 429]);
 
 function lireEnveloppeErreur(donnees: unknown): EnveloppeErreur | null {
@@ -49,28 +49,27 @@ function lireEnveloppeErreur(donnees: unknown): EnveloppeErreur | null {
 }
 
 /**
- * Seul point d'accès réseau de l'application.
+ * The only network access point of the application.
  *
- * Pose systématiquement les en-têtes d'identification : le contrôle de version du serveur
- * s'exécute avant la résolution de route, un en-tête manquant produirait donc un `426`
- * trompeur sur une simple faute de chemin.
+ * Always sets the identification headers: the server version check runs before route
+ * resolution, so a missing header would produce a misleading `426` on a plain path typo.
  *
- * Toutes les requêtes partent du processus principal : le Worker ne pose aucun en-tête CORS
- * et répondrait `426` à un contrôle préalable de navigateur.
+ * Every request starts from the main process: the Worker sets no CORS header and would
+ * answer `426` to a browser preflight.
  */
 export class ApiClient {
   private statusListener: ((statut: ApiStatus) => void) | null = null;
   private dernierEchange: string | null = null;
 
   /**
-   * Branche l'émission de l'état de disponibilité.
-   * Le modèle n'accède pas à `BrowserWindow` : la composition racine y raccorde l'envoi au rendu.
+   * Wires the emission of the availability state.
+   * The model does not reach `BrowserWindow`: the composition root hooks the send to the renderer.
    */
   setStatusListener(callback: (statut: ApiStatus) => void): void {
     this.statusListener = callback;
   }
 
-  /** Dernier état publié, utile au démarrage du rendu. */
+  /** Last published state, useful when the renderer starts. */
   statutCourant(): ApiStatus {
     return { etat: this.dernierEchange ? "connecte" : "hors-ligne", dernierEchange: this.dernierEchange };
   }
@@ -92,8 +91,8 @@ export class ApiClient {
   }
 
   /**
-   * Exécute une requête et convertit toute issue en `IpcResult`.
-   * Aucune exception ne traverse cette méthode.
+   * Runs a request and converts every outcome into an `IpcResult`.
+   * No exception crosses this method.
    */
   async requete<T>(
     methode: string,
@@ -126,7 +125,7 @@ export class ApiClient {
       };
     }
 
-    // 204 : aucun octet renvoyé. Tenter d'analyser ce corps comme du JSON échouerait.
+    // 204: no byte returned. Parsing that body as JSON would fail.
     if (reponse.status === 204) {
       this.publierStatut("connecte");
       return { ok: true, data: undefined as T };
@@ -137,8 +136,8 @@ export class ApiClient {
     try {
       donnees = JSON.parse(texte);
     } catch {
-      // Réponse en texte brut : elle ne vient pas du code applicatif mais de Cloudflare,
-      // sur exception non interceptée.
+      // Plain text response: it does not come from the application code but from Cloudflare,
+      // on an uncaught exception.
       log.error(`Réponse illisible sur ${methode} ${chemin} (HTTP ${reponse.status})`);
       this.publierStatut("serveur");
       return {
@@ -174,7 +173,7 @@ export class ApiClient {
       };
     }
 
-    // Une session périmée n'est plus utilisable : le jeton stocké est effacé immédiatement.
+    // An expired session is no longer usable: the stored token is cleared immediately.
     if (enveloppe.code === CODE_SESSION_EXPIREE) effacerSession();
 
     log.warn(`Refus ${enveloppe.code} sur ${methode} ${chemin} (HTTP ${reponse.status})`);
@@ -188,7 +187,7 @@ export class ApiClient {
     if (mode === "public") return entetes;
 
     entetes["X-App-Id"] = config.API_APP_ID;
-    // Version réelle publiée, jamais une constante figée : le seuil serveur la compare numériquement.
+    // The real published version, never a frozen constant: the server threshold compares it numerically.
     entetes["X-App-Version"] = app.getVersion();
 
     if (mode === "complet") {
@@ -200,7 +199,7 @@ export class ApiClient {
 
   private versIpcError(statut: number, enveloppe: EnveloppeErreur): IpcError {
     const type: ToastType = STATUTS_AVERTISSEMENT.has(statut) ? "warning" : "danger";
-    // Le message serveur est rédigé pour l'utilisateur final et s'affiche tel quel.
+    // The server message is written for the end user and is displayed as it comes.
     return { type, message: enveloppe.message, code: enveloppe.code, champ: enveloppe.champ };
   }
 

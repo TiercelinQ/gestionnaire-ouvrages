@@ -8,8 +8,8 @@ import type {
 import { apiClient } from "./api-client";
 
 /**
- * Les segments d'URL emploient le trait d'union là où les clés JSON et les tables
- * emploient le tiret bas. La correspondance est explicite pour éviter toute dérive.
+ * URL segments use a hyphen where the JSON keys and the tables use an underscore.
+ * The mapping is explicit to prevent any drift.
  */
 export const CLE_JSON: Record<RessourceNomenclature, keyof Nomenclatures> = {
   categories: "categories",
@@ -32,15 +32,15 @@ const LISTES_VIDES: Nomenclatures = {
 };
 
 /**
- * Nomenclatures : les sept listes de référence.
- * La lecture est groupée en un seul appel, il n'existe pas de route par ressource.
+ * Nomenclatures: the seven reference lists.
+ * Reading is grouped into a single call, there is no per-resource route.
  */
 export const nomenclatureModel = {
-  /** Lecture groupée des sept listes, chacune triée par nom croissant côté serveur. */
+  /** Grouped read of the seven lists, each sorted by ascending name server side. */
   async list(): Promise<IpcResult<Nomenclatures>> {
     const resultat = await apiClient.get<Partial<Nomenclatures>>("/nomenclatures");
     if (!resultat.ok) return resultat;
-    // Lecture défensive : une liste absente vaut liste vide, jamais `undefined` côté rendu.
+    // Defensive read: a missing list means an empty list, never `undefined` in the renderer.
     return { ok: true, data: { ...LISTES_VIDES, ...resultat.data } };
   },
 
@@ -52,8 +52,8 @@ export const nomenclatureModel = {
   },
 
   /**
-   * Renomme, et déplace pour les deux ressources hiérarchiques.
-   * Le déplacement est refusé si au moins un ouvrage référence la valeur, corbeille comprise.
+   * Renames, and moves for the two hierarchical resources.
+   * Moving is refused if at least one book references the value, trash included.
    */
   async update(
     ressource: RessourceNomenclature,
@@ -63,7 +63,7 @@ export const nomenclatureModel = {
     return apiClient.patch<Nomenclature>(`/${ressource}/${id}`, input);
   },
 
-  /** Suppression définitive, sans corbeille. Refusée si la valeur est utilisée ou a des enfants. */
+  /** Permanent deletion, no trash. Refused if the value is in use or has children. */
   async remove(ressource: RessourceNomenclature, id: number): Promise<IpcResult<void>> {
     return apiClient.delete<void>(`/${ressource}/${id}`);
   },

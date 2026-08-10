@@ -12,10 +12,10 @@ import type {
 } from "../shared/types";
 
 /**
- * Surface exposée au processus de rendu.
+ * Surface exposed to the renderer process.
  *
- * Uniquement des fonctions nommées, une par canal déclaré. Ni `ipcRenderer` brut,
- * ni `require`, ni primitive Node. Aucune logique : le preload ne fait que transmettre.
+ * Named functions only, one per declared channel. No raw `ipcRenderer`, no `require`, no
+ * Node primitive. No logic: the preload only forwards.
  */
 const api: WindowApi = {
   sessionStatus: () => ipcRenderer.invoke(IPC.SESSION_STATUS),
@@ -50,7 +50,7 @@ const api: WindowApi = {
   setPreference: (cle, valeur) => ipcRenderer.invoke(IPC.PREF_SET, cle, valeur),
   pickCoversFolder: () => ipcRenderer.invoke(IPC.PREF_PICK_FOLDER),
 
-  // L'objet événement n'est jamais transmis au rendu : seule la donnée passe.
+  // The event object is never passed to the renderer: only the payload goes through.
   onApiStatus: (callback: (statut: ApiStatus) => void) => {
     const ecouteur = (_evenement: Electron.IpcRendererEvent, statut: ApiStatus): void =>
       callback(statut);

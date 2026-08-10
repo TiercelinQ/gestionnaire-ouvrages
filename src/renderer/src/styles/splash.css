@@ -1,41 +1,23 @@
 /* ============================================================
-   splash.css - Gestionnaire Ouvrage v1.0.0
-   Consomme uniquement les tokens de tokens.css. Aucune valeur littérale.
+   splash.css - Gestionnaire Ouvrage
+   Consumes tokens.css only. No literal value.
    ============================================================ */
 
-/* token: font-family / bg / text / border-strong */
+/* The window is transparent (main/index.ts): no background, no border, no theming.
+   The icon is the only thing on screen. */
 .splash {
   margin: 0;
   height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-3);
-  font-family: var(--font-family);
-  background: var(--bg);
-  color: var(--text);
-  border: var(--border-width) solid var(--border-strong);
+  background: transparent;
   overflow: hidden;
   user-select: none;
 }
 
-/* token: icon-lg - l'icône de l'application, agrandie pour l'écran de démarrage */
+/* token: splash-icon-size - the window is exactly this size */
 .splash-icone {
-  width: calc(var(--icon-lg) * 3);
-  height: calc(var(--icon-lg) * 3);
-}
-
-/* token: font-xl / weight-semibold */
-.splash-nom {
-  margin: 0;
-  font-size: var(--font-xl);
-  font-weight: var(--weight-semibold);
-}
-
-/* token: font-sm / text-subtle */
-.splash-etat {
-  margin: 0;
-  font-size: var(--font-sm);
-  color: var(--text-subtle);
+  width: var(--splash-icon-size);
+  height: var(--splash-icon-size);
 }

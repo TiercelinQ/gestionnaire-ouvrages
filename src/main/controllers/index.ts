@@ -5,7 +5,7 @@ import { registerOuvrageController } from "./ouvrage.controller";
 import { registerPreferencesController } from "./preferences.controller";
 import { registerSessionController } from "./session.controller";
 
-/** Enregistre tous les gestionnaires IPC. Appelé une seule fois, depuis la composition racine. */
+/** Registers every IPC handler. Called once, from the composition root. */
 export function registerAllControllers(): void {
   registerSessionController();
   registerOuvrageController();

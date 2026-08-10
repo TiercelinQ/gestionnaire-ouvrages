@@ -4,7 +4,7 @@ import type { IpcError, ToastType } from "../../../shared/types";
 import { t } from "../i18n";
 import { ToastContext, type Toast, type ToastApi } from "../hooks/useToast";
 
-/** Durées d'affichage. Un `danger` reste jusqu'à fermeture explicite. */
+/** Display durations. A `danger` stays until it is explicitly dismissed. */
 const DUREES: Record<ToastType, number | null> = {
   success: 4000,
   info: 4000,
@@ -20,8 +20,8 @@ const ICONES = {
 } as const;
 
 /**
- * File de toasts. Seul canal de retour d'erreur de l'application :
- * aucun bandeau en ligne, aucune boîte native.
+ * Toast queue. The only error feedback channel of the application:
+ * no inline banner, no native dialog.
  */
 export function ToastProvider({ children }: { children: ReactNode }): React.JSX.Element {
   const [toasts, setToasts] = useState<Toast[]>([]);

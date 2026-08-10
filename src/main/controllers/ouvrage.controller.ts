@@ -17,7 +17,7 @@ function refus(message: string, champ: string | null = null): IpcResult<never> {
   return { ok: false, error: { type: "danger", message, code: CODE_TECHNIQUE, champ } };
 }
 
-/** La version doit être numérique : le serveur refuse une chaîne, même bien formée. */
+/** The version must be numeric: the server rejects a string, however well formed. */
 function versionValide(valeur: unknown): valeur is number {
   return typeof valeur === "number" && Number.isFinite(valeur);
 }

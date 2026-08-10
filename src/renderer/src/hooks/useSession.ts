@@ -9,19 +9,19 @@ import {
 } from "../../../shared/types";
 import { useToast } from "./useToast";
 
-/** Écran affiché par la racine de l'application. */
+/** Screen displayed by the application root. */
 export type EtatApplication = "chargement" | "connexion" | "mise-a-jour" | "pret";
 
 export interface SessionApi {
   etat: EtatApplication;
   utilisateur: Utilisateur | null;
-  /** Message serveur associé au refus de version, affiché tel quel. */
+  /** Server message attached to the version refusal, displayed as it comes. */
   messageMiseAJour: string;
   connecter(identifiants: Identifiants): Promise<IpcError | null>;
   deconnecter(): Promise<void>;
   /**
-   * Traite une erreur d'appel : bascule d'écran sur session expirée ou refus de version,
-   * toast sinon. À appeler sur tout `IpcResult` en échec.
+   * Handles a call error: switches screen on an expired session or a version refusal,
+   * toasts otherwise. To be called on every failed `IpcResult`.
    */
   echouer(erreur: IpcError): void;
 }
@@ -38,7 +38,7 @@ function estRefusDeVersion(code: string | undefined): boolean {
   return code === CODE_VERSION_INVALIDE || code === CODE_VERSION_ANCIENNE;
 }
 
-/** État de session. Instancié une seule fois, par la racine de l'application. */
+/** Session state. Instantiated once, by the application root. */
 export function useSessionState(): SessionApi {
   const { toastErreur } = useToast();
   const [etat, setEtat] = useState<EtatApplication>("chargement");
@@ -51,7 +51,7 @@ export function useSessionState(): SessionApi {
       const resultat = await window.api.sessionStatus();
       if (annule) return;
       if (!resultat.ok) {
-        // Serveur injoignable au démarrage : on présente l'écran de connexion.
+        // Server unreachable at startup: the sign-in screen is presented.
         toastErreur(resultat.error);
         setEtat("connexion");
         return;

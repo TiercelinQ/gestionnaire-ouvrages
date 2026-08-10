@@ -17,7 +17,7 @@ import { AProposModal } from "./views/layout/AProposModal";
 import { Statusbar } from "./views/layout/Statusbar";
 import { ONGLETS, Topbar, type Onglet } from "./views/layout/Topbar";
 
-/** Dernier filet côté rendu : une erreur non interceptée n'efface pas la fenêtre. */
+/** Last net on the renderer side: an uncaught error does not blank the window. */
 class ErrorBoundary extends Component<{ children: ReactNode }, { erreur: boolean }> {
   constructor(props: { children: ReactNode }) {
     super(props);
@@ -29,7 +29,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { erreur: boolean
   }
 
   componentDidCatch(erreur: Error, infos: ErrorInfo): void {
-    // La console du rendu est relayée dans le journal fichier par electron-log.
+    // The renderer console is relayed into the file log by electron-log.
     window.console.error(erreur, infos.componentStack);
   }
 
@@ -56,7 +56,7 @@ export function App(): React.JSX.Element {
   );
 }
 
-/** Charge les préférences avant tout rendu dépendant du thème, pour éviter un basculement visible. */
+/** Loads the preferences before any theme-dependent render, to avoid a visible switch. */
 function ChargementPreferences(): React.JSX.Element {
   const [preferences, setPreferences] = useState<Preferences | null>(null);
 

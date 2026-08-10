@@ -7,7 +7,7 @@ vi.mock("electron-log/main", () => ({
 
 const fichiers = new Map<string, string>();
 vi.mock("node:fs", () => {
-  // L'export `default` est requis : certaines dépendances importent le module entier.
+  // The `default` export is required: some dependencies import the whole module.
   const fs = {
     existsSync: (chemin: string): boolean => fichiers.has(chemin),
     readFileSync: (chemin: string): string => {

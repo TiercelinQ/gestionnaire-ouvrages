@@ -8,7 +8,7 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    // TypeScript couvre déjà les symboles inconnus, mieux que la règle de base.
+    // TypeScript already covers unknown symbols, better than the base rule does.
     files: ["**/*.{ts,tsx}"],
     rules: { "no-undef": "off" },
   },
@@ -22,7 +22,7 @@ export default tseslint.config(
     rules: {
       ...react.configs.flat.recommended.rules,
       ...reactHooks.configs.recommended.rules,
-      // Le JSX ne nécessite plus l'import de React depuis la transformation automatique.
+      // JSX no longer requires importing React since the automatic transform.
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
     },
@@ -39,7 +39,7 @@ export default tseslint.config(
         __dirname: "readonly",
       },
     },
-    // Ces scripts tournent sous Node en CommonJS, avant tout bundling.
+    // These scripts run under Node in CommonJS, before any bundling.
     rules: { "@typescript-eslint/no-require-imports": "off" },
   },
 );

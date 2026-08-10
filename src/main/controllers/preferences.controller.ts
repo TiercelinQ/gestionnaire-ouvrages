@@ -34,7 +34,7 @@ export function registerPreferencesController(): void {
     },
   );
 
-  /** Sélection du dossier racine des couvertures : boîte système, donc côté contrôleur. */
+  /** Picking the cover root folder: a system dialog, hence controller side. */
   ipcMain.handle(IPC.PREF_PICK_FOLDER, async (evenement): Promise<IpcResult<string | null>> => {
     const fenetre = BrowserWindow.fromWebContents(evenement.sender);
     const options = { properties: ["openDirectory" as const] };

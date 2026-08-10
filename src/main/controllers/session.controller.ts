@@ -41,8 +41,8 @@ export function registerSessionController(): void {
       try {
         return await sessionModel.login(identifiants);
       } catch (err) {
-        // Seule exception possible ici : le système ne fournit pas de chiffrement,
-        // et le jeton ne doit jamais être écrit en clair.
+        // The only exception possible here: the system provides no encryption,
+        // and the token must never be written in clear text.
         if (err instanceof ChiffrementIndisponibleError) {
           log.error("Session non conservée", err.message);
           return {

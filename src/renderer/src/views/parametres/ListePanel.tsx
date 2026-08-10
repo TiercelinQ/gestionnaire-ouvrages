@@ -15,12 +15,11 @@ export interface ListePanelProps {
 }
 
 /**
- * Panneau générique d'une liste simple. Les sept nomenclatures partagent un contrat
- * d'API identique : un panneau paramétré évite quatre copies du même écran.
+ * Generic panel for a simple list. The seven nomenclatures share an identical API
+ * contract: one parameterised panel avoids four copies of the same screen.
  *
- * Les messages de refus du serveur sont affichés tels quels : ils sont déjà accordés
- * en nombre et rédigés pour l'utilisateur final, et aucune structure machine n'est
- * fournie pour en extraire les compteurs.
+ * Server refusal messages are displayed as they come: they are already correctly worded
+ * for the end user, and no machine-readable structure is provided to extract the counts.
  */
 export function ListePanel({ ressource, titre, elements }: ListePanelProps): React.JSX.Element {
   const { recharger } = useNomenclatures();

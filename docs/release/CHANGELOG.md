@@ -1,30 +1,44 @@
-# Changelog
+# Journal des modifications
 
-All notable changes to this project are documented in this file.
-The format is based on Keep a Changelog, and this project adheres to Semantic Versioning.
+Toutes les modifications notables de ce projet sont consignées dans ce fichier.
+Le format s'appuie sur Keep a Changelog, et le projet suit le versionnage sémantique.
 
-## [Unreleased]
+## [Non publié]
+
+## [1.1.0] - 2026-08-10
+
+### Modifié
+
+- Nouvelle palette de couleurs Saphir, accent `#1D4ED8`, appliquée aux deux thèmes. Les couleurs sémantiques suivent désormais la règle de dérivation du design system pour cet accent.
+- Les tableaux séparent leurs colonnes par un trait, du même poids que celui des lignes.
+- L'indicateur de tri se place contre la bordure droite de la colonne concernée au lieu de suivre le libellé.
+- Le chevron des listes déroulantes est écarté de la bordure droite du champ.
+- L'historique d'un ouvrage s'ouvre dans une modale posée sur la fiche, sous forme de tableau, au lieu d'un panneau latéral rendu illisible par la modale qui le recouvrait. La touche Échap ne ferme plus que la fenêtre du dessus.
+- L'écran de démarrage ne montre plus que l'icône de l'application, sur une fenêtre transparente et sans encadré.
+- Nouvelle icône d'application, reprise par la fenêtre, la barre des tâches, l'écran de démarrage et l'exécutable empaqueté.
+- Les commentaires du code sont rédigés en anglais. Les libellés d'interface, les messages de journal et les noms de tests restent en français.
+- Le README et ce journal sont rédigés en français.
 
 ## [1.0.1] - 2026-08-10
 
-### Fixed
+### Corrigé
 
-- Top bar and status bar stayed in place while scrolling: the shell now fills the window instead of growing with its content, so only the main content area scrolls.
-- Table scrollbar now starts below the header row, which no longer sits inside the scrolling container.
-- Table columns keep a fixed width instead of resizing as virtualised rows enter and leave the DOM; overflowing cell text is truncated.
+- La barre supérieure et la barre d'état restaient en place au défilement : la coquille occupe désormais la fenêtre au lieu de grandir avec son contenu, seule la zone de contenu défile.
+- La barre de défilement du tableau commence sous la ligne d'en-tête, qui n'est plus dans le conteneur défilant.
+- Les colonnes du tableau gardent une largeur fixe au lieu de se redimensionner quand les lignes virtualisées entrent et sortent du DOM ; le texte trop long est tronqué.
 
 ## [1.0.0] - 2026-08-09
 
-### Added
+### Ajouté
 
-- Initial release.
-- Account sign-in against the Cloudflare Worker API, with the session token encrypted at rest through Electron `safeStorage`.
-- Book list with client-side search, sorting and virtualised scrolling over the full collection.
-- Book record: create, edit with optimistic locking, and move to trash.
-- Trash with remaining days and restore.
-- Per-field history panel for a book.
-- Hierarchical classification (category, genre, sub-genre) and four reference lists.
-- Dashboard with counters and category/period charts.
-- Cover resolution from a configurable root folder, thumbnail and full-screen preview.
-- CSV export of the displayed collection.
-- Light and dark themes, splash screen, passive API availability indicator.
+- Version initiale.
+- Connexion par compte sur l'API hébergée sur Cloudflare Worker, jeton de session chiffré au repos par `safeStorage` d'Electron.
+- Liste des ouvrages avec recherche côté client, tri et défilement virtualisé sur toute la collection.
+- Fiche d'ouvrage : création, modification avec verrouillage optimiste, mise à la corbeille.
+- Corbeille avec jours restants et restauration.
+- Panneau d'historique champ par champ d'un ouvrage.
+- Classification hiérarchique (catégorie, genre, sous-genre) et quatre listes de référence.
+- Tableau de bord avec compteurs et graphiques par catégorie et par période.
+- Résolution des couvertures depuis un dossier racine configurable, vignette et aperçu plein écran.
+- Export CSV de la collection affichée.
+- Thèmes clair et sombre, écran de démarrage, indicateur passif de disponibilité de l'API.

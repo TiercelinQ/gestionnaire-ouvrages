@@ -2,19 +2,19 @@ import { useEffect, useState } from "react";
 import * as config from "../../../shared/config";
 
 export interface FenetreVirtuelle {
-  /** Index de la première ligne rendue. */
+  /** Index of the first rendered row. */
   debut: number;
-  /** Index suivant la dernière ligne rendue. */
+  /** Index following the last rendered row. */
   fin: number;
-  /** Hauteur du bloc d'espacement précédant les lignes rendues. */
+  /** Height of the spacer block preceding the rendered rows. */
   hauteurAvant: number;
-  /** Hauteur du bloc d'espacement suivant les lignes rendues. */
+  /** Height of the spacer block following the rendered rows. */
   hauteurApres: number;
 }
 
 /**
- * Calcule la fenêtre de rendu. Fonction pure, isolée du DOM pour rester vérifiable.
- * La hauteur de ligne est fixe : c'est la condition d'une virtualisation par simple division.
+ * Computes the render window. Pure function, isolated from the DOM to stay testable.
+ * The row height is fixed: that is what makes virtualisation a plain division.
  */
 export function calculerFenetre(
   total: number,
@@ -39,8 +39,8 @@ export function calculerFenetre(
 }
 
 /**
- * Virtualisation d'une liste plate à hauteur de ligne constante.
- * Aucune bibliothèque : la collection tient en mémoire, seule la fenêtre visible est rendue.
+ * Virtualisation of a flat list with a constant row height.
+ * No library: the collection fits in memory, only the visible window is rendered.
  */
 export function useVirtualRows(
   total: number,
@@ -67,8 +67,8 @@ export function useVirtualRows(
     };
 
     element.addEventListener("scroll", recalculer, { passive: true });
-    // L'observateur appelle son rappel dès la mise en observation : c'est le premier calcul,
-    // ce qui évite un setState synchrone dans le corps de l'effet.
+    // The observer calls its callback as soon as it starts observing: that is the first
+    // computation, which avoids a synchronous setState in the effect body.
     const observateur = new ResizeObserver(recalculer);
     observateur.observe(element);
 

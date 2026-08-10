@@ -1,14 +1,14 @@
 import fr from "./fr.json";
 
 /**
- * Libellés de l'interface, centralisés en français.
+ * Interface labels, centralised in French.
  *
- * L'internationalisation n'est pas activée (Phase 1) : pas de dépendance i18next, pas de
- * bascule de langue. Les libellés restent néanmoins hors des composants, ce qui rend
- * l'activation ultérieure possible sans reprendre les vues.
+ * Internationalisation is not enabled (Phase 1): no i18next dependency, no language switch.
+ * The labels still live outside the components, which keeps a later activation possible
+ * without reworking the views.
  *
- * Le typage de `Cle` sur les clés réelles du fichier fait échouer la compilation
- * sur toute clé absente : c'est la vérification d'intégrité des libellés.
+ * Typing `Cle` on the actual keys of the file makes the compilation fail on any missing
+ * key: that is the integrity check of the labels.
  */
 export type Cle = keyof typeof fr;
 
@@ -16,7 +16,7 @@ export function t(cle: Cle): string {
   return fr[cle];
 }
 
-/** Variante à substitution : `{n}` et `{valeur}` sont remplacés par les paramètres fournis. */
+/** Substitution variant: `{n}` and `{valeur}` are replaced by the supplied parameters. */
 export function tp(cle: Cle, params: Record<string, string | number>): string {
   return Object.entries(params).reduce<string>(
     (texte, [nom, valeur]) => texte.replace(`{${nom}}`, String(valeur)),

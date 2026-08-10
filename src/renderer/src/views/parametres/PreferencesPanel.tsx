@@ -10,7 +10,7 @@ export interface PreferencesPanelProps {
   onTheme(): void;
 }
 
-/** Préférences locales. Le jeton de session n'y figure jamais : il est chiffré à part. */
+/** Local preferences. The session token never appears here: it is encrypted separately. */
 export function PreferencesPanel({ theme, onTheme }: PreferencesPanelProps): React.JSX.Element {
   const { utilisateur, echouer } = useSession();
   const { toast } = useToast();

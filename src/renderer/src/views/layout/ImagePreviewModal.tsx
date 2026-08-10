@@ -4,12 +4,12 @@ import { Modal } from "./Modal";
 export interface ImagePreviewModalProps {
   ouvert: boolean;
   titre: string;
-  /** Image déjà résolue en data URL par le processus principal. */
+  /** Image already resolved to a data URL by the main process. */
   dataUrl: string | null;
   onFermer(): void;
 }
 
-/** Aperçu plein écran d'une couverture. */
+/** Full-screen preview of a cover. */
 export function ImagePreviewModal({
   ouvert,
   titre,

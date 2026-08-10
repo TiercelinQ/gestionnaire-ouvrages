@@ -1,6 +1,6 @@
-/** Erreurs métier nommées. Levées par les modèles, interceptées par les contrôleurs. */
+/** Named business errors. Raised by the models, caught by the controllers. */
 
-/** Le serveur a répondu avec un code d'erreur applicatif. */
+/** The server answered with an application error code. */
 export class ApiHttpError extends Error {
   constructor(
     message: string,
@@ -13,7 +13,7 @@ export class ApiHttpError extends Error {
   }
 }
 
-/** Le serveur n'a pas pu être joint (réseau, DNS, délai dépassé). */
+/** The server could not be reached (network, DNS, timeout). */
 export class ApiReseauError extends Error {
   constructor(message: string) {
     super(message);
@@ -21,7 +21,7 @@ export class ApiReseauError extends Error {
   }
 }
 
-/** Le serveur a répondu, mais la réponse n'est pas exploitable (500 en texte brut, JSON invalide). */
+/** The server answered, but the response is unusable (plain text 500, invalid JSON). */
 export class ApiReponseIllisibleError extends Error {
   constructor(message: string) {
     super(message);
@@ -29,7 +29,7 @@ export class ApiReponseIllisibleError extends Error {
   }
 }
 
-/** Aucune session locale exploitable. */
+/** No usable local session. */
 export class SessionAbsenteError extends Error {
   constructor(message: string) {
     super(message);
@@ -37,7 +37,7 @@ export class SessionAbsenteError extends Error {
   }
 }
 
-/** Le chiffrement du système n'est pas disponible : le jeton ne peut pas être conservé. */
+/** System encryption is unavailable: the token cannot be kept. */
 export class ChiffrementIndisponibleError extends Error {
   constructor(message: string) {
     super(message);

@@ -15,7 +15,7 @@ const VIDES: Nomenclatures = {
 export interface NomenclaturesApi {
   nomenclatures: Nomenclatures;
   chargement: boolean;
-  /** Rechargement après toute écriture : le serveur est la seule référence. */
+  /** Reload after any write: the server is the only reference. */
   recharger(): Promise<void>;
 }
 
@@ -30,14 +30,14 @@ export function useNomenclatures(): NomenclaturesApi {
 }
 
 /**
- * Les sept listes de référence, chargées en un seul appel et conservées pour la session.
- * Il n'existe pas de route de lecture par ressource.
+ * The seven reference lists, loaded in a single call and kept for the session.
+ * There is no per-resource read route.
  */
 export function useNomenclaturesState(actif: boolean): NomenclaturesApi {
   const { echouer } = useSession();
   const [nomenclatures, setNomenclatures] = useState<Nomenclatures>(VIDES);
-  // Vrai dès le montage : le premier chargement part immédiatement, et signaler l'occupation
-  // ici plutôt qu'au début de `recharger` évite un setState synchrone dans l'effet.
+  // True from mount: the first load starts immediately, and flagging the busy state here
+  // rather than at the start of `recharger` avoids a synchronous setState in the effect.
   const [chargement, setChargement] = useState(true);
 
   const recharger = useCallback(async () => {
@@ -50,8 +50,8 @@ export function useNomenclaturesState(actif: boolean): NomenclaturesApi {
     setNomenclatures(resultat.data);
   }, [echouer]);
 
-  // Chargement initial écrit dans l'effet, avec drapeau d'annulation : appeler `recharger`
-  // ici exposerait un setState hors du corps asynchrone de l'effet.
+  // Initial load written inside the effect, with a cancellation flag: calling `recharger`
+  // here would expose a setState outside the asynchronous body of the effect.
   useEffect(() => {
     if (!actif) return;
     let annule = false;

@@ -17,8 +17,8 @@ function refus(message: string, champ: string | null = null): IpcResult<never> {
 }
 
 /**
- * Vérifie la clé de rattachement des deux ressources hiérarchiques.
- * Le serveur exige un type numérique et n'accepte pas une chaîne.
+ * Checks the parent key of the two hierarchical resources.
+ * The server requires a numeric type and does not accept a string.
  */
 function rattachementValide(ressource: string, input: NomenclatureInput): boolean {
   if (ressource === "genres") return estEntierPositif(input.id_categorie);

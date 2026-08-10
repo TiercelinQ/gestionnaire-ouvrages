@@ -16,7 +16,7 @@ vi.mock("electron-log/main", () => ({
 
 const fichiers = new Map<string, Buffer>();
 vi.mock("node:fs", () => {
-  // L'export `default` est requis : certaines dépendances importent le module entier.
+  // The `default` export is required: some dependencies import the whole module.
   const fs = {
     existsSync: (chemin: string): boolean => fichiers.has(chemin),
     readFileSync: (chemin: string): Buffer => {
@@ -70,7 +70,7 @@ describe("token-store", () => {
       expire_le: new Date(Date.now() - 1000).toISOString(),
       utilisateur: UTILISATEUR,
     });
-    // Le cache mémoire est purgé pour forcer une relecture depuis le fichier.
+    // The memory cache is cleared to force a re-read from the file.
     store.effacerSession();
     fichiers.set(
       "C:\\userData\\session.bin",

@@ -1,18 +1,18 @@
 /**
- * Types partagés : DTO de l'API, contrat de résultat IPC, surface exposée au rendu.
- * Les noms de champs des DTO reprennent ceux de l'API (français, tirets bas).
+ * Shared types: API DTOs, IPC result contract, surface exposed to the renderer.
+ * DTO field names mirror the ones used by the API (French, underscores).
  */
 
 // ---------------------------------------------------------------------------
-// Contrat de résultat IPC
+// IPC result contract
 // ---------------------------------------------------------------------------
 
 export type ToastType = "success" | "info" | "warning" | "danger";
 
 /**
- * Erreur remontée au rendu.
- * `code` et `champ` sont repris de l'enveloppe d'erreur de l'API : le rendu branche
- * sa logique sur `code` et positionne `message` sous le champ désigné par `champ`.
+ * Error surfaced to the renderer.
+ * `code` and `champ` come from the API error envelope: the renderer branches its logic
+ * on `code` and places `message` under the field designated by `champ`.
  */
 export interface IpcError {
   type: ToastType;
@@ -24,7 +24,7 @@ export interface IpcError {
 
 export type IpcResult<T> = { ok: true; data: T } | { ok: false; error: IpcError };
 
-/** Codes d'erreur de l'API sur lesquels le rendu branche un comportement. */
+/** API error codes the renderer branches a behaviour on. */
 export const CODE_SESSION_EXPIREE = "session_expiree";
 export const CODE_CONFLIT_VERSION = "conflit_version";
 export const CODE_VERSION_INVALIDE = "entete_version_invalide";
@@ -35,17 +35,17 @@ export const CODE_RESEAU = "reseau_indisponible";
 export const CODE_TECHNIQUE = "erreur_technique";
 
 // ---------------------------------------------------------------------------
-// Disponibilité de l'API
+// API availability
 // ---------------------------------------------------------------------------
 
 /**
- * État de disponibilité, dérivé du dernier appel réellement effectué.
- * Aucun sondage périodique : le quota de l'API est partagé et non protégé.
+ * Availability state, derived from the last call actually made.
+ * No periodic polling: the API quota is shared and unprotected.
  */
 export interface ApiStatus {
-  /** `connecte` : dernier appel abouti · `serveur` : réponse illisible ou 500 · `hors-ligne` : échec réseau. */
+  /** `connecte`: last call succeeded - `serveur`: unreadable response or 500 - `hors-ligne`: network failure. */
   etat: "connecte" | "serveur" | "hors-ligne";
-  /** Horodatage ISO du dernier échange abouti, `null` si aucun depuis le démarrage. */
+  /** ISO timestamp of the last successful exchange, `null` if none since startup. */
   dernierEchange: string | null;
 }
 
@@ -67,30 +67,30 @@ export interface Identifiants {
 export interface SessionStatut {
   authentifie: boolean;
   utilisateur?: Utilisateur;
-  /** Vrai quand le serveur a répondu 426 : l'application doit afficher l'écran de mise à jour. */
+  /** True when the server answered 426: the application must show the update screen. */
   miseAJourRequise?: boolean;
-  /** Message serveur associé, affiché tel quel. */
+  /** Matching server message, displayed as it comes. */
   message?: string;
 }
 
 export interface AppInfo {
   nom: string;
   version: string;
-  /** Seuils lus sur `GET /v1/version`, absents si la route n'a pas répondu. */
+  /** Thresholds read from `GET /v1/version`, absent if the route did not answer. */
   versionsMinimales?: { electron: string; flutter: string };
 }
 
 // ---------------------------------------------------------------------------
-// Ouvrages
+// Books
 // ---------------------------------------------------------------------------
 
 /**
- * Ligne de `GET /v1/ouvrages`.
+ * Row of `GET /v1/ouvrages`.
  *
- * Les six premiers champs sont ceux que le Worker renvoie aujourd'hui. Les suivants sont
- * attendus de l'évolution décrite dans `docs/api/evolution-liste-ouvrages.md` : ils restent
- * optionnels pour que l'application fonctionne avant comme après le déploiement, les écrans
- * qui en dépendent se masquant tant qu'ils sont absents.
+ * The first six fields are the ones the Worker returns today. The following ones are
+ * expected from the evolution described in `docs/api/evolution-liste-ouvrages.md`: they stay
+ * optional so the application works before and after the deployment, the screens depending
+ * on them hiding themselves while they are absent.
  */
 export interface OuvrageListe {
   id: number;
@@ -109,7 +109,7 @@ export interface OuvrageListe {
   a_couverture_quatrieme?: boolean;
 }
 
-/** Champs enrichis effectivement présents dans la réponse, déduits d'un échantillon de lignes. */
+/** Enriched fields actually present in the response, inferred from a sample of rows. */
 export interface ChampsDisponibles {
   localisation: boolean;
   periode: boolean;
@@ -117,16 +117,16 @@ export interface ChampsDisponibles {
   couvertures: boolean;
 }
 
-/** Ligne de `GET /v1/corbeille` : les six champs de la liste plus quatre. */
+/** Row of `GET /v1/corbeille`: the six list fields plus four. */
 export interface OuvrageCorbeille extends OuvrageListe {
   version: number;
   supprime_le: string;
   supprime_par_nom: string | null;
-  /** Calculé par le serveur à chaque appel. Jamais recalculé côté client. */
+  /** Computed by the server on every call. Never recomputed client-side. */
   jours_restants: number;
 }
 
-/** Les vingt-neuf champs modifiables par le client. */
+/** The twenty-nine fields the client can modify. */
 export interface OuvrageInput {
   titre: string;
   sous_titre: string | null;
@@ -159,7 +159,7 @@ export interface OuvrageInput {
   couverture_quatrieme_emplacement: string | null;
 }
 
-/** Fiche complète : les 38 colonnes plus les sept libellés de nomenclature résolus. */
+/** Full record: the 38 columns plus the seven resolved nomenclature labels. */
 export interface OuvrageFiche extends OuvrageInput {
   id: number;
   recherche_normalisee: string;
@@ -179,7 +179,7 @@ export interface OuvrageFiche extends OuvrageInput {
   localisation_nom: string | null;
 }
 
-/** Corps d'une modification : la fiche entière plus la version lue au chargement. */
+/** Body of an update: the whole record plus the version read when loading it. */
 export interface OuvrageUpdateInput extends OuvrageInput {
   version: number;
 }
@@ -188,10 +188,10 @@ export interface EntreeHistorique {
   id: number;
   date_action: string;
   auteur: string;
-  /** Seule valeur non traduite par le serveur. */
+  /** The only value the server does not translate. */
   action: "creation" | "modification" | "suppression" | "restauration";
   champ: string | null;
-  /** Chaîne d'affichage, jamais une valeur énumérée. */
+  /** Display string, never an enumerated value. */
   champ_libelle: string | null;
   ancienne_valeur: string | null;
   nouvelle_valeur: string | null;
@@ -201,7 +201,7 @@ export interface EntreeHistorique {
 // Nomenclatures
 // ---------------------------------------------------------------------------
 
-/** Segments d'URL des sept ressources. Le segment emploie le trait d'union, la clé JSON le tiret bas. */
+/** URL segments of the seven resources. The segment uses a hyphen, the JSON key an underscore. */
 export const RESSOURCES_NOMENCLATURE = [
   "categories",
   "genres",
@@ -237,7 +237,7 @@ export interface Nomenclatures {
   reliures: Nomenclature[];
 }
 
-/** Corps de création ou de renommage. La clé de rattachement ne concerne que genres et sous-genres. */
+/** Creation or rename body. The parent key only concerns genres and sub-genres. */
 export interface NomenclatureInput {
   nom: string;
   id_categorie?: number;
@@ -245,12 +245,13 @@ export interface NomenclatureInput {
 }
 
 // ---------------------------------------------------------------------------
-// Couvertures
+// Covers
 // ---------------------------------------------------------------------------
 
 /**
- * Résultat de résolution d'un chemin de couverture.
- * Les quatre cas du parc existant sont tolérés sans erreur : relatif, absolu, malformé, absent.
+ * Result of resolving a cover path.
+ * The four cases of the existing set are tolerated without error: relative, absolute,
+ * malformed, absent.
  */
 export interface CouvertureResolue {
   dataUrl: string | null;
@@ -258,7 +259,7 @@ export interface CouvertureResolue {
 }
 
 // ---------------------------------------------------------------------------
-// Préférences
+// Preferences
 // ---------------------------------------------------------------------------
 
 export type Theme = "light" | "dark";
@@ -272,13 +273,13 @@ export interface WindowBounds {
 
 export interface Preferences {
   theme: Theme | null;
-  /** Dossier racine servant à résoudre les chemins de couverture relatifs. */
+  /** Root folder used to resolve relative cover paths. */
   coversRoot: string | null;
   windowBounds: WindowBounds | null;
 }
 
 // ---------------------------------------------------------------------------
-// Surface exposée au rendu par le preload
+// Surface exposed to the renderer by the preload
 // ---------------------------------------------------------------------------
 
 export interface WindowApi {
@@ -320,7 +321,7 @@ export interface WindowApi {
   ): Promise<IpcResult<void>>;
   pickCoversFolder(): Promise<IpcResult<string | null>>;
 
-  /** Abonnement à l'état de disponibilité de l'API. Renvoie la fonction de désabonnement. */
+  /** Subscribes to the API availability state. Returns the unsubscribe function. */
   onApiStatus(callback: (statut: ApiStatus) => void): () => void;
 }
 
@@ -331,7 +332,7 @@ declare global {
 }
 
 // ---------------------------------------------------------------------------
-// Gardes de type - utilisées par les contrôleurs pour valider les entrées IPC
+// Type guards - used by the controllers to validate IPC inputs
 // ---------------------------------------------------------------------------
 
 export function estChaineNonVide(valeur: unknown): valeur is string {
@@ -348,7 +349,7 @@ export function estRessourceNomenclature(valeur: unknown): valeur is RessourceNo
   );
 }
 
-/** Vérifie la présence des deux seuls champs obligatoires d'un ouvrage. */
+/** Checks the presence of the only two mandatory fields of a book. */
 export function estOuvrageInput(valeur: unknown): valeur is OuvrageInput {
   if (typeof valeur !== "object" || valeur === null) return false;
   const candidat = valeur as Record<string, unknown>;

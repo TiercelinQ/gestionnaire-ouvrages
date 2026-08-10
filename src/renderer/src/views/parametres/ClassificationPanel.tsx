@@ -16,7 +16,7 @@ interface Colonne {
   ressource: RessourceNomenclature;
   titre: string;
   elements: Nomenclature[];
-  /** Identifiant du parent requis pour créer, `undefined` pour la racine. */
+  /** Parent identifier required to create, `undefined` for the root. */
   parent?: number | null;
   selection: number | null;
   onSelection(id: number): void;
@@ -28,10 +28,10 @@ interface Edition {
 }
 
 /**
- * Classification hiérarchique en trois colonnes liées.
+ * Hierarchical classification in three linked columns.
  *
- * Aucun verrouillage optimiste n'existe sur les nomenclatures : deux renommages simultanés
- * s'écrasent silencieusement. La liste est donc rechargée après chaque écriture.
+ * There is no optimistic locking on the nomenclatures: two simultaneous renames overwrite
+ * each other silently. The list is therefore reloaded after every write.
  */
 export function ClassificationPanel(): React.JSX.Element {
   const { nomenclatures, recharger } = useNomenclatures();
@@ -102,7 +102,7 @@ export function ClassificationPanel(): React.JSX.Element {
   async function renommer(): Promise<void> {
     if (!edition) return;
     setOccupe(true);
-    // Seul le nom est envoyé : la clé de rattachement omise conserve sa valeur actuelle.
+    // Only the name is sent: the omitted parent key keeps its current value.
     const resultat = await window.api.nomenclatureUpdate(edition.colonne.ressource, edition.element.id, {
       nom: nomEdite.trim(),
     });

@@ -8,16 +8,16 @@ import { useSession } from "../hooks/useSession";
 import { useToast } from "../hooks/useToast";
 
 /**
- * Corbeille. La purge est une tâche serveur quotidienne : un ouvrage à zéro jour restant
- * peut rester visible jusqu'à vingt-quatre heures, il n'est donc ni masqué ni grisé.
+ * Trash. Purging is a daily server task: a book with zero remaining days can stay visible
+ * for up to twenty-four hours, so it is neither hidden nor greyed out.
  */
 export function CorbeilleView(): React.JSX.Element {
   const { echouer } = useSession();
   const { toast } = useToast();
   const ouvrages = useOuvrages();
   const [lignes, setLignes] = useState<OuvrageCorbeille[]>([]);
-  // Vrai dès le montage : le chargement part immédiatement. Le bouton Actualiser repasse
-  // l'indicateur à vrai depuis son gestionnaire, hors du corps de l'effet.
+  // True from mount: loading starts immediately. The Refresh button sets the flag back to
+  // true from its own handler, outside the effect body.
   const [chargement, setChargement] = useState(true);
 
   const charger = useCallback(async () => {
@@ -30,8 +30,8 @@ export function CorbeilleView(): React.JSX.Element {
     setLignes(resultat.data);
   }, [echouer]);
 
-  // Chargement initial écrit dans l'effet, avec drapeau d'annulation : appeler `charger`
-  // ici exposerait un setState hors du corps asynchrone de l'effet.
+  // Initial load written inside the effect, with a cancellation flag: calling `charger`
+  // here would expose a setState outside the asynchronous body of the effect.
   useEffect(() => {
     let annule = false;
     void (async () => {
@@ -83,7 +83,7 @@ export function CorbeilleView(): React.JSX.Element {
       </div>
 
       <div className="table-cadre">
-        {/* En-tête hors du conteneur défilant : la piste de défilement commence sous lui. */}
+        {/* Header outside the scrolling container: the scroll track starts below it. */}
         <div className="table-entete">
           <table className="data-table">
             <thead>

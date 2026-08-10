@@ -22,7 +22,7 @@ export default defineConfig({
     plugins: [react()],
     build: {
       rollupOptions: {
-        // Deux entrées : la fenêtre principale et le splash, construits ensemble.
+        // Two entries: the main window and the splash, built together.
         input: {
           index: resolve(__dirname, "src/renderer/index.html"),
           splash: resolve(__dirname, "src/renderer/splash.html"),

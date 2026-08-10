@@ -10,12 +10,12 @@ import {
 
 describe("conversion vers l'heure de Paris", () => {
   it("ajoute_deux_heures_en_ete", () => {
-    // 2026-08-08T14:22:07Z - heure d'été, UTC+2.
+    // 2026-08-08T14:22:07Z - summer time, UTC+2.
     expect(formaterHeure("2026-08-08T14:22:07Z")).toBe("16:22");
   });
 
   it("ajoute_une_heure_en_hiver", () => {
-    // 2026-01-15T14:22:07Z - heure d'hiver, UTC+1.
+    // 2026-01-15T14:22:07Z - winter time, UTC+1.
     expect(formaterHeure("2026-01-15T14:22:07Z")).toBe("15:22");
   });
 
@@ -35,7 +35,7 @@ describe("conversion vers l'heure de Paris", () => {
 
 describe("helpers de formulaire", () => {
   it("formate_les_milliers_a_la_francaise", () => {
-    // L'espace employé est une espace insécable étroite, pas un espace ordinaire.
+    // The space used is a narrow no-break space, not an ordinary space.
     expect(formaterNombre(1234).replace(/\s/gu, " ")).toBe("1 234");
   });
 

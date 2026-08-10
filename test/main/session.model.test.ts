@@ -5,7 +5,7 @@ vi.mock("electron-log/main", () => ({
   default: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() },
 }));
 vi.mock("node:os", () => {
-  // L'export `default` est requis : certaines dépendances importent le module entier.
+  // The `default` export is required: some dependencies import the whole module.
   const os = { hostname: () => "POSTE-TEST" };
   return { ...os, default: os };
 });

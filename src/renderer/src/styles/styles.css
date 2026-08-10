@@ -1,7 +1,7 @@
 /* ============================================================
-   styles.css - Gestionnaire Ouvrage v1.0.0
-   Référence : design-system.md v2.0 (Electron) · layout.md v4.1
-   Aucune valeur littérale : uniquement var(--token).
+   styles.css - Gestionnaire Ouvrage
+   Reference: design-system.md v2.0 (Electron) - layout.md v4.1
+   No literal value: var(--token) only.
    ============================================================ */
 
 /* --- BASE ------------------------------------------------------ */
@@ -10,9 +10,9 @@
   box-sizing: border-box;
 }
 
-/* #root porte la hauteur au même titre que html et body : sans elle, le
-   height: 100% de #app-shell se résout contre un parent auto et la coquille
-   déborde, ce qui fait défiler body au lieu de #main-content. */
+/* #root carries the height just like html and body: without it the height: 100%
+   of #app-shell resolves against an auto-sized parent and the shell overflows,
+   which scrolls body instead of #main-content. */
 html,
 body,
 #root {
@@ -43,7 +43,7 @@ ul {
   padding: 0;
 }
 
-/* --- COQUILLE -------------------------------------------------- */
+/* --- SHELL ----------------------------------------------------- */
 /* token: topbar-height / statusbar-height */
 #app-shell {
   display: grid;
@@ -90,9 +90,9 @@ ul {
   margin-right: var(--spacing-2);
 }
 
-/* --- ONGLETS --------------------------------------------------- */
-/* Le conteneur porte le soulignement signature (design-system.md §8) :
-   le JS n'écrit que --underline-x et --underline-w. */
+/* --- TABS ------------------------------------------------------ */
+/* The container carries the signature underline (design-system.md section 8):
+   JavaScript only writes --underline-x and --underline-w. */
 .tabs {
   position: relative;
   display: flex;
@@ -128,7 +128,7 @@ ul {
     border-color var(--transition-default);
 }
 
-/* token: border - le survol renforce le trait, jamais un aplat */
+/* token: border - hover strengthens the stroke, never fills */
 .tab:hover {
   border-color: var(--border);
 }
@@ -137,7 +137,7 @@ ul {
   color: var(--primary);
 }
 
-/* --- CONTENU PRINCIPAL ----------------------------------------- */
+/* --- MAIN CONTENT ---------------------------------------------- */
 /* token: bg / spacing-6 */
 #main-content {
   overflow-y: auto;
@@ -190,7 +190,7 @@ ul {
   font-weight: var(--weight-semibold);
 }
 
-/* --- ÉCRANS HORS COQUILLE -------------------------------------- */
+/* --- SCREENS OUTSIDE THE SHELL --------------------------------- */
 /* token: bg / spacing-6 */
 .ecran-plein {
   display: flex;
@@ -228,7 +228,7 @@ ul {
   font-weight: var(--weight-semibold);
 }
 
-/* --- TEXTES ---------------------------------------------------- */
+/* --- TEXT ------------------------------------------------------ */
 /* token: font-sm / text / text-subtle / danger-600 */
 .texte-corps {
   font-size: var(--font-sm);
@@ -264,7 +264,7 @@ ul {
   color: var(--text-subtle);
 }
 
-/* --- BOUTONS --------------------------------------------------- */
+/* --- BUTTONS --------------------------------------------------- */
 /* token: radius / spacing / font-sm / weight-medium / transition-default */
 .btn {
   display: inline-flex;
@@ -313,7 +313,7 @@ ul {
   background: var(--primary-pressed);
 }
 
-/* token: border / text - profondeur par le trait */
+/* token: border / text - depth by stroke */
 .btn-secondary {
   background: transparent;
   color: var(--text);
@@ -379,8 +379,8 @@ ul {
   justify-content: flex-end;
 }
 
-/* --- ICÔNES ---------------------------------------------------- */
-/* token: icon-* - Lucide rend un SVG en currentColor */
+/* --- ICONS ----------------------------------------------------- */
+/* token: icon-* - Lucide renders inline SVG in currentColor */
 .icon {
   flex: none;
 }
@@ -428,7 +428,7 @@ ul {
   color: var(--icon-muted);
 }
 
-/* --- FORMULAIRES ----------------------------------------------- */
+/* --- FORMS ----------------------------------------------------- */
 /* token: spacing-4 / font-sm / weight-medium */
 .formulaire {
   display: flex;
@@ -472,6 +472,13 @@ ul {
   transition: border-color var(--transition-default);
 }
 
+/* token: spacing-4 - Chromium draws the native arrow after the content box,
+   so the right padding is what sets its distance from the field border. */
+.champ select,
+.champ-filtre {
+  padding-right: var(--spacing-4);
+}
+
 .champ input:hover,
 .champ select:hover,
 .champ textarea:hover,
@@ -496,7 +503,7 @@ ul {
   color: var(--danger-600);
 }
 
-/* --- BARRE D'OUTILS -------------------------------------------- */
+/* --- TOOLBAR --------------------------------------------------- */
 /* token: spacing-2 */
 .barre-outils {
   display: flex;
@@ -522,7 +529,7 @@ ul {
 }
 
 /* --- TABLES ---------------------------------------------------- */
-/* token: border / radius - cadre commun à l'en-tête figé et au corps défilant */
+/* token: border / radius - frame shared by the frozen header and the scrolling body */
 .table-cadre {
   flex: 1;
   min-height: 0;
@@ -533,12 +540,11 @@ ul {
   border-radius: var(--radius);
 }
 
-/* token: scrollbar-width / bg-subtle / border-strong - l'en-tête est hors du
-   conteneur défilant pour que la piste de défilement commence sous lui ; il
-   compense la gouttière du corps, sans quoi ses colonnes ne tombent pas en face
-   de celles des lignes. Le fond et la bordure basse sont portés ici plutôt que
-   par les th : ils couvrent ainsi la compensation, qui laisserait sinon une
-   entaille claire à droite du dernier en-tête. */
+/* token: scrollbar-width / bg-subtle / border-strong - the header sits outside the
+   scrolling container so the scroll track starts below it; it offsets the body gutter,
+   without which its columns would not line up with the rows. The background and the
+   bottom border are carried here rather than by the th elements: they then cover the
+   offset, which would otherwise leave a pale notch right of the last header. */
 .table-entete {
   flex: none;
   padding-right: var(--scrollbar-width);
@@ -546,16 +552,16 @@ ul {
   border-bottom: var(--border-width-emphasis) solid var(--border-strong);
 }
 
-/* Gouttière toujours réservée (scroll et non auto) : l'alignement sur l'en-tête
-   ne dépend donc pas du nombre de lignes affichées. */
+/* The gutter is always reserved (scroll, not auto): alignment with the header therefore
+   does not depend on how many rows are displayed. */
 .table-defilante {
   flex: 1;
   overflow-y: scroll;
   overflow-x: hidden;
 }
 
-/* token: font-sm - largeurs figées : en calcul automatique, la virtualisation ne
-   soumet qu'une poignée de lignes et les colonnes changent de largeur au défilement. */
+/* token: font-sm - fixed widths: with automatic layout the virtualisation only submits a
+   handful of rows and the columns resize while scrolling. */
 .data-table {
   width: 100%;
   table-layout: fixed;
@@ -564,8 +570,8 @@ ul {
   font-variant-numeric: tabular-nums;
 }
 
-/* token: weight-semibold / text-subtle - fond et bordure basse portés par
-   .table-entete, sur toute la largeur du cadre. */
+/* token: weight-semibold / text-subtle - background and bottom border are carried by
+   .table-entete, across the full width of the frame. */
 .data-table thead th {
   padding: var(--spacing-2) var(--spacing-3);
   text-align: left;
@@ -576,7 +582,31 @@ ul {
   text-overflow: ellipsis;
 }
 
-/* token: primary - colonne de tri cliquable */
+/* token: border-subtle - column separator, same stroke as the row separator */
+.data-table th,
+.data-table td {
+  border-right: var(--border-width) solid var(--border-subtle);
+}
+
+.data-table th:last-child,
+.data-table td:last-child {
+  border-right: none;
+}
+
+/* token: spacing-2 - the sort indicator is pushed against the right edge of its column */
+.th-contenu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.th-libelle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* token: primary - sortable column header */
 .data-table thead th.is-sortable {
   cursor: pointer;
   user-select: none;
@@ -611,8 +641,8 @@ ul {
   cursor: default;
 }
 
-/* token: col-narrow / col-medium / col-wide - largeur portée par le th, la seule
-   rangée lue en table-layout: fixed. Une colonne laissée sans classe prend le reste. */
+/* token: col-narrow / col-medium / col-wide - the width is carried by the th, the only row
+   read under table-layout: fixed. A column left without a class takes the remainder. */
 .colonne-etroite {
   width: var(--col-narrow);
 }
@@ -636,7 +666,7 @@ ul {
   text-align: right;
 }
 
-/* Espaceurs de virtualisation : hauteur écrite en ligne car calculée au défilement. */
+/* Virtualisation spacers: height written inline because it is computed while scrolling. */
 .espaceur {
   border: none;
   background: transparent;
@@ -646,7 +676,36 @@ ul {
   background: transparent;
 }
 
-/* --- MODALE ---------------------------------------------------- */
+/* token: bg-subtle / border-strong - table without a frozen header, used inside a modal:
+   the header sticks to the top of the scrolling modal body, widths follow the content
+   and long values wrap instead of being truncated. */
+.table-simple {
+  table-layout: auto;
+}
+
+.table-simple thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-subtle);
+  border-bottom: var(--border-width-emphasis) solid var(--border-strong);
+}
+
+.table-simple tbody tr {
+  height: auto;
+}
+
+.table-simple td {
+  padding: var(--spacing-2) var(--spacing-3);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+
+.cellule-date {
+  white-space: nowrap;
+}
+
+/* --- MODAL ----------------------------------------------------- */
 /* token: text / opacity-overlay / z-modal-overlay */
 .modal-overlay {
   position: fixed;
@@ -657,8 +716,8 @@ ul {
   z-index: var(--z-modal-overlay);
 }
 
-/* L'assombrissement passe par un pseudo-élément : appliquer l'opacité au conteneur
-   la propagerait à la modale, qui doit rester pleinement opaque. */
+/* The dimming goes through a pseudo-element: applying the opacity to the container would
+   propagate it to the modal, which must stay fully opaque. */
 .modal-overlay::before {
   content: "";
   position: absolute;
@@ -682,6 +741,13 @@ ul {
 .modal-standard {
   width: auto;
   max-width: 40rem;
+}
+
+/* Sits above the record modal: narrower than it, so the stacking stays readable. */
+.modal-moyenne {
+  width: 56rem;
+  max-width: 90vw;
+  max-height: 70vh;
 }
 
 .modal-large {
@@ -721,8 +787,8 @@ ul {
   border-top: var(--border-width) solid var(--border-subtle);
 }
 
-/* --- FICHE D'OUVRAGE ------------------------------------------- */
-/* token: spacing-6 - trois colonnes (docs/specs/03-surfaces.md) */
+/* --- RECORD FORM ----------------------------------------------- */
+/* token: spacing-6 - three columns (docs/specs/03-surfaces.md) */
 .formulaire-fiche {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -749,7 +815,7 @@ ul {
   border-radius: var(--radius);
 }
 
-/* --- COUVERTURES ----------------------------------------------- */
+/* --- COVERS ---------------------------------------------------- */
 /* token: bg-subtle / border / radius */
 .couverture {
   display: flex;
@@ -809,106 +875,18 @@ ul {
   margin: 0 auto;
 }
 
-/* --- PANNEAU LATÉRAL ------------------------------------------- */
-/* token: text / opacity-overlay / z-drawer-overlay */
-.drawer-overlay {
-  position: fixed;
-  inset: 0;
-  background: var(--text);
-  opacity: var(--opacity-overlay);
-  z-index: var(--z-drawer-overlay);
-}
-
-/* token: drawer-width / bg-elevated / border-strong / z-drawer */
-#drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: var(--drawer-width);
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-elevated);
-  border-left: var(--border-width) solid var(--border-strong);
-  z-index: var(--z-drawer);
-}
-
-.drawer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-4) var(--spacing-6);
-  border-bottom: var(--border-width) solid var(--border-subtle);
-}
-
-.drawer-title {
-  font-size: var(--font-lg);
-  font-weight: var(--weight-semibold);
-}
-
-.drawer-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--spacing-6);
-}
-
-/* --- HISTORIQUE ------------------------------------------------ */
-/* token: border-subtle / spacing-3 / font-xs */
-.historique {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-3);
-}
-
-.historique-entree {
-  padding-bottom: var(--spacing-3);
-  border-bottom: var(--border-width) solid var(--border-subtle);
-}
-
-.historique-entete {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--spacing-2);
-}
-
-.historique-action {
-  font-weight: var(--weight-medium);
-}
-
-.historique-date,
-.historique-auteur {
-  font-size: var(--font-xs);
-  color: var(--text-subtle);
-}
-
-.historique-champ {
-  font-size: var(--font-sm);
-  font-weight: var(--weight-medium);
-  margin-top: var(--spacing-1);
-}
-
-.historique-valeurs {
-  display: flex;
-  align-items: baseline;
-  gap: var(--spacing-2);
-  font-size: var(--font-sm);
-  flex-wrap: wrap;
-}
-
+/* --- HISTORY --------------------------------------------------- */
+/* token: text-subtle / text - the before value is struck through, the after value plain */
 .historique-avant {
   color: var(--text-subtle);
   text-decoration: line-through;
-}
-
-.historique-fleche {
-  color: var(--text-muted);
 }
 
 .historique-apres {
   color: var(--text);
 }
 
-/* --- TABLEAU DE BORD ------------------------------------------- */
+/* --- DASHBOARD ------------------------------------------------- */
 /* token: spacing-4 */
 .tableau-bord {
   display: grid;
@@ -966,7 +944,7 @@ ul {
   font-variant-numeric: tabular-nums;
 }
 
-/* --- PARAMÈTRES ------------------------------------------------ */
+/* --- SETTINGS -------------------------------------------------- */
 /* token: spacing-6 */
 .parametres {
   display: grid;
@@ -1015,7 +993,7 @@ ul {
   min-width: 0;
 }
 
-/* --- LISTES DE RÉFÉRENCE --------------------------------------- */
+/* --- REFERENCE LISTS ------------------------------------------- */
 /* token: border-subtle / spacing-2 */
 .liste-simple {
   display: flex;
@@ -1100,7 +1078,7 @@ ul {
 }
 
 /* --- TOASTS ---------------------------------------------------- */
-/* token: z-toast / spacing-4 - ancrage bas centre (docs/specs/03-surfaces.md) */
+/* token: z-toast / spacing-4 - bottom centre anchor (docs/specs/03-surfaces.md) */
 #toast-container {
   position: fixed;
   bottom: calc(var(--statusbar-height) + var(--spacing-4));
@@ -1218,14 +1196,14 @@ ul {
   outline-offset: 2px;
 }
 
-/* --- SÉLECTION ------------------------------------------------- */
+/* --- SELECTION ------------------------------------------------- */
 /* token: selection-bg / selection-text */
 ::selection {
   background: var(--selection-bg);
   color: var(--selection-text);
 }
 
-/* --- BARRES DE DÉFILEMENT -------------------------------------- */
+/* --- SCROLLBARS ------------------------------------------------ */
 /* token: bg-muted / border-strong / radius */
 ::-webkit-scrollbar {
   width: var(--scrollbar-width);
@@ -1246,7 +1224,7 @@ ul {
   background: var(--border-strong);
 }
 
-/* --- PROGRESSION NATIVE ---------------------------------------- */
+/* --- NATIVE PROGRESS ------------------------------------------- */
 /* token: bg-muted / primary */
 progress {
   appearance: none;
@@ -1264,8 +1242,8 @@ progress::-webkit-progress-value {
   background: var(--primary);
 }
 
-/* --- MOUVEMENT RÉDUIT ------------------------------------------ */
-/* Couvre ::after : le soulignement signature se pose sans glisser. */
+/* --- REDUCED MOTION -------------------------------------------- */
+/* Covers ::after too: the signature underline snaps instead of sliding. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

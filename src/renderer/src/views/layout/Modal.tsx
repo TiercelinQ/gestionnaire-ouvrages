@@ -5,33 +5,39 @@ import { t } from "../../i18n";
 export interface ModalProps {
   ouvert: boolean;
   titre: string;
-  /** `large` sert la fiche d'ouvrage : trois colonnes, 1200 px sur 85 % de la hauteur. */
-  taille?: "standard" | "large" | "image";
+  /** `large` serves the book record: three columns, 1200 px over 85 % of the height. */
+  taille?: "standard" | "moyenne" | "large" | "image";
+  /**
+   * Escape closes the modal. Set to `false` on the modal underneath when another one is
+   * stacked on top, so a single key press only closes the topmost one.
+   */
+  fermetureClavier?: boolean;
   onFermer(): void;
   pied?: ReactNode;
   children: ReactNode;
 }
 
 /**
- * Modale contrôlée. Remplace toute boîte native : aucun `alert`, `confirm`
- * ni `dialog.showMessageBox` dans l'application.
+ * Controlled modal. Replaces every native dialog: no `alert`, `confirm`
+ * nor `dialog.showMessageBox` in the application.
  */
 export function Modal({
   ouvert,
   titre,
   taille = "standard",
+  fermetureClavier = true,
   onFermer,
   pied,
   children,
 }: ModalProps): React.JSX.Element | null {
   useEffect(() => {
-    if (!ouvert) return;
+    if (!ouvert || !fermetureClavier) return;
     const surTouche = (evenement: KeyboardEvent): void => {
       if (evenement.key === "Escape") onFermer();
     };
     window.addEventListener("keydown", surTouche);
     return () => window.removeEventListener("keydown", surTouche);
-  }, [ouvert, onFermer]);
+  }, [ouvert, fermetureClavier, onFermer]);
 
   if (!ouvert) return null;
 

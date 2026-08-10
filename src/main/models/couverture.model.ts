@@ -16,23 +16,23 @@ function extensionAcceptee(chemin: string): boolean {
   return (config.IMAGE_EXTENSIONS as readonly string[]).includes(extname(chemin).toLowerCase());
 }
 
-/** Vérifie que le chemin résolu reste confiné sous la racine, contre toute remontée `..`. */
+/** Checks the resolved path stays confined under the root, against any `..` traversal. */
 function confineSous(racine: string, cible: string): boolean {
   const base = resolve(racine);
   return cible === base || cible.startsWith(base.endsWith(sep) ? base : base + sep);
 }
 
 /**
- * Couvertures : résolution des chemins et lecture des images.
+ * Covers: path resolution and image reading.
  *
- * L'API ne stocke aucun binaire, seulement des chaînes de chemin héritées de l'application
- * précédente. Quatre cas coexistent et doivent être tolérés sans erreur : chemin relatif à
- * une racine que l'utilisateur configure, chemin absolu, chemin malformé, absence de chemin.
+ * The API stores no binary, only path strings inherited from the previous application.
+ * Four cases coexist and must be tolerated without error: a path relative to a root the
+ * user configures, an absolute path, a malformed path, no path at all.
  */
 export const couvertureModel = {
   /**
-   * Résout un chemin de couverture et renvoie l'image en data URL.
-   * Un chemin non résolu n'est pas une erreur : la vue affiche un état vide motivé.
+   * Resolves a cover path and returns the image as a data URL.
+   * An unresolved path is not an error: the view shows a reasoned empty state.
    */
   read(chemin: string | null): IpcResult<CouvertureResolue> {
     if (!chemin || chemin.trim().length === 0) {

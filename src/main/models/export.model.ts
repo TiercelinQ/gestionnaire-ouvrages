@@ -3,24 +3,24 @@ import type { IpcResult, OuvrageListe } from "../../shared/types";
 
 const SEPARATEUR = ";";
 const ENTETES = ["Auteur", "Titre", "Édition", "Catégorie"];
-/** Sans marque d'ordre, Excel ouvre le fichier en ANSI et casse les accents. */
+/** Without a byte order mark, Excel opens the file as ANSI and breaks the accents. */
 const BOM = "﻿";
 
-/** Échappe une valeur au format CSV : guillemets doublés, encadrement si nécessaire. */
+/** Escapes a value in CSV format: doubled quotes, wrapped when needed. */
 function echapper(valeur: string | null): string {
   const texte = valeur ?? "";
   return /[";\r\n]/.test(texte) ? `"${texte.replace(/"/g, '""')}"` : texte;
 }
 
 /**
- * Export CSV de la collection.
+ * CSV export of the collection.
  *
- * Les colonnes sont celles que la liste renvoie : l'API ne fournit les trente-huit champs
- * d'un ouvrage que fiche par fiche, et exporter la collection complète coûterait
- * une requête par ouvrage.
+ * The columns are the ones the list returns: the API only provides the thirty-eight fields
+ * of a book record by record, and exporting the full collection would cost one request
+ * per book.
  */
 export const exportModel = {
-  /** Écrit le fichier en UTF-8 avec BOM, séparateur point-virgule, ordre reçu. */
+  /** Writes the file in UTF-8 with BOM, semicolon separator, in the order received. */
   toCsv(lignes: OuvrageListe[], chemin: string): IpcResult<string> {
     const contenu = [
       ENTETES.join(SEPARATEUR),

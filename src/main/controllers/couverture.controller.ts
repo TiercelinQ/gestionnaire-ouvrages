@@ -6,7 +6,7 @@ import { CODE_TECHNIQUE, type CouvertureResolue, type IpcResult } from "../../sh
 import { couvertureModel } from "../models/couverture.model";
 
 export function registerCouvertureController(): void {
-  /** La boîte de sélection est une API d'interface : elle vit dans le contrôleur, pas dans le modèle. */
+  /** The file picker is an interface API: it lives in the controller, not in the model. */
   ipcMain.handle(IPC.COUVERTURE_PICK, async (evenement): Promise<IpcResult<string | null>> => {
     const fenetre = BrowserWindow.fromWebContents(evenement.sender);
     const options = {

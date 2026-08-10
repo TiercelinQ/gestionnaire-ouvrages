@@ -6,14 +6,14 @@ import { useSession } from "./useSession";
 export type ColonneTri = "auteur" | "titre" | "edition" | "categorie";
 export type SensTri = "asc" | "desc";
 
-/** Valeurs spéciales du filtre par localisation, en regard d'un identifiant. */
+/** Special values of the location filter, as opposed to an identifier. */
 export const LOCALISATION_TOUTES = "toutes";
 export const LOCALISATION_ABSENTE = "non-renseignee";
 
 export interface OuvragesApi {
-  /** Collection complète telle que reçue, pour les agrégations du tableau de bord. */
+  /** Full collection as received, for the dashboard aggregations. */
   toutes: OuvrageListe[];
-  /** Collection filtrée puis triée, telle qu'affichée par la table. */
+  /** Collection filtered then sorted, as displayed by the table. */
   lignes: OuvrageListe[];
   chargement: boolean;
   recherche: string;
@@ -25,7 +25,7 @@ export interface OuvragesApi {
   basculerTri(colonne: ColonneTri): void;
   effacerFiltres(): void;
   recharger(): Promise<void>;
-  /** Champs enrichis effectivement fournis par l'API, voir docs/api/evolution-liste-ouvrages.md. */
+  /** Enriched fields actually provided by the API, see docs/api/evolution-liste-ouvrages.md. */
   champs: ChampsDisponibles;
 }
 
@@ -50,7 +50,7 @@ function valeurTri(ligne: OuvrageListe, colonne: ColonneTri): string {
   }
 }
 
-/** Un champ est disponible dès qu'il est présent dans la réponse, même valué à `null`. */
+/** A field is available as soon as it is present in the response, even valued `null`. */
 function detecterChamps(lignes: OuvrageListe[]): ChampsDisponibles {
   const echantillon = lignes[0];
   if (!echantillon) {
@@ -65,17 +65,17 @@ function detecterChamps(lignes: OuvrageListe[]): ChampsDisponibles {
 }
 
 /**
- * Collection d'ouvrages : chargement, recherche, filtrage et tri.
+ * Book collection: loading, searching, filtering and sorting.
  *
- * Le serveur ne pagine pas, ne trie pas selon la demande et ne lit aucun paramètre de requête.
- * Tout se fait ici, sur la collection tenue en mémoire. Aucun rechargement automatique :
- * le quota de l'API est partagé et non protégé.
+ * The server does not paginate, does not sort on request and reads no query parameter.
+ * Everything happens here, on the collection held in memory. No automatic reload: the API
+ * quota is shared and unprotected.
  */
 export function useOuvragesState(actif: boolean): OuvragesApi {
   const { echouer } = useSession();
   const [toutes, setToutes] = useState<OuvrageListe[]>([]);
-  // Vrai dès le montage : le premier chargement part immédiatement, et signaler l'occupation
-  // ici plutôt qu'au début de `recharger` évite un setState synchrone dans l'effet.
+  // True from mount: the first load starts immediately, and flagging the busy state here
+  // rather than at the start of `recharger` avoids a synchronous setState in the effect.
   const [chargement, setChargement] = useState(true);
   const [recherche, setRecherche] = useState("");
   const [localisation, setLocalisation] = useState<string>(LOCALISATION_TOUTES);
@@ -92,8 +92,8 @@ export function useOuvragesState(actif: boolean): OuvragesApi {
     setToutes(resultat.data);
   }, [echouer]);
 
-  // Chargement initial écrit dans l'effet, avec drapeau d'annulation : appeler `recharger`
-  // ici exposerait un setState hors du corps asynchrone de l'effet.
+  // Initial load written inside the effect, with a cancellation flag: calling `recharger`
+  // here would expose a setState outside the asynchronous body of the effect.
   useEffect(() => {
     if (!actif) return;
     let annule = false;
@@ -131,11 +131,11 @@ export function useOuvragesState(actif: boolean): OuvragesApi {
   const champs = useMemo(() => detecterChamps(toutes), [toutes]);
 
   const lignes = useMemo(() => {
-    // La chaîne saisie est normalisée comme l'est `recherche_normalisee` côté serveur.
+    // The typed string is normalised the same way `recherche_normalisee` is server side.
     const terme = normaliser(recherche);
     const filtrees = toutes.filter((ligne) => {
       if (terme && !ligne.recherche_normalisee.includes(terme)) {
-        // La catégorie n'entre pas dans `recherche_normalisee` : on la compare séparément.
+        // The category is not part of `recherche_normalisee`: it is compared separately.
         if (!normaliser(ligne.categorie_nom ?? "").includes(terme)) return false;
       }
       if (!champs.localisation || localisation === LOCALISATION_TOUTES) return true;

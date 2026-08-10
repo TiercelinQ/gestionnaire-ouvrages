@@ -26,7 +26,7 @@ describe("gardes de type", () => {
   it("accepte_les_sept_ressources_et_refuse_les_autres", () => {
     expect(estRessourceNomenclature("categories")).toBe(true);
     expect(estRessourceNomenclature("sous-genres")).toBe(true);
-    // La table s'appelle sous_genres, mais le segment d'URL emploie le trait d'union.
+    // The table is called sous_genres, but the URL segment uses a hyphen.
     expect(estRessourceNomenclature("sous_genres")).toBe(false);
     expect(estRessourceNomenclature("utilisateurs")).toBe(false);
   });

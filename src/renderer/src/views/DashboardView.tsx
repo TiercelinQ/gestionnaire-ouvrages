@@ -6,7 +6,7 @@ import { formaterDate, formaterNombre } from "../utils/helpers";
 import { useNomenclatures } from "../hooks/useNomenclatures";
 import { LOCALISATION_TOUTES, useOuvrages } from "../hooks/useOuvrages";
 
-/** Les cinq tokens de visualisation, cyclés au-delà de cinq segments. */
+/** The five visualisation tokens, cycled beyond five segments. */
 const TOKENS_GRAPHIQUE = [
   "--chart-primary",
   "--chart-success",
@@ -16,9 +16,9 @@ const TOKENS_GRAPHIQUE = [
 ] as const;
 
 /**
- * Lit les couleurs de graphique dans les tokens et les relit au changement de thème.
- * Recharts attend des couleurs en propriété : les valeurs viennent de tokens.css,
- * jamais d'un littéral dans le composant.
+ * Reads the chart colours from the tokens and re-reads them when the theme changes.
+ * Recharts expects colours as props: the values come from tokens.css, never from a
+ * literal inside the component.
  */
 function useCouleursGraphique(): string[] {
   const [couleurs, setCouleurs] = useState<string[]>([]);

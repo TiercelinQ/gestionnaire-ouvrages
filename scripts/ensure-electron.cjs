@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // scripts/ensure-electron.cjs
-// Filet de sécurité pour le postinstall d'electron.
-// Si l'extraction du binaire a échoué silencieusement (antivirus, permission,
-// téléchargement interrompu), on récupère depuis le cache local. Sans cela :
-// "Error: Electron uninstall" au lancement de electron-vite.
+// Safety net for the electron postinstall.
+// When extracting the binary failed silently (antivirus, permission, interrupted
+// download), restore it from the local cache. Without this:
+// "Error: Electron uninstall" when starting electron-vite.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -45,11 +45,11 @@ function isInstalled() {
   return fs.existsSync(PATH_TXT) && fs.existsSync(path.join(DIST_DIR, relExecPath()));
 }
 
-// Dans un shell lancé par une app Electron (VS Code, Cursor…),
-// ELECTRON_RUN_AS_NODE=1 est hérité par les process node enfants. Sous ce
-// flag, l'installeur officiel d'Electron (install.js) avale le téléchargement
-// du binaire (sortie 0, aucun zip mis en cache). On relance donc l'installeur
-// avec un environnement nettoyé avant toute restauration depuis le cache.
+// In a shell started by an Electron app (VS Code, Cursor and the like),
+// ELECTRON_RUN_AS_NODE=1 is inherited by child node processes. Under that flag
+// the official Electron installer (install.js) swallows the binary download
+// (exit 0, no zip cached). So the installer is re-run with a cleaned
+// environment before any restoration from the cache.
 function retryDownloadWithCleanEnv() {
   const installer = path.join(ELECTRON_DIR, "install.js");
   if (!fs.existsSync(installer)) return;
@@ -58,7 +58,7 @@ function retryDownloadWithCleanEnv() {
   try {
     execFileSync(process.execPath, [installer], { stdio: "inherit", env });
   } catch {
-    // install.js n'échoue pas en sortie non nulle : on vérifie via isInstalled().
+    // install.js does not exit non-zero on failure: isInstalled() is the check.
   }
 }
 
@@ -82,7 +82,7 @@ async function main() {
     process.exit(1);
   }
 
-  // 1) Relancer le téléchargement officiel avec un env nettoyé.
+  // 1) Re-run the official download with a cleaned environment.
   if (process.env.ELECTRON_RUN_AS_NODE) {
     retryDownloadWithCleanEnv();
     if (isInstalled()) {
@@ -93,7 +93,7 @@ async function main() {
 
   const { version } = JSON.parse(fs.readFileSync(path.join(ELECTRON_DIR, "package.json"), "utf8"));
 
-  // 2) Sinon, restaurer depuis le cache local (extraction échouée).
+  // 2) Otherwise, restore from the local cache (failed extraction).
   const zipPath = findCachedZip(version);
   if (!zipPath) {
     console.error("[ensure-electron] Binaire Electron absent et zip introuvable dans le cache.");
@@ -110,8 +110,8 @@ async function main() {
     process.exit(1);
   }
 
-  // Electron >= 42 a renommé l'extracteur embarqué (extract-zip ->
-  // @electron-internal/extract-zip). On essaie les deux noms.
+  // Electron >= 42 renamed the bundled extractor (extract-zip ->
+  // @electron-internal/extract-zip). Both names are tried.
   let extract;
   for (const name of ["@electron-internal/extract-zip", "extract-zip"]) {
     try {

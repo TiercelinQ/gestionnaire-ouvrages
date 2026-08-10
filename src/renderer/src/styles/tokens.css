@@ -1,13 +1,13 @@
 /* ============================================================
-   tokens.css - Gestionnaire Ouvrage v1.0.0
-   Référence : design-system.md v2.0 (Electron) - palette Espresso
-   Accent #78350F (H 22, S 78 %, L 26 %) + quatre surcharges par thème.
+   tokens.css - Gestionnaire Ouvrage
+   Reference: design-system.md v2.0 (Electron) - Saphir palette
+   Accent #1D4ED8 (H 224, S 76%, L 48%) plus four per-theme overrides.
    ============================================================ */
 
 :root {
-  color-scheme: light; /* les contrôles natifs suivent le thème */
+  color-scheme: light; /* native controls follow the theme */
 
-  /* --- TYPOGRAPHIE --- */
+  /* --- TYPOGRAPHY --- */
   --font-family: system-ui, "Segoe UI", "Helvetica Neue", sans-serif;
   --font-xs: 12px;
   --font-sm: 14px;
@@ -22,45 +22,45 @@
   --leading-tight: 1.25;
   --leading-normal: 1.5;
 
-  /* --- COULEURS - thème clair (neutres teintés par l'accent) --- */
+  /* --- COLORS - light theme (neutrals tinted by the accent hue) --- */
   --bg: #ffffff;
-  --bg-subtle: #fbf8f7;
+  --bg-subtle: #f7f8fb;
   --bg-elevated: #ffffff;
-  --bg-muted: #f4f0ee;
-  --text: #241a14;
-  --text-subtle: #7b6d65;
-  --text-muted: #aea098;
-  --border: #efe6e1;
-  --border-subtle: #f7f3f0;
-  --border-strong: #b0a096;
+  --bg-muted: #eef0f4;
+  --text: #141824;
+  --text-subtle: #656b7b;
+  --text-muted: #989eae;
+  --border: #e1e5ef;
+  --border-subtle: #edeef3;
+  --border-strong: #969db0;
 
-  /* --- ACCENT - paliers (identiques dans les deux thèmes) --- */
-  --primary-50: #fcf0e8;
-  --primary-400: #eea377;
-  --primary-600: #78350f;
-  --primary-700: #5f2a0c;
-  --primary-800: #4d220a;
-  --primary-900: #3b1a07;
+  /* --- ACCENT - stops (identical in both themes) --- */
+  --primary-50: #e9eefc;
+  --primary-400: #7897ed;
+  --primary-600: #1d4ed8;
+  --primary-700: #1842b4;
+  --primary-800: #143590;
+  --primary-900: #0f2970;
 
-  /* --- ACCENT - tokens d'usage --- */
+  /* --- ACCENT - usage tokens --- */
   --primary: var(--primary-600);
   --primary-bg: var(--primary-50);
   --primary-hover: var(--primary-700);
   --primary-pressed: var(--primary-800);
 
-  /* --- SÉMANTIQUES - dérivées, teintes harmonisées ±6° vers l'accent --- */
-  --success-600: #328f5b;
-  --success-50: #eff6f2;
+  /* --- SEMANTIC - derived, hues harmonized within 6 degrees of the accent --- */
+  --success-600: #328f6d;
+  --success-50: #eff6f3;
   --warning-600: #a56a27;
   --warning-50: #f8f3ee;
-  --danger-600: #ba3d3b;
-  --danger-50: #faf0ef;
-  --danger-700: #9f3432;
-  --danger-800: #882c2b;
+  --danger-600: #ba3b52;
+  --danger-50: #f9eff1;
+  --danger-700: #a23448;
+  --danger-800: #8a2c3d;
   --info-600: var(--primary);
   --info-50: var(--primary-bg);
 
-  /* --- ICÔNES (consomment les tokens ci-dessus) --- */
+  /* --- ICONS (consume the tokens above) --- */
   --icon-default: var(--text-subtle);
   --icon-active: var(--primary);
   --icon-success: var(--success-600);
@@ -70,7 +70,7 @@
   --icon-muted: var(--text-muted);
   --icon-stroke: 1.75;
 
-  /* --- ESPACEMENTS --- */
+  /* --- SPACING --- */
   --spacing-1: 4px;
   --spacing-2: 8px;
   --spacing-3: 12px;
@@ -80,24 +80,24 @@
   --spacing-7: 28px;
   --spacing-8: 32px;
 
-  /* --- TAILLES FIXES --- */
+  /* --- FIXED SIZES --- */
   --topbar-height: 48px;
   --statusbar-height: 28px;
-  --drawer-width: 420px; /* 320 par défaut ; élargi pour l'historique (Phase 3) */
   --content-xl: 1024px;
   --modal-large-width: 1200px;
   --modal-large-height: 85vh;
-  --row-height: 36px; /* miroir de ROW_HEIGHT (shared/config.ts) - virtualisation */
-  --scrollbar-width: 12px; /* largeur de la gouttière : aligne l'en-tête figé sur le corps défilant */
-  --col-narrow: 7rem; /* colonnes de table à largeur figée (table-layout: fixed) */
+  --row-height: 36px; /* mirrors ROW_HEIGHT (shared/config.ts) - virtualisation */
+  --scrollbar-width: 12px; /* gutter width: aligns the frozen header with the scrolling body */
+  --col-narrow: 7rem; /* fixed table column widths (table-layout: fixed) */
   --col-medium: 11rem;
   --col-wide: 14rem;
   --col-actions: 5.5rem;
   --icon-sm: 16px;
   --icon-md: 20px;
   --icon-lg: 24px;
+  --splash-icon-size: 256px; /* splash window is exactly this size - the icon is its only content */
 
-  /* --- FORME / BORDURES / OPACITÉ --- */
+  /* --- SHAPE / BORDERS / OPACITY --- */
   --radius: 5px;
   --border-width: 1px;
   --border-width-emphasis: 2px;
@@ -110,22 +110,20 @@
   --transition-default: 160ms var(--ease-out);
   --transition-slow: 240ms var(--ease-out);
 
-  /* --- SUPERPOSITION --- */
+  /* --- LAYERING --- */
   --z-content: 0;
-  --z-drawer-overlay: 100;
-  --z-drawer: 110;
   --z-modal-overlay: 200;
   --z-modal: 210;
   --z-dropdown: 300;
   --z-toast: 400;
 
-  /* --- SÉLECTION / TEXTE SUR FOND COLORÉ --- */
+  /* --- SELECTION / TEXT ON COLOURED FILL --- */
   --selection-bg: var(--primary-bg);
   --selection-text: var(--text);
   --text-on-primary: #ffffff;
   --text-on-danger: #ffffff;
 
-  /* --- GRAPHIQUES --- */
+  /* --- CHARTS --- */
   --chart-primary: var(--primary);
   --chart-success: var(--success-600);
   --chart-warning: var(--warning-600);
@@ -136,28 +134,26 @@
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #1c1917;
-  --bg-subtle: #272320;
-  --bg-elevated: #322a25;
-  --bg-muted: #382e29;
-  --text: #f0efef;
-  --text-subtle: #ad9d94;
-  --text-muted: #77685f;
-  --border: #544a45;
-  --border-subtle: #352c27;
-  --border-strong: #6f5d52;
+  --bg: #17181c;
+  --bg-subtle: #202227;
+  --bg-elevated: #252832;
+  --bg-muted: #292d38;
+  --text: #efeff0;
+  --text-subtle: #949bad;
+  --text-muted: #5f6677;
+  --border: #454954;
+  --border-subtle: #272b35;
+  --border-strong: #525a6f;
 
-  /* L'accent #78350F ne fait que 1,93:1 sur ce fond : l'usage bascule sur le palier clair. */
+  /* The 600 stop only reaches 2.6:1 on this background: foreground accents switch to the 400 stop.
+     The primary button keeps the 600 fill in both themes (design-system.md section 9). */
   --primary: var(--primary-400);
   --primary-bg: var(--primary-900);
 
-  /* Le blanc ne passe pas sur #EEA377 (2,07:1) : le texte sur accent devient quasi noir. */
-  --text-on-primary: #241a14;
-
-  --success-600: #6ec493;
-  --success-50: #2b382d;
+  --success-600: #6ec4a4;
+  --success-50: #273734;
   --warning-600: #d29d60;
-  --warning-50: #3d3124;
-  --danger-600: #cb7372;
-  --danger-50: #3c2927;
+  --warning-50: #393028;
+  --danger-600: #cb7282;
+  --danger-50: #37282e;
 }

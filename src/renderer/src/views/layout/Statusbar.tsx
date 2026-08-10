@@ -18,8 +18,8 @@ const LIBELLE_STATUT = {
 } as const;
 
 /**
- * Barre d'état. L'indicateur d'API reflète le dernier appel réellement effectué :
- * aucun sondage périodique, le quota du serveur est partagé et non protégé.
+ * Status bar. The API indicator reflects the last call actually made: no periodic
+ * polling, the server quota is shared and unprotected.
  */
 export function Statusbar({
   message,

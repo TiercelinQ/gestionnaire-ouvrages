@@ -1,12 +1,12 @@
 import log from "electron-log/main";
 import * as config from "../shared/config";
 
-/** Journalisation applicative. Unique point de configuration des transports. */
+/** Application logging. Single configuration point for the transports. */
 export function setupLogging(): void {
   log.initialize();
   log.transports.file.level = debugActif() ? "debug" : config.LOG_LEVEL;
   log.transports.file.maxSize = config.LOG_MAX_BYTES;
-  // Écho console en debug uniquement : en production l'application tourne en fenêtre.
+  // Console echo in debug only: in production the application runs windowed.
   log.transports.console.level = debugActif() ? "debug" : false;
 }
 

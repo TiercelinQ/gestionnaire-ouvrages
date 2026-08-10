@@ -1,15 +1,15 @@
 /**
- * Noms des canaux IPC. Convention `entite:action`.
- * Aucune chaîne de canal ne doit apparaître ailleurs dans le code.
+ * IPC channel names. Convention `entity:action`.
+ * No channel string may appear anywhere else in the code.
  */
 export const IPC = {
-  // Session et application
+  // Session and application
   SESSION_STATUS: "session:status",
   SESSION_LOGIN: "session:login",
   SESSION_LOGOUT: "session:logout",
   APP_INFO: "app:info",
 
-  // Ouvrages
+  // Books
   OUVRAGE_LIST: "ouvrage:list",
   OUVRAGE_GET: "ouvrage:get",
   OUVRAGE_CREATE: "ouvrage:create",
@@ -25,18 +25,18 @@ export const IPC = {
   NOMENCLATURE_UPDATE: "nomenclature:update",
   NOMENCLATURE_DELETE: "nomenclature:delete",
 
-  // Couvertures
+  // Covers
   COUVERTURE_PICK: "couverture:pick",
   COUVERTURE_READ: "couverture:read",
 
   // Export
   EXPORT_CSV: "export:csv",
 
-  // Préférences
+  // Preferences
   PREF_GET: "pref:get",
   PREF_SET: "pref:set",
   PREF_PICK_FOLDER: "pref:pickFolder",
 
-  // Événement poussé du processus principal vers le rendu
+  // Event pushed from the main process to the renderer
   API_STATUS: "api:status",
 } as const;

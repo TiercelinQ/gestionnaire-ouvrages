@@ -5,14 +5,14 @@ export interface ConfirmModalProps {
   ouvert: boolean;
   titre: string;
   message: string;
-  /** Libellé du bouton de confirmation. Le style est celui d'une action destructrice. */
+  /** Label of the confirmation button. The style is that of a destructive action. */
   libelleConfirmer: string;
   occupe?: boolean;
   onConfirmer(): void;
   onAnnuler(): void;
 }
 
-/** Confirmation d'une action destructrice. Jamais `confirm()`. */
+/** Confirmation of a destructive action. Never `confirm()`. */
 export function ConfirmModal({
   ouvert,
   titre,
