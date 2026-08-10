@@ -43,8 +43,13 @@ jobs:
           if ($changelogTop -ne $pkgVersion) { Write-Error "CHANGELOG '$changelogTop' != package.json '$pkgVersion'"; exit 1 }
           Write-Host "Version consistency OK: $pkgVersion"
 
+      # --publish never is mandatory here. Run on a tag, electron-builder
+      # triggers an implicit publish of its own and fails with "GitHub Personal
+      # Access Token is not set", after having built the installers correctly.
+      # Publishing belongs to the release step below, which attaches the notes
+      # extracted from the changelog.
       - name: Build and package (electron-builder)
-        run: npm run dist
+        run: npm run dist -- --publish never
 
       - name: Extract changelog section
         shell: pwsh
