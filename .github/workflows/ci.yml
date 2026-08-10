@@ -10,7 +10,11 @@ jobs:
   # Job name "quality" is the contract with the branch ruleset: it is the
   # required status check that gates every merge into main.
   quality:
-    runs-on: ubuntu-latest
+    # windows-latest, not ubuntu: the app is Windows-only and the main-process
+    # tests exercise Windows path semantics (drive letters, backslashes), which
+    # node resolves differently on Linux. Public repository, so Actions minutes
+    # are unlimited and the slower Windows runner costs nothing.
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -35,7 +39,7 @@ jobs:
       - name: Format check (Prettier)
         run: npm run format:check
 
-      # jsdom, window.api mocked, no BrowserWindow: no xvfb and no system libs.
+      # jsdom, window.api mocked, no BrowserWindow: no display server needed.
       - name: Tests (Vitest)
         run: npm test
 
