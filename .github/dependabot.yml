@@ -32,6 +32,15 @@ updates:
       # l'execution. Lever en meme temps que node-version dans les workflows.
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+      # eslint 10 est refuse par eslint-plugin-react, bloque a sa derniere
+      # version 7.37.5 dont la peer s'arrete a "^9.7". typescript-eslint 8 et
+      # eslint-plugin-react-hooks 7 acceptent pourtant deja eslint 10 : le
+      # plugin react est le seul frein. Lever quand il elargira sa plage.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      # @eslint/js suit la version d'eslint : lier les deux entrees.
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
     groups:
       npm-dependencies:
         patterns: ["*"]
